@@ -6,11 +6,6 @@ import unittest
 
 class TestCookbook(unittest.TestCase):
     
-    
-    
-    def test_home_page(self):
-        
-        self.assertEqual("hello", run.say_hello())
         
     def test_recipes(self):
         with run.app.app_context():
@@ -18,13 +13,31 @@ class TestCookbook(unittest.TestCase):
           
           
     def  test_creating_cookbook(self):
-        username = "Sebastian"
+        
+        # creates a document, gets its id and checks if it exists in database
         with run.app.app_context():
-            username = "Sebastian"
-            created_id=run.create_cookbook(cookbook_name="Seb_cookbook", password="", username=username)
-            item=run.get_cookbooks(query={"author_name": "Sebastian"})
+            
+            username = "Lola"
+            result=run.create_cookbook(cookbook_name="Lola_cookbook", password="", username=username)
+            item=run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+        
+        self.assertEqual(result.inserted_id, item["_id"])
+        
+        
     
-            self.assertEquals(created_id, item.["_id"])
+    def test_deleting(self):
+        # queries for a document and delets it, then checks if succed
+        with run.app.app_context():
+            username = "Lola"
+            item=run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+            
+        self.assertIsNotNone(item)
+        with run.app.app_context():
+            run.mongo.db.cookbooks.delete_one({"_id": item["_id"]})
+            rmd =run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+            
+        self.assertIsNone(rmd)
+        
             
 
 if __name__ == '__main__':

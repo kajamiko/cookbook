@@ -3,17 +3,17 @@
     <head>
    
          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+        <script type="text/javascript" src="../static/js/validate.js"> </script>
     </head>
     
     <body>
 <!--Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Yummy!<br>Your online cookbook</a>
+            <a class="navbar-brand" href="#">Yummy! Your online cookbook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item active">
                         <a class="nav-link" href="#">Home </a>
@@ -26,17 +26,27 @@
                     </li>
                 </ul>
                 
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="{{ url_for('register')}}"><span class="glyphicon glyphicon-user"></span> Create your own cookbook! </a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('register')}}"><span class="glyphicon glyphicon-user"></span> Create your own cookbook! </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                    </li>
                 </ul>
                 </div>
 
         </nav>        
         
         
-        <div class="container">
-            {% block content %} {% endblock %}
+        <div class="container-fluid">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-4">Yummy!</h1>
+                    <p class="lead">A place with a sense of taste</p>
+                </div>
+            </div>
+                {% block content %} {% endblock %}
         </div>
 
 

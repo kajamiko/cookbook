@@ -1,40 +1,46 @@
+
+      
+      
 {% extends 'base.html' %}
+
 {% block content %} 
 
-
-<form action="{{ url_for('register') }}" method="POST" name="reg_form" onsubmit="return(validate())">  
+<div class="container">
+<form action="{{ url_for('register') }}" method="POST" name="reg_form" onsubmit="return(validate());"> 
+   
+      <form action="{{ url_for('register') }}" method="POST" name="reg_form" onsubmit="return(validate());"> 
     <div class="form-group row">
-      <label for="cookbok_name" class="col-sm-2 col-form-label">Cookbook title:</label>
+      <label for="cookbook_name" class="col-sm-2 col-form-label">Cookbook title:</label>
       <div class="col-sm-10">
-        <input id="cookbok_name" name="cookbok_name" type="text" class="validate" required>
+        <input id="cookbook_name"  name="cookbook_name" type="text" class="validate col-md-6"  placeholder="Make it yummy! :)" required>
       </div>
     </div>
-    
+
      <div class="form-group row">
       <label for="author_name" class="col-sm-2 col-form-label">Your name:</label>
       <div class="col-sm-10">
-        <input id="author_name" name="author_name" type="text" class="validate" required>
+        <input id="author_name" name="author_name" type="text" class="validate col-md-6" required>
       </div>
     </div>
     
        <div class="form-group row">
       <label for="password" class="col-sm-2 col-form-label">Password:</label>
       <div class="col-sm-10">
-        <input type="password" id="password" name="password" type="password" class="validate" required>
+        <input type="password" id="password" name="password" type="password" class="validate col-md-6" required>
       </div>
       </div>
       
     <div class="form-group row">
       <label for="con_password" class="col-sm-2 col-form-label">Confirm password:</label>
       <div class="col-sm-10">
-        <input id="con_password" name="con_password" type="con_password" class="validate"  type="password" required>
+        <input id="con_password" name="con_password" class="validate col-md-6"  type="password" required>
       </div>
       </div>
       
     <div class="form-group row">
       <label for="cookbook_desc" class="col-sm-2 col-form-label"> Describe your cookbook:</label>
       <div class="col-sm-10 col-md-6">
-        <textarea name="cookbook_desc"  class="form-control" id="cookbook_desc" ></textarea> 
+        <textarea name="cookbook_desc"  class="form-control" id="cookbook_desc" rows="3" ></textarea> 
       </div>
     </div>
     
@@ -44,39 +50,6 @@
       </div>
     </div>
   </form>
-    {% endblock %}
-    <script type="text/javascript">
+</div>
 
-      function validate()
-      {
-      
-         if( document.reg_form.cookbok_name.value.length < 3 )
-         {
-            alert( "Please give cookbook a title!" );
-            document.reg_form.cookbok_name.focus() ;
-            return false;
-         }
-         
-          if( document.reg_form.author_name.value.length < 3 )
-         {
-            alert( "Please provide your name!" );
-            document.reg_form.cookbok_name.focus() ;
-            return false;
-         }
-         
-          if( document.reg_form.password.value.length < 5 )
-         {
-            alert( "Please provide at least 5 characters long password!" );
-            document.reg_form.cookbok_name.focus() ;
-            return false;
-         }
-         
-         if( document.reg_form.password.value.length !=  document.reg_form.con_password.value.length)
-         {
-            alert( "Passwords are not the same!" );
-            document.reg_form.cookbok_name.focus() ;
-            return false;
-         }
-       return( true );  
-      }
-        </script>
+{% endblock %} 
