@@ -1,0 +1,88 @@
+
+   	
+<div class="container">
+  <form action="{{ url_for('insert_recipe') }}" method="POST">
+
+    <div class="form-group row">
+      <label for="recipe_name" class="col-sm-2 col-form-label">Recipe title:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="recipe_name" name="recipe_name" placeholder="Title">
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label for="author_name" class="col-sm-2 col-form-label">Author's name:</label>
+      <div class="col-sm-10">
+        <input id="author_name" name="author_name" type="text" class="validate">
+      </div>
+    </div>
+    
+       <div class="form-group row">
+      <label for="author_name" class="col-sm-2 col-form-label">How many servings?:</label>
+      <div class="col-sm-10">
+        <input id="servings" name="servings" type="text" class="validate">
+      </div>
+      </div>
+      
+      <label for="author_name" class="col-sm-2 col-form-label">Cooking time:</label>
+      <div class="col-sm-10">
+        <input id="cooking_time" name="cooking_time" type="text" class="validate">
+      </div>
+      
+      <div class="form-group row">
+      <select id="difficulty" name="difficulty">
+        <option value="" disabled selected>Difficulty:</option>
+          <option value="easy">Easy</option>
+          <option value="easy">Medium</option>
+          <option value="easy">Difficult</option>
+          <option value="easy">Level Pro</option>
+          
+          </select>
+      
+    </div>
+    
+    <div class="form-group row">
+      <label for="what_to_check" class="col-sm-2 col-form-label">Dish type:</label>
+      <div class="col-sm-10">
+        <select id="what_to_check" name="what_to_check">
+        <option value="" disabled selected>Choose from categories:</option>
+          {% for dish in dishes  %}
+          <option value="{{dish.name}}">{{dish.name}}</option>
+          {% endfor %}
+          </select>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label for="cuisine_name" class="col-sm-2 col-form-label">Cuisine:</label>
+      <div class="col-sm-10">
+        <select id="cuisine_name" name="cuisine_name">
+        <option value="" selected>Leave it if none</option>
+          {% for cui in cuisine_list  %}
+          <option value="{{cui.name}}">{{cui.name}}</option>
+          {% endfor %}
+          </select>
+      </div>
+    </div>
+    
+    <div class="form-group row">
+      <label for="ingredients_list" class="col-sm-2 col-form-label"> Ingredients:</label>
+      <div class="col-sm-10 col-md-6">
+        <textarea name="ingredients_list"  class="form-control" id="ingredients_list" placeholder="Put each ingredient along with quantity, in separate line"></textarea> 
+      </div>
+    </div>
+   
+    <div class="form-group row">
+      <label for="preparation_steps_list" class="col-sm-2 col-form-label">How to prepare:</label>
+      <div class="col-sm-10 col-md-6">
+       <textarea name="preparation_steps_list"  class="form-control" id="preparation_steps_list" placeholder="Type each step in separate line. Don't bother about numbering them."></textarea>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="offset-sm-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" >Submit</button>
+      </div>
+    </div>
+  </form>
+</div>

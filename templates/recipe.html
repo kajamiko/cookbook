@@ -1,32 +1,36 @@
-<!DOCTYPE html>
-<html>
-    <head>
-    </head>
-    
+{% extends 'base.html' %}
+
+{% block content %} 
 <!-- okay, so this is a view for one single recipe. Looks almost like the all recipes view, but it doesn't have the for loop -->
-       <h2> {{ recipe.recipe_name }} </h2>
-       <span>Author: {{ recipe.author_name }}</span>
-     
-       <span>Dish type: {{ recipe.dish_type }}</span>
-       <span>Cooking time: {{ recipe.cooking_time }} </span><span>Difficulty:  {{ recipe.difficulty }}</span>
-        <ul>
-        
-            {% for ingredient in recipe.ingredients_list %}
-            <li>{{ ingredient }}</li>
-            {% endfor %}
-        
-        </ul>
-        
-        <h3>Preparation:</h3>
-        <ol>
-            
-             {% for step in recipe.preparation_steps_list %}
-             <li>{{ step }}</li>
-            
-             {% endfor %}
-             
-        </ol>
-        
-         <span>Upvotes: {{ recipe.upvotes }}</span>
-    <a href="{{ url_for('give_up', recipe_id=recipe._id) }}">Up</a> 
-</html>
+<div class="container">
+
+    <div class="row"><h2> {{ recipe.recipe_name }} </h2></div>
+    <div class="row">Author: {{ recipe.author_name }}</div>
+    <div class="row">
+        <div class="col-sm">Dish type: {{ recipe.dish_type }}</div>
+        <div class="col-sm">Cooking time: {{ recipe.cooking_time }} </div>
+        <div class="col-sm">Difficulty: {{ recipe.difficulty }}</div>
+    </div>
+    
+    <ul>
+
+        {% for ingredient in recipe.ingredients_list %}
+        <li>{{ ingredient }}</li>
+        {% endfor %}
+
+    </ul>
+
+    <h3>Preparation:</h3>
+    <ol>
+
+        {% for step in recipe.preparation_steps_list %}
+        <li>{{ step }}</li>
+
+        {% endfor %}
+
+    </ol>
+
+    <div class="row">Upvotes: {{ recipe.upvotes }}</div>
+    <a href="{{ url_for('give_up', recipe_id=recipe._id) }}">Up</a>
+</div>
+{% endblock %} 

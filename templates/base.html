@@ -16,13 +16,13 @@
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home </a>
+                        <a class="nav-link" href="{{ url_for('get_recipes')}}">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cuisines</a>
+                        <a class="nav-link" href="{{ url_for('cuisines') }}">Cuisines</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Dishes</a>
+                        <a class="nav-link" href="{{ url_for('dishes') }}">Dishes</a>
                     </li>
                 </ul>
                 
@@ -46,6 +46,7 @@
                     <p class="lead">A place with a sense of taste</p>
                 </div>
             </div>
+            
                 {% block content %} {% endblock %}
         </div>
 
