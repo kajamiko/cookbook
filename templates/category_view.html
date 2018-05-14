@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %} 
-<div>
-
+<div class="container">
+    <div class="row">
         {% for data in dataset %}
-        
             {% if dishes %}
             <div>
-                <a href="{{ url_for('get_recipes', dish_name=data.name) }}" ><h2> {{ data.name }} </h2></a>
+                <div class="col"><a href="{{ url_for('get_recipes', dish_name=data.name) }}" ><h2> {{ data.name }} </h2></a></div>
             </div>
             {% endif %}
             
             
             {% if cuisines %}
             <div>
-                <a href="{{ url_for('get_recipes', cuisine_name=data.name) }}" ><h2> {{ data.name }} </h2></a>
+                <div class="col"><a href="{{ url_for('get_recipes', cuisine_name=data.name) }}" ><h2> {{ data.name }} </h2></a></end>
             </div>
             {% endif %}
             
         {% endfor %}
-
+    </div>
 </div>
 {% endblock %} 
