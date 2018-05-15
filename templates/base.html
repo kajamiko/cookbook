@@ -3,13 +3,23 @@
     <head>
    
          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script type="text/javascript" src="../static/js/validate.js"> </script>
+         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+         <style type="text/css">
+             #jumbo{
+                    background-image: url("../static/images/cooking-header.jpeg");
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    color: white;
+                    text-shadow: -2px 0 black, 0 2px black, 1px 0 black, 0 -2px black;
+                    
+                    }
+         </style>
     </head>
     
     <body>
 <!--Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Yummy! Your online cookbook</a>
+            <a class="navbar-brand" href="{{ url_for('get_recipes')}}">Yummy! Your online cookbook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -19,10 +29,19 @@
                         <a class="nav-link" href="{{ url_for('get_recipes')}}">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('cuisines') }}">Cuisines</a>
+                        <a class="nav-link" href="{{ url_for('category_view', collection_name='cuisines') }}">Cuisines</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dishes') }}">Dishes</a>
+                        <a class="nav-link" href="{{ url_for('category_view', collection_name='dishes') }}">Dishes</a>
+                    </li>
+                    
+                    <li>
+                        <div>  
+                       <form class="form-inline my-2 my-lg-0">
+                          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                      </form>
+                      </div>
                     </li>
                 </ul>
                 
@@ -40,8 +59,8 @@
         
         
         <div class="container-fluid">
-            <div class="jumbotron jumbotron-fluid">
-                <div class="container">
+            <div class="jumbotron jumbotron-fluid" id="jumbo">
+                <div class="container"  >
                     <h1 class="display-4">Yummy!</h1>
                     <p class="lead">A place with a sense of taste</p>
                 </div>

@@ -6,7 +6,7 @@
 {% block content %} 
 
 <div class="container">
-<form action="{{ url_for('register') }}" method="POST" name="reg_form" onsubmit="return(validate());"> 
+
    
       <form action="{{ url_for('register') }}" method="POST" name="reg_form" onsubmit="return(validate());"> 
     <div class="form-group row">
@@ -51,5 +51,5 @@
     </div>
   </form>
 </div>
-
+ <script type="text/javascript" src="../static/js/validate.js"> </script>
 {% endblock %} 

@@ -29,3 +29,8 @@
          }
          return( true );
       }
+      
+      function validate_empty(){
+         
+        
+      }

@@ -1,0 +1,8 @@
+#jumbo{
+                    background-image: url("../images/cooking-header.jpeg");
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    color: white;
+                    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+                    
+                    }

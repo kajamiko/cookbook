@@ -29,7 +29,7 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
     """
     Inserts given parameters as a cookbook document to the db and returns it's id 
     """
-    _id=mongo.db.cookbooks.insert_one({"cookbok_name": cookbook_name,
+    _id=mongo.db.cookbooks.insert_one({"cookbook_name": cookbook_name,
         "password" : password,
         "author_name": username,
         "cookbook_desc": description,
@@ -39,18 +39,16 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
     })
     return _id
     
-    
-"""
-def get_recipes(query={}):
-    return mongo.db.recipes.find(query)
-"""
+
 def get_record(collection, query={}):
     return collection.find_one(query)
 
 def delete_record(record_id):
     
     pass
-def pass_query(ready_string):
+
+
+def exclude_query(ready_string):
     """
     gets strings into find query, converts to regexp?
     """
@@ -64,7 +62,7 @@ def pass_query(ready_string):
 @app.route('/cuisines/<cuisine_name>')
 @app.route('/dishes/<dish_name>')
 @app.route('/filter', methods=["GET","POST"])
-def get_recipes(cuisine_name="", dish_name="", query={}):
+def get_recipes(cuisine_name="", dish_name="", query=""):
     """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
     allergens = ""
@@ -85,13 +83,10 @@ def get_recipes(cuisine_name="", dish_name="", query={}):
                     str_allergens = temp + v 
                     allergens = str_allergens.replace(' ', '|')
             
-            print(allergens)
-            recipes = pass_query(allergens)
-            
+            #print(allergens)
+            recipes = exclude_query(allergens)
         else:
-            
             recipes = mongo.db.recipes.find()
-            
             
     recipes.sort('upvotes', pymongo.DESCENDING)
     
@@ -116,7 +111,8 @@ def register():
 
 @app.route('/cookbook_view/<cookbook_id>')
 def cookbook_view(cookbook_id):
-    _cookbook = mongo.db.cookbooks.find_one({"_id": cookbook_id})
+    _cookbook = mongo.db.cookbooks.find_one({"_id": ObjectId(cookbook_id)})
+    
     return render_template('cookbook_view.html',
     cookbook=_cookbook)
     
@@ -173,20 +169,26 @@ def insert_recipe():
     return redirect(url_for('get_recipes'))  
   
 
-@app.route('/cuisines')
-def cuisines():
-
-    return render_template('category_view.html',
-    dataset = mongo.db.cuisines.find(),
-    cuisines = True)
     
+@app.route('/category_view/<collection_name>')
+def category_view(collection_name):
+    if(collection_name == "cuisines"):
+        return render_template('category_view.html',
+        dataset = mongo.db.cuisines.find(),
+        cuisines = True)
+    elif(collection_name == "dishes"):
+        return render_template('category_view.html',
+        dataset = mongo.db.dishes.find(),
+        dishes = True)
+    
+"""
 @app.route('/dishes')
 def dishes():
      return render_template('category_view.html',
     dataset = mongo.db.dishes.find(),
     dishes = True)
 
-
+"""
 if __name__ == "__main__":
     app.run(host=os.environ.get('IP'),
     port=int(os.environ.get('PORT')),
