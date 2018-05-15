@@ -6,6 +6,8 @@ from flask_pymongo import PyMongo
 from secret import db_name, uri_str, secret_key
 import datetime
 import re
+from flask import Blueprint
+from flask_paginate import Pagination, get_page_parameter
 
 
 app = Flask(__name__)
@@ -65,8 +67,13 @@ def exclude_query(ready_string):
 def get_recipes(cuisine_name="", dish_name="", query=""):
     """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
+    
+    query_db = ""
+    if (query):
+        query_db = {"$text": {"$search": query }}
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    
     allergens = ""
-
     if(cuisine_name):
         recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name})
 
@@ -86,12 +93,19 @@ def get_recipes(cuisine_name="", dish_name="", query=""):
             #print(allergens)
             recipes = exclude_query(allergens)
         else:
-            recipes = mongo.db.recipes.find()
+            if(query_db != ""):
+                recipes = mongo.db.recipes.find(query_db)
+            else:
+                recipes = mongo.db.recipes.find() 
             
     recipes.sort('upvotes', pymongo.DESCENDING)
+    pagination = Pagination(page=page, total=recipes.count(),
+    record_name='recipes',per_page=5,
+    css_framework="bootstrap4")
     
     return render_template("recipes.html",
-    recipes=recipes)
+        recipes=recipes,
+        pagination=pagination,)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():

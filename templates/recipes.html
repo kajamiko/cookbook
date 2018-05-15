@@ -43,34 +43,43 @@
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-3"></div>   
-        
-     <div class="col-md-9 justify-content-center"> 
+<div class="row justify-content-center">
+<div class="col-md-3"></div>
+<div class="col-md-6"> 
+{{ pagination.info }}
+{{ pagination.links }}
         {% for recipe in recipes %}
-<!-- Here, there will be a link to a separate recipe view -->
+
        <a href="{{ url_for('show_recipe', recipe_id=recipe._id) }}" ><h2> {{ recipe.recipe_name }} </h2></a>
-       <span>Author: {{ recipe.author_name }}</span>
-       <br>
-       <span>Cuisine: {{ recipe.cuisine_name }}</span>
-       <br>
-       <span>Dish type: {{ recipe.dish_type }}</span>
-       <span>Cooking time: {{ recipe.cooking_time }} </span><span>Difficulty:  {{ recipe.difficulty }}</span>
-        <ul>
-        <!--And this makes jinja display only 3 first ingredients -->
-        {% for ingredient in recipe.ingredients_list[:3] %}
-           
-               <li>{{ ingredient }}</li>
+       <div class="row">
+           <img  width="400" height="300"src="{{ recipe.image_url }}" alt="recipe image"></img>
+           <div class="col">Author: {{ recipe.author_name }}
+                          <br>
+                        Cuisine: {{ recipe.cuisine_name }}
+                        <br>
+                        Dish type: {{ recipe.dish_type }}
+                        <br>
+                       Cooking time: {{ recipe.cooking_time }}
+                       <br>
+                       Difficulty:  {{ recipe.difficulty }}
+                       
+                        <ul>
+                            <!--And this makes jinja display only 3 first ingredients -->
+                            {% for ingredient in recipe.ingredients_list[:3] %}
+                            <li>{{ ingredient }}</li>
+                            {% endfor %}
+                            <li><b>...</b></li>
+                        </ul>
+                        
+                        Upvotes: {{ recipe.upvotes }}
+            </div>
+        </div>
+                         {% endfor %}
 
-         {% endfor %}
-        </ul>
-
-        <span>Upvotes: {{ recipe.upvotes }}</span>
-         {% endfor %}
-         </div>
     </div>
-          
+    </div>
+
+          {{ pagination.links }}
           
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
