@@ -7,10 +7,11 @@ import unittest
 class TestCookbook(unittest.TestCase):
     
         
-    def test_recipes(self):
+    def test_exist(self):
         with run.app.app_context():
-            self.assertIsNotNone(run.get_recipes(query={}))
+            value = run.check_if_exists("author_name", "Lola")
           
+        self.assertIsNone(value)
           
     def  test_creating_cookbook(self):
         
