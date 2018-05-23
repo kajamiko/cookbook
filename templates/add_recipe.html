@@ -4,7 +4,7 @@
    	
 <div class="container">
   
-  <form action="{{ url_for('insert_recipe'), username=username }}" method="POST" onsubmit="return(validate_empty());">
+  <form action="{{ url_for('insert_recipe') }}" method="POST" onsubmit="return(validate_empty());">
 
     <div class="form-group row">
       <label for="recipe_name" class="col-sm-2 col-form-label">Recipe title:</label>
@@ -14,10 +14,11 @@
     </div>
     
     <div class="form-group row">
-      {% if username %}
+      {% if session['logged_in'] %}
  
         <label for="author_name" class="col-sm-2 col-form-label">You're logged as </label>
-        <input id="author_name" name="author_name" type="text" class="validate" value="{{ username }}" disabled>
+        <div class="col-sm-10">
+        <input id="author_name" type="text" class="validate" placeholder="{{ session['username'] }}" disabled>
         {% else %}
         <label for="author_name" class="col-sm-2 col-form-label">Author's name:</label>
         <div class="col-sm-10">
@@ -53,9 +54,9 @@
       <select id="difficulty" name="difficulty">
         <option value="" disabled selected>Choose:</option>
           <option value="easy">Easy</option>
-          <option value="easy">Medium</option>
-          <option value="easy">Difficult</option>
-          <option value="easy">Level Pro</option>
+          <option value="medium">Medium</option>
+          <option value="difficult">Difficult</option>
+          <option value="professional">Level Pro</option>
           
           </select>
       </div>
@@ -63,9 +64,9 @@
 
     
     <div class="form-group row">
-      <label for="what_to_check" class="col-sm-2 col-form-label">Dish type:</label>
+      <label for="dish_type_to_check" class="col-sm-2 col-form-label">Dish type:</label>
       <div class="col-sm-10">
-        <select id="what_to_check" name="what_to_check">
+        <select id="dish_type" name="dish_type">
         <option value="" disabled selected>Choose from categories:</option>
           {% for dish in dishes  %}
           <option value="{{dish.name}}">{{dish.name}}</option>

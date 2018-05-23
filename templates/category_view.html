@@ -2,18 +2,24 @@
 
 {% block content %} 
 <div class="container">
+    
+        <h3>Categories:</h3>
     <div class="row">
         {% for data in dataset %}
             {% if dishes %}
             <div>
-                <div class="col"><a href="{{ url_for('get_recipes', dish_name=data.name) }}" ><h2> {{ data.name }} </h2></a></div>
+                <div class="col"><a href="{{ url_for('get_recipes', dish_name=data.name) }}" >
+                    <img width="300" height="200" alt="dish_image" src="{{ url_for('static', filename=data.image_url) }}">
+                    <h2> {{ data.name }} </h2></a></div>
             </div>
             {% endif %}
             
             
             {% if cuisines %}
             <div>
-                <div class="col"><a href="{{ url_for('get_recipes', cuisine_name=data.name) }}" ><h2> {{ data.name }} </h2></a></div>
+                <div class="col"><a href="{{ url_for('get_recipes', cuisine_name=data.name) }}" >
+                    <img width="300" height="200" alt="cuisine_image" src="data.image_url">
+                    <h2> {{ data.name }} </h2></a></div>
             </div>
             {% endif %}
             

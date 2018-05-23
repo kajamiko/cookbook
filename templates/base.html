@@ -16,9 +16,7 @@
               
          </style>
          
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
     </head>
     
     <body>
@@ -39,6 +37,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('category_view', collection_name='dishes') }}">Dishes</a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('summarise') }}">Statistic</a>
+                    </li>
                     
                     <li>
                         <div>  
@@ -51,12 +52,12 @@
                 </ul>
                 
                 <ul class="navbar-nav">
-                    {% if username %}
+                    {% if session['logged_in'] %}
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('your_cookbook', username = username) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ username }} )</a>
+                        <a class="nav-link" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                        <a class="nav-link" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
                     </li>
                     {% else %}
                     <li class="nav-item active">
@@ -83,7 +84,9 @@
                 {% block content %} {% endblock %}
         </div>
 
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     </body>
 </html>
 

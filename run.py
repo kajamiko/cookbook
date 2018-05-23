@@ -66,6 +66,19 @@ def exclude_query(ready_string):
     return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
 
 
+def update_recipes_array(recipe_id, recipe_title, type_of_array='recipes_pinned'):
+    if(type_of_array=='recipes_pinned'):
+        mongo.db.recipes.update({"id": recipe_id }, {'$inc': {'pinned': 1}})
+    return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
+            { '$push': 
+                { type_of_array: 
+                    {'_id': recipe_id, 'title': recipe_title}
+                    
+                }}
+                )
+    
+                
+
 ### Front end making functions
 
 
@@ -77,7 +90,6 @@ def exclude_query(ready_string):
 def get_recipes(cuisine_name="", dish_name="", query=""):
     """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
-    username = session.get('username')
     #return 'Logged in as ' + username + '<br>' + \
     query_db = ""
     if (query):
@@ -115,8 +127,7 @@ def get_recipes(cuisine_name="", dish_name="", query=""):
     
     return render_template("recipes.html",
         recipes=recipes,
-        pagination=pagination,
-        username = username)
+        pagination=pagination)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -134,24 +145,28 @@ def register():
             message = _result
     return render_template('register.html', message = message)
 
-####Started coookbook view, but need to implement html view
+
 
 @app.route('/cookbook_view/<cookbook_id>')
 def cookbook_view(cookbook_id):
     _cookbook = mongo.db.cookbooks.find_one({"_id": ObjectId(cookbook_id)})
     
     return render_template('cookbook_view.html',
-    cookbook=_cookbook,
-    username =session.get('username'))
+    cookbook=_cookbook)
+    #username =session.get('username'))
     
     
 @app.route('/show_recipe/<recipe_id>')
 def show_recipe(recipe_id):
-     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
-     
-     return render_template("recipe.html",
-     recipe=_recipe,
-     username =session.get('username'))
+    
+    pinned = False
+    _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    if("logged_in" in session):
+        if (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_pinned" : {"id":  ObjectId(recipe_id)}})):
+             pinned = True
+    return render_template("recipe.html",
+    recipe=_recipe,
+    pinned=pinned)
      
 
 @app.route('/give_up/<recipe_id>')
@@ -166,15 +181,16 @@ def add_recipe():
     
     return render_template("add_recipe.html",
     dishes=mongo.db.dishes.find(),
-    cuisine_list=mongo.db.cuisines.find(),
-    username=session.get('username'))
+    cuisine_list=mongo.db.cuisines.find())
+    #username=session.get('username'))
     
 @app.route('/insert_recipe', methods=['POST'])
-def insert_recipe(username=""):
+def insert_recipe():
     recipes = mongo.db.recipes
     # creating an empty dictionary to send it later as a new document, to the database. 
     request_ready = {}
     if( request.method == "POST"):
+        username = session.get('username')
         new_date = create_nice_date()
         """
          filling disctionary with data from the form, with large strings sliced to an array
@@ -193,11 +209,26 @@ def insert_recipe(username=""):
         request_ready.setdefault("upvotes", 0)
         request_ready.setdefault("views", 0)
         request_ready.setdefault("created_on", new_date)
+        request_ready.setdefault("author_name", username)
+        #push everything to the database and store returned data in _result
+        _result = recipes.insert_one(request_ready)
+        print(request_ready)
         if (username):
-            mongo.db.cookbooks.find_one_and_update("") 
-        
-        recipes.insert_one(request_ready)
-    return redirect(url_for('get_recipes', username = session.get('username')))  
+            # push to owned by username
+            
+            update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
+          
+            
+            """
+            value = request_ready['recipe_name']
+            mongo.db.cookbooks.update({'author_name': username}, 
+            { '$push': 
+                {'recipes_owned': 
+                    {'_id': ObjectId(_result.inserted_id), 'title': value}
+                    
+                }}
+                )"""
+    return redirect(url_for('get_recipes'))  
   
 
     
@@ -210,8 +241,8 @@ def category_view(collection_name):
     elif(collection_name == "dishes"):
         return render_template('category_view.html',
         dataset = mongo.db.dishes.find(),
-        dishes = True,
-        username = session.get('username'))
+        dishes = True)
+        #username = session.get('username'))
     
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -219,10 +250,11 @@ def login():
     if (request.method == 'POST'):
         form = request.form
         doc = mongo.db.cookbooks.find_one({"author_name": form["author_name"]})
-        print(doc)
         if (doc): # if exists in db
             if(form["password"] == doc["password"]): # if password correct
-                session['username'] = form['author_name']
+                session['username'] = doc["author_name"]
+                session['logged_in'] = True
+                print(session["username"])
                 return redirect(url_for('cookbook_view', cookbook_id = doc["_id"]))
             else: # and if password is not correct
                 message = "Incorrect password"
@@ -237,16 +269,58 @@ def your_cookbook(username):
     
     _cookbook = mongo.db.cookbooks.find_one({"author_name": session.get('username')})
     return redirect(url_for('cookbook_view', 
-    cookbook_id = _cookbook["_id"],
-    username = session.get('username')))
+    cookbook_id = _cookbook["_id"]))
     
-     
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    """
+    session['logged_in'] = False
+    session['username'] = None
+    """
+    session.clear()
+    print (session.get('username'))
     return redirect(url_for('get_recipes'))
     
+@app.route('/pin_recipe/<recipe_id>/<recipe_title>')
+def pin_recipe(recipe_id, recipe_title):
+    update_recipes_array(ObjectId(recipe_id), recipe_title)
+    return redirect(url_for('show_recipe', recipe_id=recipe_id))
     
+    
+@app.route('/summarise', methods = ['GET','POST'])
+def summarise(what_to_check="author_name", chart_type="'doughnut'"):
+    
+    """
+    This function queries database and keeps data in arrays that are passed to a javascript file
+    """
+    datanames = []
+    dataset = []
+    if( request.method == 'POST'):
+        chart_type = request.form['chart_type']
+        what_to_check = request.form['what_to_check']
+        print(chart_type)
+
+    recipes = mongo.db.recipes.find()
+    for recipe in recipes:
+        if (what_to_check in recipe):
+            name = recipe[what_to_check]
+            if (name not in datanames):
+                datanames.append(name)
+                dataset.append(mongo.db.recipes.find({what_to_check: name}).count())
+    # this checks if a field doesnt exist, especially cuisine type, can be then labeled as none
+    count = mongo.db.recipes.find({ what_to_check: {"$exists": False}}).count()
+    if(count != 0 ):
+        dataset.append(count)
+        datanames.append("None")
+    if(what_to_check == "author_name"):
+        dataset = dataset[:4]
+        datanames = datanames[:4]
+        
+    return render_template("plot.html", 
+    dataset = dataset,
+    datanames = datanames,
+    chart_type=chart_type)
+
 if __name__ == "__main__":
     app.run(host=os.environ.get('IP'),
     port=int(os.environ.get('PORT')),
