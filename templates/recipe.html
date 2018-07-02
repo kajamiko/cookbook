@@ -31,14 +31,25 @@
     </ol>
 
     <div class="row">Upvotes: {{ recipe.upvotes }}</div>
-    
-    <a class="btn btn-success" href="{{ url_for('give_up', recipe_id=recipe._id) }}">Up</a>
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-success" href="{{ url_for('give_up', recipe_id=recipe._id) }}">Up</a>
     {% if session['logged_in'] %}
-    {% if pinned %}
-    <a class="btn btn-warning" disabled>Pinned</a>
-    {% elif not pinned %}
+    {% if already_got %}
+            <h5><span class="badge badge-success">In your cookbook</span></h5>
+        </div>
+    <div class="col-md-2">
+    {% if owned %}
+    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
+    {% elif not owned %}
+    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id) }}">Remove</a>
+    {% endif %}
+    </div>
+    {% elif not already_got %}
     <a class="btn btn-warning" href="{{ url_for('pin_recipe', recipe_id = recipe._id, recipe_title = recipe.recipe_name) }}">Pin to your cookbook</a>
     {% endif %}
+    </div>
     {% endif %}
+    </div>
 </div>
 {% endblock %} 

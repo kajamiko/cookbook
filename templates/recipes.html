@@ -50,10 +50,12 @@
 <div class="row justify-content-center">
 <div class="col-md-3"></div>
 <div class="col-md-6"> 
+
 {{ pagination.info }}
 {{ pagination.links }}
-        {% for recipe in recipes %}
 
+        {% for recipe in recipes %}
+        
        <a href="{{ url_for('show_recipe', recipe_id=recipe._id) }}" ><h2> {{ recipe.recipe_name }} </h2></a>
        <div class="row">
            <img  width="400" height="300"src="{{ recipe.image_url }}" alt="recipe image"></img>
@@ -79,11 +81,12 @@
             </div>
         </div>
                          {% endfor %}
-
+{{ pagination.links }}
     </div>
+    
     </div>
 
-          {{ pagination.links }}
+         
           
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>

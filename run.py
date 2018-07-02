@@ -6,20 +6,21 @@ from flask_pymongo import PyMongo
 from secret import db_name, uri_str, secret_key
 import datetime
 import re
+from math import ceil
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
 
 
 app = Flask(__name__)
+
+PER_PAGE = 5
 app.config["MONGO_DBNAME"] = db_name
 app.config["MONGO_URI"] = uri_str
 app.secret_key = secret_key
 
 mongo = PyMongo(app)
-
 ### Raw functions ###
 
-    
 def check_if_exists(field, value):
  
     return mongo.db.cookbooks.find_one({field: value})
@@ -54,34 +55,37 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
 def get_record(collection, query={}):
     return collection.find_one(query)
 
-def delete_record(record_id):
-    
-    pass
 
 
 def exclude_query(ready_string):
     """
-    gets strings into find query, converts to regexp?
+    passes strings into find query, converts to regexp
     """
     return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
 
 
-def update_recipes_array(recipe_id, recipe_title, type_of_array='recipes_pinned'):
-    if(type_of_array=='recipes_pinned'):
-        mongo.db.recipes.update({"id": recipe_id }, {'$inc': {'pinned': 1}})
-    return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
-            { '$push': 
-                { type_of_array: 
-                    {'_id': recipe_id, 'title': recipe_title}
-                    
-                }}
-                )
+def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinned', remove = False):
+    if(remove == False):
+        return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
+                { '$push': 
+                    { type_of_array: 
+                        {'_id': recipe_id, 'title': recipe_title}
+                        
+                    }}
+                    )
+    else:
+        return  mongo.db.cookbooks.update({'author_name': session.get('username')}, 
+                { '$pull': 
+                    { type_of_array: 
+                        {'_id': recipe_id}
+                        
+                    }}
+                    )
     
-                
 
-### Front end making functions
+### Front end functions
 
-
+    
 @app.route('/', methods=["GET","POST"])
 @app.route('/get_recipes', methods=["GET","POST"])
 @app.route('/cuisines/<cuisine_name>')
@@ -90,18 +94,18 @@ def update_recipes_array(recipe_id, recipe_title, type_of_array='recipes_pinned'
 def get_recipes(cuisine_name="", dish_name="", query=""):
     """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
-    #return 'Logged in as ' + username + '<br>' + \
+   
     query_db = ""
     if (query):
         query_db = {"$text": {"$search": query }}
-    page = request.args.get(get_page_parameter(), type=int, default=1)
     
+    page = request.args.get(get_page_parameter(), type=int, default=1)
     allergens = ""
     if(cuisine_name):
-        recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name})
-
+        recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        
     elif(dish_name):
-        recipes = mongo.db.recipes.find({"dish_type": dish_name})
+        recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
     else:
         
         if (request.method == "POST"):
@@ -114,20 +118,22 @@ def get_recipes(cuisine_name="", dish_name="", query=""):
                     allergens = str_allergens.replace(' ', '|')
             
             recipes = exclude_query(allergens)
+            recipes.skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         else:
             if(query_db != ""):
-                recipes = mongo.db.recipes.find(query_db)
+                recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             else:
-                recipes = mongo.db.recipes.find() 
+                recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             
-    recipes.sort('upvotes', pymongo.DESCENDING)
-    pagination = Pagination(page=page, total=recipes.count(),
-    record_name='recipes',per_page=5,
-    css_framework="bootstrap4")
     
+    recipes.sort('upvotes', pymongo.DESCENDING)
+    
+    pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
+                record_name='recipes', bs_version=4)
+      
     return render_template("recipes.html",
-        recipes=recipes,
-        pagination=pagination)
+        pagination = pagination,
+        recipes=recipes)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -159,14 +165,21 @@ def cookbook_view(cookbook_id):
 @app.route('/show_recipe/<recipe_id>')
 def show_recipe(recipe_id):
     
-    pinned = False
+    already_got = False
+    owned = False
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     if("logged_in" in session):
-        if (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_pinned" : {"id":  ObjectId(recipe_id)}})):
-             pinned = True
+        if (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_pinned._id" : ObjectId(recipe_id)})):
+             already_got = True
+             
+        elif (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_owned._id" : ObjectId(recipe_id)})):
+            already_got = True
+            owned = True
+            
     return render_template("recipe.html",
     recipe=_recipe,
-    pinned=pinned)
+    already_got=already_got,
+    owned = owned)
      
 
 @app.route('/give_up/<recipe_id>')
@@ -254,7 +267,6 @@ def login():
             if(form["password"] == doc["password"]): # if password correct
                 session['username'] = doc["author_name"]
                 session['logged_in'] = True
-                print(session["username"])
                 return redirect(url_for('cookbook_view', cookbook_id = doc["_id"]))
             else: # and if password is not correct
                 message = "Incorrect password"
@@ -273,19 +285,27 @@ def your_cookbook(username):
     
 @app.route('/logout')
 def logout():
-    """
-    session['logged_in'] = False
-    session['username'] = None
-    """
+
     session.clear()
     print (session.get('username'))
     return redirect(url_for('get_recipes'))
     
 @app.route('/pin_recipe/<recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):
-    update_recipes_array(ObjectId(recipe_id), recipe_title)
+    update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
     
+
+@app.route('/remove_recipe/<recipe_id>')
+def remove_recipe(recipe_id, owned=False):
+    print("Is it owned? ", owned)
+    if(owned):
+        print("Removing!")
+        mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
+        update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
+    else:
+        update_recipes_array(ObjectId(recipe_id), remove = True)
+    return redirect(url_for('show_recipe', recipe_id=recipe_id))
     
 @app.route('/summarise', methods = ['GET','POST'])
 def summarise(what_to_check="author_name", chart_type="'doughnut'"):
@@ -322,6 +342,8 @@ def summarise(what_to_check="author_name", chart_type="'doughnut'"):
     chart_type=chart_type)
 
 if __name__ == "__main__":
+    app.jinja_env.auto_reload = True
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.run(host=os.environ.get('IP'),
     port=int(os.environ.get('PORT')),
     debug=True)
