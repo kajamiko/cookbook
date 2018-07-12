@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, request, url_for, flash, ses
 import pymongo
 from bson.objectid import ObjectId
 from flask_pymongo import PyMongo
-from secret import db_name, uri_str, secret_key
+from conf import db_name, uri_str, UP_FOLDER, secret_key
 import datetime
 import re
 from math import ceil
@@ -16,10 +16,19 @@ app = Flask(__name__)
 PER_PAGE = 5
 app.config["MONGO_DBNAME"] = db_name
 app.config["MONGO_URI"] = uri_str
-app.secret_key = secret_key
 
+
+def create_app(conf_obj='conf.TestingConfig'):
+    
+    application = Flask(__name__)
+    application.config.from_object(conf_obj)
+    return application
+
+# setting up configuration for Devel config
+#('Config')
+app = create_app(conf_obj='conf.Config')
+app.secret_key = secret_key
 mongo = PyMongo(app)
-### Raw functions ###
 
 def check_if_exists(field, value):
  
@@ -94,6 +103,8 @@ def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinn
 def get_recipes(cuisine_name="", dish_name="", query=""):
     """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
+    menu = []
+   # menu = mongo.db.recipes.aggregate({ "$sample": { "size": 1 } })
    
     query_db = ""
     if (query):
