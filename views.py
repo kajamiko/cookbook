@@ -99,6 +99,11 @@ def create_nice_date():
     new_date = "{0}-{1}-{2}".format(now.day,now.month,now.year)
     return new_date
     
+    
+################## Flask funtions ########################################################################################################
+
+############# Main view function : getting recipes from the database
+    
 @app.route('/', methods=["GET","POST"])
 @app.route('/get_recipes', methods=["GET","POST"])
 @app.route('/cuisines/<cuisine_name>')
@@ -149,6 +154,9 @@ def get_recipes(cuisine_name="", dish_name="", query=""):
     return render_template("recipes.html",
         pagination = pagination,
         recipes=recipes)
+        
+        
+############ Creating cookbook/ cookbook views logic ############################################ 
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -174,7 +182,15 @@ def cookbook_view(cookbook_id):
     
     return render_template('cookbook_view.html',
     cookbook=_cookbook)
+  
+@app.route('/your_cookbook/<username>')
+def your_cookbook(username):
     
+    _cookbook = mongo.db.cookbooks.find_one({"author_name": session.get('username')})
+    return redirect(url_for('cookbook_view', 
+    cookbook_id = _cookbook["_id"]))
+
+########################## Adding/showing recipes logic ############################################################3    
     
 @app.route('/show_recipe/<recipe_id>')
 def show_recipe(recipe_id):
@@ -194,14 +210,6 @@ def show_recipe(recipe_id):
     recipe=_recipe,
     already_got=already_got,
     owned = owned)
-     
-
-@app.route('/give_up/<recipe_id>')
-def give_up(recipe_id):
-    _recipe = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
-        {'$inc': {"upvotes" : 1}})
-    return redirect(url_for("show_recipe",recipe_id=recipe_id))
-
 
 @app.route('/add_recipe')
 def add_recipe():
@@ -281,6 +289,8 @@ def category_view(collection_name):
         dataset = mongo.db.dishes.find(),
         dishes = True)
         #username = session.get('username'))
+
+############### Login/logout logic ################################################
     
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
@@ -300,27 +310,24 @@ def login():
         
      
     return render_template('login.html', message=message)
-      
-@app.route('/your_cookbook/<username>')
-def your_cookbook(username):
     
-    _cookbook = mongo.db.cookbooks.find_one({"author_name": session.get('username')})
-    return redirect(url_for('cookbook_view', 
-    cookbook_id = _cookbook["_id"]))
     
 @app.route('/logout')
 def logout():
 
     session.clear()
     print (session.get('username'))
-    return redirect(url_for('get_recipes'))
+    return redirect(url_for('get_recipes'))    
     
+      
+
+
+############## Pinning/removing/ upvoting recipes logic
 @app.route('/pin_recipe/<recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):
     update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
-    
-
+   
 @app.route('/remove_recipe/<recipe_id>')
 def remove_recipe(recipe_id, owned=False):
     print("Is it owned? ", owned)
@@ -331,6 +338,16 @@ def remove_recipe(recipe_id, owned=False):
     else:
         update_recipes_array(ObjectId(recipe_id), remove = True)
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
+    
+     
+
+@app.route('/give_up/<recipe_id>')
+def give_up(recipe_id):
+    _recipe = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+        {'$inc': {"upvotes" : 1}})
+    return redirect(url_for("show_recipe",recipe_id=recipe_id))
+
+
     
 @app.route('/summarise', methods = ['GET','POST'])
 def summarise(what_to_check="author_name", chart_type="'doughnut'"):

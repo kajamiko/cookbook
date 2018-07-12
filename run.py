@@ -2,11 +2,6 @@ import os
 import views
 
 
-
-
-
-
-
 if __name__ == "__main__":
     views.app.jinja_env.auto_reload = True
     views.app.config['TEMPLATES_AUTO_RELOAD'] = True
