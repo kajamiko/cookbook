@@ -42,7 +42,7 @@
     {% if owned %}
     <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
     {% elif not owned %}
-    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id) }}">Remove</a>
+    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id) }}">Unpin</a>
     {% endif %}
     </div>
     {% elif not already_got %}
