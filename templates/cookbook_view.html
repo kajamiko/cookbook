@@ -6,16 +6,22 @@
         <div class="col-md-3">
             <h2>Recipes by {{ cookbook.author_name}}</h2>
             <a href="{{ url_for('add_recipe') }}" class="btn btn-success">Add recipe</a>
-           
+               {% if cookbook.recipes_owned %}
                 {% for recipe in cookbook.recipes_owned[:5] %}
                 <li><a href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
+                {% else %}
+            <span>You didn't add any recipes yet!</span>
+            {% endif %}
                
              <h2>Recipes pinned</h2>
+             {% if cookbook.recipes_pinned %}
                 {% for recipe in cookbook.recipes_pinned[:5] %}
                 <li><a href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
-                 
+            {% else %}
+            <span>You didn't pin any recipes yet!</span>
+            {% endif %} 
         </div>
         <div class="col-md-9 justify-content-center">
             <h2>{{ cookbook.cookbook_name }}</h2>

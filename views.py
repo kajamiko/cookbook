@@ -3,8 +3,8 @@ import pymongo
 from werkzeug.utils import secure_filename
 import datetime
 from bson.objectid import ObjectId
-from flask_pymongo import PyMongo
 from conf import db_name, uri_str, UP_FOLDER, secret_key
+from app import app, mongo
 import os
 import re
 from math import ceil
@@ -13,19 +13,6 @@ from flask_paginate import Pagination, get_page_parameter
 
 
 PER_PAGE = 5
-
-
-def create_app(conf_obj='conf.TestingConfig'):
-    
-    application = Flask(__name__)
-    application.config.from_object(conf_obj)
-    application.secret_key = secret_key
-    return application
-
-# setting up configuration
-#('Config')
-app = create_app(conf_obj='conf.Config')
-mongo = PyMongo(app)
 
 
 
@@ -328,18 +315,18 @@ def pin_recipe(recipe_id, recipe_title):
     update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
    
-@app.route('/remove_recipe/<recipe_id>')
-def remove_recipe(recipe_id, owned=False):
+@app.route('/remove_recipe/<recipe_id>/<owned>')
+def remove_recipe(recipe_id, owned):
     print("Is it owned? ", owned)
-    if(owned):
-        print("Removing!")
-        mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
-        update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
-    else:
+    if(owned == "False"):
         update_recipes_array(ObjectId(recipe_id), remove = True)
-    return redirect(url_for('show_recipe', recipe_id=recipe_id))
-    
-     
+        return redirect(url_for('show_recipe', recipe_id=recipe_id))
+       
+    else:
+        print("Removing!")
+        #mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
+        update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
+        return redirect(url_for('your_cookbook', username = session["username"]))
 
 @app.route('/give_up/<recipe_id>')
 def give_up(recipe_id):

@@ -32,5 +32,56 @@
       
       function validate_empty(){
          
-        
+         if( document.add_form.recipe_name.value.length < 4 )
+         {
+            alert( "Title has to be longer than 4 characters!" );
+            document.add_form.cookbook_name.focus() ;
+            return false;
+         }
+          if( document.add_form.author_name.value.length < 4 )
+         {
+            alert( "Please provide a valid name!" );
+            document.add_form.author_name.focus() ;
+            return false;
+         }
+         
+         if( document.add_form.cooking_time.value == "")
+         {
+            alert( "Please provide cooking time" );
+            document.add_form.cooking_time.focus() ;
+            return false;
+         }
+         
+         if( document.add_form.servings.value == "")
+         {
+            alert( "Please provide, how many servings is your recipe for." );
+            return false;
+         }
+         if( document.add_form.difficulty.value == "")
+         {
+            alert( "Please choose difficulty level." );
+            return false;
+         }
+         
+         if( document.add_form.dish_type.value == "")
+         {
+            alert( "Please choose dish_type." );
+            return false;
+         }
+         
+          if( document.add_form.ingredients_list.value.length < 10 )
+         {
+            alert( "Please provide a list of ingredients!" );
+            document.add_form.ingredients_list.focus() ;
+            return false;
+         }
+         
+         if( document.add_form.preparation_steps_list.value.length < 10 )
+         {
+            alert( "Please share with others, how to prepare your dish!" );
+            document.add_form.preparation_steps_list.focus() ;
+            return false;
+         }
+         
+        return( true );
       }

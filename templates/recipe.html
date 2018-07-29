@@ -40,9 +40,9 @@
         </div>
     <div class="col-md-2">
     {% if owned %}
-    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=True) }}">Remove</a>
-    {% elif not owned %}
-    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id) }}">Unpin</a>
+    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
+    {% else %}
+    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Unpin</a>
     {% endif %}
     </div>
     {% elif not already_got %}
