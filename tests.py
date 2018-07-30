@@ -1,3 +1,4 @@
+import views
 import run
 import unittest
 
@@ -9,7 +10,7 @@ class TestCookbook(unittest.TestCase):
         
     def test_exist(self):
         with run.app.app_context():
-            value = run.check_if_exists("author_name", "Lola")
+            value = views.check_if_exists("author_name", "Lola")
           
         self.assertIsNone(value)
           
@@ -19,8 +20,8 @@ class TestCookbook(unittest.TestCase):
         with run.app.app_context():
             
             username = "Lola"
-            result=run.create_cookbook(cookbook_name="Lola_cookbook", password="", username=username)
-            item=run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+            result=views.create_cookbook(cookbook_name="Lola_cookbook", password="", username=username)
+            item=views.get_record(views.mongo.db.cookbooks, query={"author_name": username})
         
         self.assertEqual(result.inserted_id, item["_id"])
         
@@ -30,12 +31,12 @@ class TestCookbook(unittest.TestCase):
         # queries for a document and delets it, then checks if succed
         with run.app.app_context():
             username = "Lola"
-            item=run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+            item=views.get_record(views.mongo.db.cookbooks, query={"author_name": username})
             
         self.assertIsNotNone(item)
         with run.app.app_context():
-            run.mongo.db.cookbooks.delete_one({"_id": item["_id"]})
-            rmd =run.get_record(run.mongo.db.cookbooks, query={"author_name": username})
+            views.mongo.db.cookbooks.delete_one({"_id": item["_id"]})
+            rmd =views.get_record(views.mongo.db.cookbooks, query={"author_name": username})
             
         self.assertIsNone(rmd)
         

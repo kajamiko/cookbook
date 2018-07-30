@@ -7,13 +7,6 @@
             document.reg_form.cookbook_name.focus() ;
             return false;
          }
-
-         if( document.reg_form.author_name.value.length < 4 )
-         {
-            alert( "Please provide your name!" );
-            document.reg_form.author_name.focus() ;
-            return false;
-         }
          
           if( document.reg_form.password.value.length < 5 )
          {
@@ -36,12 +29,6 @@
          {
             alert( "Title has to be longer than 4 characters!" );
             document.add_form.cookbook_name.focus() ;
-            return false;
-         }
-          if( document.add_form.author_name.value.length < 4 )
-         {
-            alert( "Please provide a valid name!" );
-            document.add_form.author_name.focus() ;
             return false;
          }
          

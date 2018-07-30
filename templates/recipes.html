@@ -4,28 +4,31 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
  {% extends 'base.html' %}
 
-{% block content %}  
+{% block title %}
+Yummy! Search page
+{% endblock %}
 
-<div class="row justify-content-end">
-    <div class="col-3">
-        <div class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+{% block content %}  
+<div class="container">
+<form action="{{ url_for('get_recipes') }}" method="POST">
+    <div class="row justify-content-around">
+        <div class="col">
+            <a href="{{ url_for('get_recipes') }}">Cancel</a>
+            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
+        </div>
+        <div class="col">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Filter allergens
             </a>
 
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <form action="{{ url_for('get_recipes') }}" method="POST">
-
-
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk yogurt butter cheese ">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt butter cheese">
                         <label class="form-check-label" for="inlineCheckbox1">Diary</label>
                     </div>
-
-
-
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nut ">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nut">
                         <label class="form-check-label" for="inlineCheckbox2">Nuts</label>
                     </div>
 
@@ -33,69 +36,41 @@
                         <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="eggs" value="egg">
                         <label class="form-check-label" for="inlineCheckbox3">Eggs</label>
                     </div>
-
-
-                    <div class="dropdown-divider"></div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-primary">Apply</button>
-                    </div>
-
-                </form>
+                </div>
 
             </div>
-            </form>
         </div>
+        <div class="col">
+
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+
+
     </div>
+</form> 
 </div>
 <div class="row justify-content-center">
-<div class="col-md-4">
-    <h2>Menu of the day:</h2>
-    <ul>
-        {% for result in menu_result%}
-        <li>{{ result.recipe_name }}</li>
-        {% endfor %}
-    </ul>
-    
-</div>
-<div class="col-md-6"> 
-
 {{ pagination.info }}
 {{ pagination.links }}
-
-        {% for recipe in recipes %}
-        
-       <a href="{{ url_for('show_recipe', recipe_id=recipe._id) }}" ><h2> {{ recipe.recipe_name }} </h2></a>
-       <div class="row">
-           <img  width="400" height="300" src="{{ recipe.image_url }}" alt="recipe image"></img>
-           <div class="col">Author: {{ recipe.author_name }}
-                          <br>
-                        Cuisine: {{ recipe.cuisine_name }}
-                        <br>
-                        Dish type: {{ recipe.dish_type }}
-                        <br>
-                       Cooking time: {{ recipe.cooking_time }}
-                       <br>
-                       Difficulty:  {{ recipe.difficulty }}
-                       
-                        <ul>
-                            <!--And this makes jinja display only 3 first ingredients -->
-                            {% for ingredient in recipe.ingredients_list[:3] %}
-                            <li>{{ ingredient }}</li>
-                            {% endfor %}
-                            <li><b>...</b></li>
-                        </ul>
-                        
-                        Upvotes: {{ recipe.upvotes }}
-            </div>
+</div>
+<div class="row justify-content-around">
+    {% for recipe in recipes %}
+    <div class="card mx-2 my-2 resp-card">
+        <img class="card-img-top" src="{{ recipe.image_url }}" alt="recipe image"></img>
+        <div class="card-body">
+                <span><h5><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a></h5></span>
+                <span class="fas fa-user"> {{ recipe.author_name }}</span>
+                <span class="fas fa-clock"> {{ recipe.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ recipe.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ recipe.upvotes }}</span>
+           
         </div>
-                         {% endfor %}
-{{ pagination.links }}
     </div>
-    
-    </div>
+    {% endfor %}
+</div>
+<div class="row justify-content-center">{{ pagination.links }}</div>
 
-         
-          
+    
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>

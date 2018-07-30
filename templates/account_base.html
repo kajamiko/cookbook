@@ -61,20 +61,22 @@
                 </ul>
                 </div>
 
-        </nav>        
-        
-        
+        </nav> 
+         {% block content %} {% endblock %}
+                        
+          <footer class="footer">
         <div class="container-fluid">
-            <div class="jumbotron jumbotron-fluid" id="jumbo">
-                <div class="container" id="text" >
-                    <h1 class="display-4">Yummy!</h1>
-                    <p class="lead">A place with a sense of taste</p>
-                </div>
-            </div>
-            </div>
-                {% block content %} {% endblock %}
-                
-
+          <h5>Yummy! Online cookbook</h5>
+          <div class="row align-items-end justify-content-start">
+           <div class="col-3"><span>Contact</span></div>
+           <div class="col-3"><span>Credits</span></div>
+           <div class="col-3"><span>Join us</span></div>
+          <div class="col-3"><span>Other websites</span></div>
+          <div class="col-4"><p>Created by<br>KajaMiko<br>kajaths@gmail.com</p></div>
+          <div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="apron"> apron </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+        </div>
+      </div>
+    </footer>
         
     <div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -82,5 +84,4 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
     </body>
 </html>
-
 

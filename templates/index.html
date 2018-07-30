@@ -1,0 +1,62 @@
+ {% extends 'base.html' %}
+{% block tile %}
+Yummy! Homepage
+{% endblock %}
+{% block content %}
+<h3>Menu just for you: how about...?</h3>
+<div class="container d-flex justify-content-between">
+
+            <div class="row">
+            <!--Breakfast-->
+            <div class="card my-1 mx-2" style="width: 15rem;">
+                 <h5 class="card-header">Breakfast</h5>
+            {% for break in breakfast %}
+                    <img  class="card-img-top" src="{{ break.image_url }}" alt="recipe image"></img>
+                     <div class="card-body">
+                    <a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=break._id) }}">{{ break.recipe_name }}
+                    </a>
+                </div>
+                 {% endfor %}
+            </div>
+            <!--Lunch-->
+            <div class="card my-1 mx-2" style="width: 15rem;">
+                
+                    <h5 class="card-header">Main Course</h5>
+                {% for m in main %}
+                    <img  class="card-img-top" src="{{ m.image_url }}" alt="recipe image"></img>
+                     <div class="card-body">
+                    <a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=m._id) }}">{{ m.recipe_name }}
+                    </a>
+                </div>
+                 {% endfor %}
+            </div>
+            <!--Dessert-->
+            <div class="card my-1 mx-2" style="width: 15rem;">
+                    <h5 class="card-header">Dessert</h5>
+                {% for des in dessert %}
+                    <img  class="card-img-top" src="{{ des.image_url }}" alt="recipe image"></img>
+                     <div class="card-body">
+                
+                    <a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=des._id) }}">{{ des.recipe_name }}
+                    </a>
+                </div>
+                 {% endfor %}
+            </div>
+           
+           <!--Dinner -->
+           
+            <div class="card my-1 mx-2" style="width: 15rem;">
+               
+                    <h5 class="card-header">Dinner</h5>
+                    {% for din in dinner %}
+                    <img height="50%" class="card-img-top" src="{{ din.image_url }}" alt="recipe image"></img>
+                     <div class="card-body">
+                    <a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=din._id) }}">{{ din.recipe_name }}
+                    </a>
+                    </div>
+                    {% endfor %}
+                
+            </div>
+            </div>
+</div>
+ {% endblock %} 
