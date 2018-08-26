@@ -1,98 +1,27 @@
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 import pymongo
-from werkzeug.utils import secure_filename
-import datetime
 from bson.objectid import ObjectId
 from conf import db_name, uri_str, UP_FOLDER
 from secret import secret_key
 from app import app, mongo
+from werkzeug.utils import secure_filename
 import os
 import re
 from math import ceil
 from flask import Blueprint
+from basic import allowed_file, PER_PAGE, check_if_exists, get_record, create_cookbook, exclude_query, update_recipes_array, create_nice_date
 from flask_paginate import Pagination, get_page_parameter
 
-
-PER_PAGE = 6
-
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def check_if_exists(field, value):
- 
-    return mongo.db.cookbooks.find_one({field: value})
-
-def get_record(collection, query={}):
-    return collection.find_one(query)
-
-def create_cookbook(cookbook_name='', password='', username='', description=''):
-    """
-    Inserts given parameters as a cookbook document to the db and returns it's id 
-    """
-    _id = ""
-    if(check_if_exists("author_name", username) == check_if_exists("cookbook_name", cookbook_name)):
-        _id=mongo.db.cookbooks.insert_one({"cookbook_name": cookbook_name,
-            "password" : password,
-            "author_name": username,
-            "cookbook_desc": description,
-            "created_on": create_nice_date(),
-            "recipes_pinned": [],
-            "recipes_owned": []
-        })
-        return _id
-    else:
-        return "Error! Some value already exists"
-
-
-def exclude_query(ready_string):
-    """
-    passes strings into find query, converts to regexp
-    """
-    
-    return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
-
-
-def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinned', remove = False):
-    if(remove == False):
-        return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
-                { '$push': 
-                    { type_of_array: 
-                        {'_id': recipe_id, 'title': recipe_title}
-                        
-                    }}
-                    )
-    else:
-        return  mongo.db.cookbooks.update({'author_name': session.get('username')}, 
-                { '$pull': 
-                    { type_of_array: 
-                        {'_id': recipe_id}
-                        
-                    }}
-                    )
-    
-
-
-def create_nice_date():
-    """
-    Returns current date in dd-mm-yyyy format
-    """
-    now = datetime.datetime.now()
-    new_date = "{0}-{1}-{2}".format(now.day,now.month,now.year)
-    return new_date
-    
     
 ################## Flask funtions ########################################################################################################
 
-############# Main view function : getting recipes from the database
-
-    
+ 
     
 @app.route('/', methods=["GET","POST"])
 def index():
-    
+    """
+    Homepage view function : getting random recipes from selected categories
+    """
     dinner = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Side"}},{ "$sample": { "size": 1 }}])
     main = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Main"}},{ "$sample": { "size": 1 }}])
     dessert = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Desserts"}},{ "$sample": { "size": 1 }}])
