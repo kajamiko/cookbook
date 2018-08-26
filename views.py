@@ -3,7 +3,8 @@ import pymongo
 from werkzeug.utils import secure_filename
 import datetime
 from bson.objectid import ObjectId
-from conf import db_name, uri_str, UP_FOLDER, secret_key
+from conf import db_name, uri_str, UP_FOLDER
+from secret import secret_key
 from app import app, mongo
 import os
 import re
@@ -26,7 +27,6 @@ def check_if_exists(field, value):
 
 def get_record(collection, query={}):
     return collection.find_one(query)
-
 
 def create_cookbook(cookbook_name='', password='', username='', description=''):
     """
@@ -130,7 +130,7 @@ def get_recipes(cuisine_name="", dish_name=""):
             del request_ready["query"]
             str_allergens = ""
             query = request.form["query"]
-            # if query, set a ready document to pass to database
+            # if query, set a ready document to pass to database.
             if (query!=""):
                 query_db = {"$text": {"$search": query }}
             
@@ -143,28 +143,40 @@ def get_recipes(cuisine_name="", dish_name=""):
                     allergens = str_allergens.replace(' ', '|')
             str_allergens = allergens[0:len(allergens)-1]
             #if user filters allergens only
-            if allergens!= "" and query=="":
+            if str_allergens!= "" and query=="":
                 recipes = exclude_query(str_allergens)
                 print(str_allergens)
             #if user filters both
-            elif allergens!= "" and query!="":
-                recipes = mongo.db.recipes.aggregate([{"$match": [{"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}, query_db]} ])
-            elif query!="" and allergens== "":
-               recipes = mongo.db.recipes.find(query_db) 
+            elif str_allergens!= "" and query!="":
+                # recipes = mongo.db.recipes.find([{"$match": query_db},
+                #                                     {"$match": {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}} }])
+                
+                recipes = mongo.db.recipes.find({"$and": [
+                                                {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}},
+                                                query_db
+                                                ]})
+                print(str_allergens)
+                print(recipes)
+            # if user filters by keyword only
+            elif query!="" and str_allergens== "":
+               recipes = mongo.db.recipes.find(query_db)
+            # if both empty, because why not
             elif allergens== "" and query=="":
                 return redirect(url_for('get_recipes'))
              #paginate result   
             recipes.skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+            
         else: #if GET request
  
             recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             
-    
     recipes.sort('upvotes', pymongo.DESCENDING)
     
     pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
                 record_name='recipes', bs_version=4)
-      
+    # flash a message if there was no result
+    if recipes.count()==0:
+        flash("We found no results for your filters... :(")
     return render_template("recipes.html",
         pagination = pagination,
         recipes=recipes)   
@@ -273,19 +285,9 @@ def insert_recipe():
         _result = recipes.insert_one(request_ready)
         print(request_ready)
         if (username):
-            # push to owned by username
+            # push to owned
             
             update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
-          
-            """
-            value = request_ready['recipe_name']
-            mongo.db.cookbooks.update({'author_name': username}, 
-            { '$push': 
-                {'recipes_owned': 
-                    {'_id': ObjectId(_result.inserted_id), 'title': value}
-                    
-                }}
-                )"""
     return redirect(url_for('get_recipes'))  
   
 

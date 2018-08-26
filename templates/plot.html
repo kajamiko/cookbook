@@ -88,9 +88,9 @@ Site summary
 </div>
 
 
-<script>
-
-var ctx = document.getElementById("myChart").getContext('2d');
+ <script >
+     
+     var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
     type: {{ chart_type|safe }},
     data: {
@@ -133,7 +133,7 @@ var myChart = new Chart(ctx, {
     }
 });
 
-</script>
+      </script>
 {% endblock %}
     
 

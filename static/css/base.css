@@ -1,3 +1,12 @@
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+#wrap{
+  font-family: 'Play', sans-serif;
+	margin-bottom: 15%;
+}
 #jumbo{
                     background-image: url("../images/cooking-header.jpeg");
                     background-repeat: no-repeat;
@@ -10,15 +19,18 @@
       margin-bottom: 100px; /* Margin bottom by footer height */
 }                   
      
-.footer{
-      position: absolute;
-      
-  height: 100px;
-  bottom: 0;
-  width: 100%;
-  font-size: 0.7em;
+#footer{
+    background-color: #ADBCA5;
+  	position: absolute;
+	 text-align: center;
+	 width: 100%;
+	 bottom: 0;
 }
-.footer .container-fluid{
+#footer a{
+  
+  color: white;
+}
+#footer .container-fluid{
     
   background-color: #ADBCA5;
 }

@@ -13,7 +13,7 @@ Yummy! Search page
 <form action="{{ url_for('get_recipes') }}" method="POST">
     <div class="row justify-content-around">
         <div class="col">
-            <a href="{{ url_for('get_recipes') }}">Cancel</a>
+            <a href="{{ url_for('get_recipes') }}"><span class="fas times-circle">Cancel search</span></a>
             <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
         </div>
         <div class="col">
@@ -69,7 +69,15 @@ Yummy! Search page
     {% endfor %}
 </div>
 <div class="row justify-content-center">{{ pagination.links }}</div>
-
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
     
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
