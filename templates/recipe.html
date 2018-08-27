@@ -8,6 +8,7 @@
 <!-- okay, so this is a view for one single recipe. Looks almost like the all recipes view, but it doesn't have the for loop -->
 <div class="container">
 <a href="{{ url_for('get_recipes') }}" class="btn btn-warning"><span class="fas fa-search"> Browse recipes </span></a>
+ <div class="row"><img  width="400" height="400" src="{{ url_for('static', filename=recipe.image_url) }}"></img></div>
     <div class="row"><h2> {{ recipe.recipe_name }} </h2></div>
     <div class="row">Author: {{ recipe.author_name }}</div>
     <div class="row">

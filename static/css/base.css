@@ -18,8 +18,8 @@ html {
 #bootstrap-overrides {
       margin-bottom: 100px; /* Margin bottom by footer height */
 }                   
-.card-img-top{
-   max-heigth: 150px;
+.nomore{
+   max-height: 300px;
 }
 .content{
     background-color: #EFE1CE;

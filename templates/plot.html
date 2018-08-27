@@ -30,7 +30,7 @@
 Site summary
 {% endblock %}
 {% block content %}
-<div class="container">    
+<div class="container" align="center">    
     <form action="{{ url_for('summarise') }}" method="POST" >
         
          <h4 class="mb-3">Chart type:</h4>
@@ -48,7 +48,6 @@ Site summary
         <input class="input_hidden" type="radio" name="chart_type" id="doughnut" value="'doughnut'" >
             <label  for="doughnut">
                     <img class="charts" src="../static/images/doughnut.jpg">
-           
           </label>
         </div>
         </div> <!-- end of chart div  -->
@@ -73,15 +72,16 @@ Site summary
            Most active users
           </label>
           </div>
-        </div>
-        
-        
-            <div class="form-group row">
+                      <div class="form-group row">
       <div class="offset-sm-2 col-sm-10">
         <button type="submit" class="btn btn-primary" >Apply!</button>
       </div>
     </div>
     </form>
+        </div>
+        
+        
+
     <div width="600" height="600">
 <canvas id="myChart" ></canvas>
 </div>
