@@ -18,7 +18,9 @@ html {
 #bootstrap-overrides {
       margin-bottom: 100px; /* Margin bottom by footer height */
 }                   
-   
+.card-img-top{
+   max-heigth: 150px;
+}
 .content{
     background-color: #EFE1CE;
     border-radius: 10px;

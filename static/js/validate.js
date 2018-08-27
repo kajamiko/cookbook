@@ -39,7 +39,7 @@
             return false;
          }
          
-         if( document.add_form.recipe_name.file.length == "" )
+         if( document.add_form.recipe_name.files.files.length === 0 )
          {
             alert( "Did you forget about an image?" );
             document.add_form.cookbook_name.focus() ;

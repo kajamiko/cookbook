@@ -13,8 +13,10 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def check_if_exists(field, value):
- 
-    return mongo.db.cookbooks.find_one({field: value})
+    if mongo.db.cookbooks.find_one({field: value}):
+        return True
+    else: 
+        return False
 
 def get_record(collection, query={}):
     return collection.find_one(query)
@@ -24,7 +26,10 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
     Inserts given parameters as a cookbook document to the db and returns it's id 
     """
     _id = ""
-    if(check_if_exists("author_name", username) == check_if_exists("cookbook_name", cookbook_name)):
+    if(check_if_exists("author_name", username) or check_if_exists("cookbook_name", cookbook_name)):
+        return "Error! Username or cookbook's title already exists"
+        
+    else:
         _id=mongo.db.cookbooks.insert_one({"cookbook_name": cookbook_name,
             "password" : password,
             "author_name": username,
@@ -34,9 +39,6 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
             "recipes_owned": []
         })
         return _id
-    else:
-        return "Error! Some value already exists"
-
 
 def exclude_query(ready_string):
     """

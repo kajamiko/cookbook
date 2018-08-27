@@ -31,7 +31,7 @@ Your cookbook
                 <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
             {% else %}
-            <a href="{{ url_for('add_recipe') }}" class="btn btn-warning"><span class="fas fa-search"></span></a>
+            <a href="{{ url_for('get_recipes') }}" class="btn btn-warning"><span class="fas fa-search"></span></a>
             <span>You didn't pin any recipes yet.</span>
             {% endif %} 
          </div>

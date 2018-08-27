@@ -18,7 +18,7 @@ def index():
     """
     Homepage view function : getting random recipes from selected categories
     """
-    dinner = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Side"}},{ "$sample": { "size": 1 }}])
+    dinner = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Sides"}},{ "$sample": { "size": 1 }}])
     main = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Main"}},{ "$sample": { "size": 1 }}])
     dessert = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Desserts"}},{ "$sample": { "size": 1 }}])
     breakfast = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Breakfast"}},{ "$sample": { "size": 1 }}])
@@ -118,20 +118,23 @@ def register():
     message = ""
     if(request.method == "POST"):
         form = request.form 
-        if(len(form["cookbook_name"]) > 4 and len(password=form["password"]) > 5 and len(username=form["author_name"])>3):
+        if(len(form["cookbook_name"]) >= 4 and len(form["password"]) > 5 and len(form["author_name"])>=3):
             _result=create_cookbook(cookbook_name=form["cookbook_name"],
                 password=form["password"],
                 username=form["author_name"], 
                 description=form["cookbook_desc"])
+                
+            if _result != "Error! Username or cookbook's title already exists":
+                session['username'] = form["author_name"]
+                session['logged_in'] = True
+                flash("Congratulatons! Here's your new and shiny cookbook.")
+                return redirect(url_for('cookbook_view', cookbook_id=_result.inserted_id))
+            else:
+                message = _result
         else:
             message = "Some of your details were incorrect"
               
-        if _result != "Error":
-            session['username'] = form["author_name"]
-            session['logged_in'] = True
-            return redirect(url_for('cookbook_view', cookbook_id=_result.inserted_id))
-        else:
-            message = _result
+        
     return render_template('register.html', message = message)
 
 
@@ -182,7 +185,6 @@ def add_recipe():
     return render_template("add_recipe.html",
     dishes=mongo.db.dishes.find(),
     cuisine_list=mongo.db.cuisines.find())
-    #username=session.get('username'))
     
 @app.route('/insert_recipe', methods=['POST'])
 def insert_recipe():
@@ -190,44 +192,49 @@ def insert_recipe():
     # creating an empty dictionary to send it later as a new document, to the database. 
     request_ready = {}
     if( request.method == "POST"):
-        username = session.get('username')
-        new_date = create_nice_date()
-        file = request.files['file']
-        """
-         filling disctionary with data from the form, with large strings sliced to an array
-         and pushing and popping out some data
-        """
-# empty image file will be prevented with js form validation
-        if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                # get me a full pathname and save the file
-                file_path = "static/uploaded_images/" + filename
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        else:
-                flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
-        
-        for k, v in request.form.to_dict().items():
-            if ( k== "ingredients_list"):
-                request_ready.setdefault(k,v.splitlines())
-            elif ( k== "preparation_steps_list"):
-                request_ready.setdefault(k,v.splitlines())
-            else: 
-                request_ready[k]=v
-        if(request_ready["cuisine_name"] == ""):
-            del request_ready["cuisine_name"] 
-        # and adding some other initial data
-        request_ready.setdefault("upvotes", 0)
-        request_ready.setdefault("views", 0)
-        request_ready.setdefault("created_on", new_date)
-        request_ready.setdefault("author_name", username)
-        request_ready.setdefault("image_url", file_path)
-        #push everything to the database and store returned data in _result
-        _result = recipes.insert_one(request_ready)
-        print(request_ready)
-        if (username):
-            # push to owned
+        form = request.form
+        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10:
+            username = session.get('username')
+            new_date = create_nice_date()
             
-            update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
+            file = request.files['file']
+            """
+             filling disctionary with data from the form, with large strings sliced to an array
+             and pushing and popping out some data
+            """
+            # empty image file will be prevented with js form validation
+            if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    # get me a full pathname and save the file
+                    file_path = "uploaded_images/" + filename
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                    flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
+            
+            for k, v in request.form.to_dict().items():
+                if ( k== "ingredients_list"):
+                    request_ready.setdefault(k,v.splitlines())
+                elif ( k== "preparation_steps_list"):
+                    request_ready.setdefault(k,v.splitlines())
+                else: 
+                    request_ready[k]=v
+            if(request_ready["cuisine_name"] == ""):
+                del request_ready["cuisine_name"] 
+            # and adding some other initial data
+            request_ready.setdefault("upvotes", 0)
+            request_ready.setdefault("views", 0)
+            request_ready.setdefault("created_on", new_date)
+            request_ready.setdefault("author_name", username)
+            request_ready.setdefault("image_url", file_path)
+            #push everything to the database and store returned data in _result
+            _result = recipes.insert_one(request_ready)
+            print(request_ready)
+            if (username):
+                # push to owned
+                update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
+            
+        else:
+            flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
   
 
@@ -242,7 +249,6 @@ def category_view(collection_name):
         return render_template('category_view.html',
         dataset = mongo.db.dishes.find(),
         dishes = True)
-        #username = session.get('username'))
 
 ############### Login/logout logic ################################################
     
