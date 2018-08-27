@@ -8,6 +8,13 @@
             return false;
          }
          
+          if( document.reg_form.author_name.value.length < 3 )
+         {
+            alert( "That's a name that will be displayed under all of your recipes...make it longer than 3 characters!" );
+            document.reg_form.authorname.focus() ;
+            return false;
+         }
+         
           if( document.reg_form.password.value.length < 5 )
          {
             alert( "Please provide at least 5 characters long password!" );
@@ -32,6 +39,12 @@
             return false;
          }
          
+         if( document.add_form.recipe_name.file.length == "" )
+         {
+            alert( "Did you forget about an image?" );
+            document.add_form.cookbook_name.focus() ;
+            return false;
+         }
          if( document.add_form.cooking_time.value == "")
          {
             alert( "Please provide cooking time" );

@@ -18,27 +18,36 @@ html {
 #bootstrap-overrides {
       margin-bottom: 100px; /* Margin bottom by footer height */
 }                   
-     
+   
+.content{
+    background-color: #EFE1CE;
+    border-radius: 10px;
+    overflow-y: scroll;
+    
+}  
 #footer{
     background-color: #ADBCA5;
   	position: absolute;
 	 text-align: center;
 	 width: 100%;
 	 bottom: 0;
+	 font-size: 0.8em;
 }
 #footer a{
   
-  color: white;
+  color: black;
 }
 #footer .container-fluid{
     
   background-color: #ADBCA5;
 }
                
-#bootstrap-overrides .navbar{
+#bootstrap-overrides nav {
     font-family: 'Nunito', sans-serif;
     background-color: #ADBCA5;
+    border: none;
 }
+
 
 #bootstrap-overrides form{
     

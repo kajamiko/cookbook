@@ -13,10 +13,6 @@ from basic import allowed_file, PER_PAGE, check_if_exists, get_record, create_co
 from flask_paginate import Pagination, get_page_parameter
 
     
-################## Flask funtions ########################################################################################################
-
- 
-    
 @app.route('/', methods=["GET","POST"])
 def index():
     """
@@ -37,10 +33,12 @@ def index():
 @app.route('/dishes/<dish_name>')
 @app.route('/filter', methods=["GET","POST"])
 def get_recipes(cuisine_name="", dish_name=""):
-    """This function takes optional arguments to pass a query to the database, or if none, it just gets all the recipes
     """
-    #menu = []
-   # menu = mongo.db.recipes.aggregate({ "$sample": { "size": 1 } })
+    This function:
+    1. Takes optional arguments: 'dishes' or 'cuisines' to filter recipes by categories.
+    2. Returns all recipes or filtered recipes, as it processes form allowing to filter allergens and/or search by keyword.
+    3. Supports results pagination.
+    """
    
     query_db = ""
     page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -105,7 +103,7 @@ def get_recipes(cuisine_name="", dish_name=""):
                 record_name='recipes', bs_version=4)
     # flash a message if there was no result
     if recipes.count()==0:
-        flash("We found no results for your filters... :(")
+        flash("We found no results for your filters...try different ones")
     return render_template("recipes.html",
         pagination = pagination,
         recipes=recipes)   
@@ -114,15 +112,23 @@ def get_recipes(cuisine_name="", dish_name=""):
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
+    """
+    Displays form and after POST request, calls a function creating a new cookbook document.
+    """
     message = ""
     if(request.method == "POST"):
         form = request.form 
-        _result=create_cookbook(cookbook_name=form["cookbook_name"],
-            password=form["password"],
-            username=form["author_name"], 
-            description=form["cookbook_desc"])
+        if(len(form["cookbook_name"]) > 4 and len(password=form["password"]) > 5 and len(username=form["author_name"])>3):
+            _result=create_cookbook(cookbook_name=form["cookbook_name"],
+                password=form["password"],
+                username=form["author_name"], 
+                description=form["cookbook_desc"])
+        else:
+            message = "Some of your details were incorrect"
               
         if _result != "Error":
+            session['username'] = form["author_name"]
+            session['logged_in'] = True
             return redirect(url_for('cookbook_view', cookbook_id=_result.inserted_id))
         else:
             message = _result
@@ -139,7 +145,9 @@ def cookbook_view(cookbook_id):
   
 @app.route('/your_cookbook/<username>')
 def your_cookbook(username):
-    
+    """
+    Redirects to a cookbook view
+    """
     _cookbook = mongo.db.cookbooks.find_one({"author_name": session.get('username')})
     return redirect(url_for('cookbook_view', 
     cookbook_id = _cookbook["_id"]))
@@ -148,7 +156,9 @@ def your_cookbook(username):
     
 @app.route('/show_recipe/<recipe_id>')
 def show_recipe(recipe_id):
-    
+    """
+    Shows recipe page, which contain details and links to upvote it.
+    """
     already_got = False
     owned = False
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
@@ -167,7 +177,8 @@ def show_recipe(recipe_id):
 
 @app.route('/add_recipe')
 def add_recipe():
-    
+    """
+    """
     return render_template("add_recipe.html",
     dishes=mongo.db.dishes.find(),
     cuisine_list=mongo.db.cuisines.find())
@@ -262,8 +273,6 @@ def logout():
     print (session.get('username'))
     return redirect(url_for('get_recipes'))    
     
-      
-
 
 ############## Pinning/removing/ upvoting recipes logic
 @app.route('/pin_recipe/<recipe_id>/<recipe_title>')

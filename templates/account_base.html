@@ -9,6 +9,13 @@
          <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
       
          <link rel="icon" type="image/png" href="/static/images/icons/apron.png">
+         <style type="text/css">
+             #bootstrap-overrides{
+                     background-image: url("../static/images/cookbook_background.jpg");
+                    background-repeat: no-repeat;
+                    background-size: cover;
+             }
+         </style>
   <title>       
 {% block title %}
 {% endblock %}
@@ -18,7 +25,7 @@
     <body id="bootstrap-overrides">
 <!--Navbar -->
 <div id="wrap">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -66,18 +73,23 @@
          {% block content %} {% endblock %}
    </div>                     
 
-             <footer id="footer" class="navbar-expand-lg text-white">
-      <div class="container">
+             <footer id="footer" class="navbar-expand-lg">
        <div class="row justify-content-around">          
-        <div class="col-6">
+        <div class="col-3">
         <ul class="list-unstyled">
           <li><strong>Contact</strong></li>
           <li>kajaths@gmail.com</li>
           <li><a href="https://github.com/kajamiko">Github</a></li>
         </ul>
       </div>
-     
-      <div class="col-6 col">
+     <div  class="col-6 py-3">
+        <p class="m-0 text-center">Copyright &copy; Kajamiko 2018</p>
+        <p class="m-0 text-center"><div>Favicon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></p>
+        <div>
+      </div>
+    </div>
+      </div>
+      <div class="col-3 col">
         <ul class="list-unstyled">
           <li><strong>Other Websites</strong></li>
           <li><a href="https://kajamiko.github.io/fabulous_mr_d/">Fabulous Mr D</a></li>
@@ -86,15 +98,6 @@
         </ul>
       </div>
     </div>
-    <div class="row">
-    <div  class="col-sm-12">
-        <p class="m-0 text-center text-white">Copyright &copy; Kajamiko 2018</p>
-        <p class="m-0 text-center text-white"><div>Favicon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></p>
-        <div>
-      </div>
-    </div>
-      </div>
-    </div> <!-- container -->
     </footer>
  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
