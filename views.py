@@ -237,8 +237,6 @@ def insert_recipe():
             flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
   
-
-    
 @app.route('/category_view/<collection_name>')
 def category_view(collection_name):
     if(collection_name == "cuisines"):
@@ -304,7 +302,6 @@ def give_up(recipe_id):
     _recipe = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
         {'$inc': {"upvotes" : 1}})
     return redirect(url_for("show_recipe",recipe_id=recipe_id))
-
 
     
 @app.route('/summarise', methods = ['GET','POST'])
