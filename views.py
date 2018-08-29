@@ -31,7 +31,6 @@ def index():
 @app.route('/get_recipes', methods=["GET","POST"])
 @app.route('/cuisines/<cuisine_name>')
 @app.route('/dishes/<dish_name>')
-@app.route('/filter', methods=["GET","POST"])
 def get_recipes(cuisine_name="", dish_name=""):
     """
     This function:
@@ -39,74 +38,84 @@ def get_recipes(cuisine_name="", dish_name=""):
     2. Returns all recipes or filtered recipes, as it processes form allowing to filter allergens and/or search by keyword.
     3. Supports results pagination.
     """
-   
-    query_db = ""
+    search_text, search_allergens, dish_name, cuisine_name, query_db = {}, {}, {}, {}, {}
     page = request.args.get(get_page_parameter(), type=int, default=1)
-    allergens = ""
     
-    if(cuisine_name):
-        recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+    # if form posted
+    if (request.method == "POST"):
+        request_ready = request.form.to_dict()
+        #make sure query string will not get into allergens list
+        del request_ready["query"]
+        # setting values for filter and exclde
+        query = request.form["query"]
+        str_allergens = exclude_query(request_ready)
+        # setting documents for each
+        if query or str_allergens:
+            return redirect(url_for('filter_query', query=query, str_allergens=str_allergens))
+    else: #if GET request
+        if(cuisine_name):
+            recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         
-    elif(dish_name):
-        recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-    else:
-        # if form posted
-        if (request.method == "POST"):
-            request_ready = request.form.to_dict()
-            #make sure query string will not get into allergens list
-            del request_ready["query"]
-            str_allergens = ""
-            query = request.form["query"]
-            # if query, set a ready document to pass to database.
-            if (query!=""):
-                query_db = {"$text": {"$search": query }}
+        elif(dish_name):
+            recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             
-            #set the allergens expressions
-            for k,v in request_ready.items():
-                if(k):
-                    
-                    temp = str_allergens
-                    str_allergens = temp + v + " " 
-                    allergens = str_allergens.replace(' ', '|')
-            str_allergens = allergens[0:len(allergens)-1]
-            #if user filters allergens only
-            if str_allergens!= "" and query=="":
-                recipes = exclude_query(str_allergens)
-                print(str_allergens)
-            #if user filters both
-            elif str_allergens!= "" and query!="":
-                # recipes = mongo.db.recipes.find([{"$match": query_db},
-                #                                     {"$match": {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}} }])
-                
-                recipes = mongo.db.recipes.find({"$and": [
-                                                {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}},
-                                                query_db
-                                                ]})
-                print(str_allergens)
-                print(recipes)
-            # if user filters by keyword only
-            elif query!="" and str_allergens== "":
-               recipes = mongo.db.recipes.find(query_db)
-            # if both empty, because why not
-            elif allergens== "" and query=="":
-                return redirect(url_for('get_recipes'))
-             #paginate result   
-            recipes.skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-            
-        else: #if GET request
- 
-            recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-            
-    recipes.sort('upvotes', pymongo.DESCENDING)
+        recipes.sort('upvotes', pymongo.DESCENDING)
     
+        pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
+                record_name='recipes', bs_version=4)
+        # flash a message if there was no result
+        if recipes.count()==0:
+            flash("We found no results for your filters...try different ones")
+        return render_template("recipes.html",
+                pagination = pagination,
+                recipes=recipes)   
+        
+
+@app.route('/filter', methods=["GET"]) 
+def filter_query():
+    query_db = ""
+    query = request.args.get('query')
+    str_allergens = request.args.get('str_allergens')
+    and_list = []
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    
+    if (query!=""):
+        search_text = {"$text": {"$search": query }}
+    if (str_allergens!=""):
+        search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
+        print("Printing {0}!".format(str_allergens))
+    #if user filters allergens only
+    if str_allergens!= "" and query=="":
+        
+        query_db = search_allergens
+    #if user filters both
+    elif str_allergens!= "" and query!="":
+         query_db = {"$and": [
+                                search_allergens,
+                                search_text
+                                 ]}
+                
+            # if user filters by keyword only
+    elif query!="" and str_allergens== "":
+        query_db = search_text
+    # if both empty, because why not
+    elif str_allergens== "" and query=="":
+            return redirect(url_for('get_recipes'))
+    
+    recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+    if recipes.count()==0:
+                flash("We found no results for your filters...try different ones")
     pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
                 record_name='recipes', bs_version=4)
-    # flash a message if there was no result
-    if recipes.count()==0:
-        flash("We found no results for your filters...try different ones")
+                
     return render_template("recipes.html",
         pagination = pagination,
-        recipes=recipes)   
+        recipes=recipes,
+        query = query,
+        str_allergens=str_allergens
+        )
+
         
 ############ Creating cookbook/ cookbook views logic ############################################ 
 

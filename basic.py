@@ -40,12 +40,19 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
         })
         return _id
 
-def exclude_query(ready_string):
+def exclude_query(request_ready):
     """
     passes strings into find query, converts to regexp
     """
-    
-    return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
+    str_allergens, allergens = "", ""
+    for k,v in request_ready.items():
+        if(k):
+            temp = str_allergens
+            str_allergens = temp + v + " " 
+            allergens = str_allergens.replace(' ', '|')
+    str_allergens = allergens[0:len(allergens)-1]
+    # return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
+    return str_allergens
 
 
 def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinned', remove = False):
