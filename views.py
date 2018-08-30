@@ -38,7 +38,7 @@ def get_recipes(cuisine_name="", dish_name=""):
     2. Returns all recipes or filtered recipes, as it processes form allowing to filter allergens and/or search by keyword.
     3. Supports results pagination.
     """
-    search_text, search_allergens, dish_name, cuisine_name, query_db = {}, {}, {}, {}, {}
+    
     page = request.args.get(get_page_parameter(), type=int, default=1)
     
     # if form posted
@@ -58,9 +58,9 @@ def get_recipes(cuisine_name="", dish_name=""):
         
         elif(dish_name):
             
-            print(dish_name)
             recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-        recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        else:
+            recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             
         recipes.sort('upvotes', pymongo.DESCENDING)
     
