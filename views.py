@@ -57,6 +57,8 @@ def get_recipes(cuisine_name="", dish_name=""):
             recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         
         elif(dish_name):
+            
+            print(dish_name)
             recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
             
@@ -72,9 +74,9 @@ def get_recipes(cuisine_name="", dish_name=""):
                 recipes=recipes)   
         
 
-@app.route('/filter', methods=["GET"]) 
-def filter_query():
-    query_db = ""
+@app.route('/filter', methods=["GET"])
+def filter_query(dish_name="", cuisine_name=""):
+    query_db = {}
     query = request.args.get('query')
     str_allergens = request.args.get('str_allergens')
     and_list = []
@@ -82,24 +84,17 @@ def filter_query():
     
     if (query!=""):
         search_text = {"$text": {"$search": query }}
+        and_list.append(search_text)
     if (str_allergens!=""):
         search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
+        and_list.append(search_allergens)
         print("Printing {0}!".format(str_allergens))
-    #if user filters allergens only
-    if str_allergens!= "" and query=="":
-        
-        query_db = search_allergens
-    #if user filters both
-    elif str_allergens!= "" and query!="":
-         query_db = {"$and": [
-                                search_allergens,
-                                search_text
-                                 ]}
-                
-            # if user filters by keyword only
-    elif query!="" and str_allergens== "":
-        query_db = search_text
-    # if both empty, because why not
+    
+    if (len(and_list) > 1):
+        query_db = {"$and": and_list}
+    elif (len(and_list) == 1):
+        query_db = and_list[0]
+
     elif str_allergens== "" and query=="":
             return redirect(url_for('get_recipes'))
     
@@ -116,7 +111,6 @@ def filter_query():
         str_allergens=str_allergens
         )
 
-        
 ############ Creating cookbook/ cookbook views logic ############################################ 
 
 @app.route('/register', methods=["GET", "POST"])
