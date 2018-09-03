@@ -9,8 +9,6 @@ import unittest
 class TestCookbook(unittest.TestCase):
     
     def setUp(self):
-        # run.app.config.from_object('conf.TestingConfig')
-        # run.app.config["SERVER_NAME"] = "{0} {1}".format(os.environ.get('PORT'), os.environ.get('IP'))
         app = app.create_app()
         app.config["SERVER_NAME"] = "{0} {1}".format(os.environ.get('PORT'), os.environ.get('IP'))
         self.app = app.test_client() 
@@ -23,11 +21,7 @@ class TestCookbook(unittest.TestCase):
     def test_register(self):
         response = self.app.get('/add_recipe')
         self.assertEqual(response._status_code, 200)
-    
-    
-    def test_dishes(self):
-        response = self.app.get('/dishes/Italian')
-        self.assertEqual(response._status_code, 200)
+
     
     def  test_creating_cookbook(self):
         

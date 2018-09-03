@@ -41,81 +41,110 @@ def get_recipes(cuisine_name="", dish_name=""):
     
     page = request.args.get(get_page_parameter(), type=int, default=1)
     
-    # if form posted
+    if(cuisine_name):
+        recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        
+    elif(dish_name):
+            
+        recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+    else:
+        recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+            
+    recipes.sort('upvotes', pymongo.DESCENDING)
+    
+    pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
+                record_name='recipes', bs_version=4)
+    # flash a message if there was no result
+    if recipes.count()==0:
+        flash("We found no results for your filters...try different ones")
+    return render_template("recipes.html",
+                pagination = pagination,
+                recipes=recipes,
+                cuisines=mongo.db.cuisines.find(),
+                dishes=mongo.db.dishes.find())   
+        
+
+@app.route('/filter', methods=["GET", "POST"])
+def filter_query():
+    
+    query_db = {}
+    str_allergens = request.args.get('str_allergens')
+    and_list, or_dish_list, or_cuisine_list = [], [], []
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    cuisines=mongo.db.cuisines.find()
+    dishes=mongo.db.dishes.find()
+    
     if (request.method == "POST"):
         request_ready = request.form.to_dict()
+        query = request.form["query"]
         #make sure query string will not get into allergens list
         del request_ready["query"]
         # setting values for filter and exclde
-        query = request.form["query"]
+        temp_list = []
+        # here the code is iterating through cursors to get names, and then iterating through form dictionary to check if there are any values
+        # coresponding, and then adding to separate lists to later send $or query, and deleting from request_ready to later pass to strig processing
+        for cuisine in cuisines:
+            temp_list.append(cuisine["name"])
+        for k,v in request.form.to_dict().items():
+            if k in temp_list:
+                or_cuisine_list.append({"cuisine_name": v})
+                del request_ready[k]
+        temp_list.clear()
+        for dish in dishes:
+            temp_list.append(dish["name"])
+        for k,v in request.form.to_dict().items():
+            if k in temp_list:
+                or_dish_list.append({"dish_type": v})
+                del request_ready[k]
+        
         str_allergens = exclude_query(request_ready)
         # setting documents for each
-        if query or str_allergens:
-            return redirect(url_for('filter_query', query=query, str_allergens=str_allergens, dish_name=dish_name, cuisine_name=cuisine_name))
-    else: #if GET request
-        if(cuisine_name):
-            recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        # if query or str_allergens:
+        #     return redirect(url_for('filter_query', query=query, str_allergens=str_allergens, dish_name=dish_name, cuisine_name=cuisine_name))
+
+        if (query!=""):
+            search_text = {"$text": {"$search": query }}
+            and_list.append(search_text)
+        if (str_allergens!=""):
+            search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
+            and_list.append(search_allergens)
         
-        elif(dish_name):
+        if (len(or_cuisine_list) > 1):
+            and_list.append({"$or": or_cuisine_list})
+        elif (len(or_cuisine_list) == 1):
+            and_list.append(or_cuisine_list[0])
+        
+        if (len(or_dish_list) > 1):
+            and_list.append({"$or": or_dish_list})
+        elif (len(or_dish_list) == 1):
+            and_list.append(or_dish_list[0])
             
-            recipes = mongo.db.recipes.find({"dish_type": dish_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-        else:
-            recipes = mongo.db.recipes.find().skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        if (len(and_list) > 1):
+            query_db = {"$and": and_list}
+        elif (len(and_list) == 1):
+            query_db = and_list[0]
             
-        recipes.sort('upvotes', pymongo.DESCENDING)
-    
+        elif str_allergens== "" and query=="":
+                return redirect(url_for('get_recipes'))
+                
+        
+        print(query_db)
+        recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        if recipes.count()==0:
+                flash("We found no results for your filters...try different ones")
         pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
                 record_name='recipes', bs_version=4)
-        # flash a message if there was no result
-        if recipes.count()==0:
-            flash("We found no results for your filters...try different ones")
         return render_template("recipes.html",
-                pagination = pagination,
-                recipes=recipes)   
-        
-
-@app.route('/filter', methods=["GET"])
-def filter_query():
-    query_db = {}
-    dish_name = request.args.get('dish_name')
-    cuisine_name = request.args.get('cuisine_name')
-    query = request.args.get('query')
-    str_allergens = request.args.get('str_allergens')
-    and_list = []
-    page = request.args.get(get_page_parameter(), type=int, default=1)
+                            pagination = pagination,
+                            recipes=recipes,
+                            query = query,
+                            str_allergens=str_allergens,
+                            cuisines=mongo.db.cuisines.find(),
+                            dishes=mongo.db.dishes.find()
+                            )
     
-    if (query!=""):
-        search_text = {"$text": {"$search": query }}
-        and_list.append(search_text)
-    if (str_allergens!=""):
-        search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
-        and_list.append(search_allergens)
-    if dish_name !="" :
-        search_dish = {"dish_type": dish_name}
-        and_list.append(search_dish)
-    if cuisine_name != "":
-        search_cuisine = {"cuisine_name": cuisine_name}
-        and_list.append(search_cuisine)
-    if (len(and_list) > 1):
-        query_db = {"$and": and_list}
-    elif (len(and_list) == 1):
-        query_db = and_list[0]
-
-    elif str_allergens== "" and query=="":
-            return redirect(url_for('get_recipes'))
     
-    recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
-    if recipes.count()==0:
-                flash("We found no results for your filters...try different ones")
-    pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
-                record_name='recipes', bs_version=4)
-                
-    return render_template("recipes.html",
-        pagination = pagination,
-        recipes=recipes,
-        query = query,
-        str_allergens=str_allergens
-        )
+
 
 ############ Creating cookbook/ cookbook views logic ############################################ 
 
@@ -281,7 +310,9 @@ def login():
     
 @app.route('/logout')
 def logout():
-
+    """
+    Logging out logic
+    """
     session.clear()
     print (session.get('username'))
     return redirect(url_for('get_recipes'))    
@@ -295,13 +326,11 @@ def pin_recipe(recipe_id, recipe_title):
    
 @app.route('/remove_recipe/<recipe_id>/<owned>')
 def remove_recipe(recipe_id, owned):
-    print("Is it owned? ", owned)
     if(owned == "False"):
         update_recipes_array(ObjectId(recipe_id), remove = True)
         return redirect(url_for('show_recipe', recipe_id=recipe_id))
        
     else:
-        print("Removing!")
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
         return redirect(url_for('your_cookbook', username = session["username"]))

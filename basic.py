@@ -51,7 +51,6 @@ def exclude_query(request_ready):
             str_allergens = temp + v + " " 
             allergens = str_allergens.replace(' ', '|')
     str_allergens = allergens[0:len(allergens)-1]
-    # return mongo.db.recipes.find({"ingredients_list": {'$not': re.compile(ready_string, re.I)}})
     return str_allergens
 
 

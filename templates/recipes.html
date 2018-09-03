@@ -10,19 +10,19 @@ Yummy! Search page
 
 {% block content %}  
 <div class="container">
-<form action="{{ url_for('get_recipes') }}" method="POST">
+<form action="{{ url_for('filter_query') }}" method="POST">
     <div class="row justify-content-around">
         <div class="col">
             <a href="{{ url_for('get_recipes') }}"><span class="fas times-circle">Cancel search</span></a>
             <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
         </div>
-        <div class="col">
+        <div class="col-sm-12 col-md-2 col-lg-2">
             <div class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Filter allergens
+              Allergens
             </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt butter cheese">
                         <label class="form-check-label" for="inlineCheckbox1">Diary</label>
@@ -36,11 +36,52 @@ Yummy! Search page
                         <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="eggs" value="egg">
                         <label class="form-check-label" for="inlineCheckbox3">Eggs</label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-control mr-sm-2" type="search" name="custom" placeholder="Custom">
+                        <label class="form-check-label" for="inlineCheckbox3">Custom - make sure you separate words with ONE space!</label>
+                    </div>
                 </div>
 
             </div>
         </div>
-        <div class="col">
+        
+        <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Cuisines
+            </a>
+
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for cuisine in cuisines %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
+                        <label class="form-check-label" for="inlineCheckbox1">{{ cuisine.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        
+         <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dishes
+            </a>
+
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% for dish in dishes %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ dish.name }}" value="{{ dish.name }}">
+                        <label class="form-check-label" for="inlineCheckbox1">{{ dish.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="col-sm-2">
 
             <button type="submit" class="btn btn-primary">Apply</button>
         </div>
