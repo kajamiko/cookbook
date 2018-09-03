@@ -11,7 +11,7 @@ Yummy! Categories
         {% for data in dataset %}
             {% if dishes %}
             <div>
-                <div class="col"><a class="text-info"  href="{{ url_for('get_recipes', dish_name=data.name) }}" >
+                <div class="col"><a class="text-info"  href="{{ url_for('filter_query', dish_name=data.name, cuisine_name='', str_allergens='', query='') }}" >
                     <img class="img-thumbnail" width="300" height="200" alt="dish image" src="{{ url_for('static', filename=data.image_url) }}">
                     <h4> {{ data.name }} </h4></a></div>
             </div>
@@ -20,7 +20,7 @@ Yummy! Categories
             
             {% if cuisines %}
             <div>
-                <div class="col"><a class="text-info" href="{{ url_for('get_recipes', cuisine_name=data.name) }}" >
+                <div class="col"><a class="text-info" href="{{ url_for('filter_query', cuisine_name=data.name, dish_name='', str_allergens='', query='') }}" >
                     <img class="img-thumbnail" width="300" height="200" alt="cuisine image" src="{{ url_for('static', filename=data.image_url) }}">
                     <h4> {{ data.name }} </h4></a></div>
             </div>

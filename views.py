@@ -51,7 +51,7 @@ def get_recipes(cuisine_name="", dish_name=""):
         str_allergens = exclude_query(request_ready)
         # setting documents for each
         if query or str_allergens:
-            return redirect(url_for('filter_query', query=query, str_allergens=str_allergens))
+            return redirect(url_for('filter_query', query=query, str_allergens=str_allergens, dish_name=dish_name, cuisine_name=cuisine_name))
     else: #if GET request
         if(cuisine_name):
             recipes = mongo.db.recipes.find({"cuisine_name": cuisine_name}).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
@@ -75,8 +75,10 @@ def get_recipes(cuisine_name="", dish_name=""):
         
 
 @app.route('/filter', methods=["GET"])
-def filter_query(dish_name="", cuisine_name=""):
+def filter_query():
     query_db = {}
+    dish_name = request.args.get('dish_name')
+    cuisine_name = request.args.get('cuisine_name')
     query = request.args.get('query')
     str_allergens = request.args.get('str_allergens')
     and_list = []
@@ -88,8 +90,12 @@ def filter_query(dish_name="", cuisine_name=""):
     if (str_allergens!=""):
         search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
         and_list.append(search_allergens)
-        print("Printing {0}!".format(str_allergens))
-    
+    if dish_name !="" :
+        search_dish = {"dish_type": dish_name}
+        and_list.append(search_dish)
+    if cuisine_name != "":
+        search_cuisine = {"cuisine_name": cuisine_name}
+        and_list.append(search_cuisine)
     if (len(and_list) > 1):
         query_db = {"$and": and_list}
     elif (len(and_list) == 1):
