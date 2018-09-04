@@ -44,13 +44,13 @@ def exclude_query(request_ready):
     """
     passes strings into find query, converts to regexp
     """
-    str_allergens, allergens = "", ""
+    str_allergens, allergens= "", ""
     for k,v in request_ready.items():
-        if(k):
-            temp = str_allergens
-            str_allergens = temp + v + " " 
-            allergens = str_allergens.replace(' ', '|')
-    str_allergens = allergens[0:len(allergens)-1]
+        if(v):
+            temp = allergens
+            proc = v.replace(" ", " -")
+            allergens = temp + " -" + proc
+    str_allergens = allergens[0:len(allergens)]
     return str_allergens
 
 

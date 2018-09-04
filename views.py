@@ -12,7 +12,8 @@ from flask import Blueprint
 from basic import allowed_file, PER_PAGE, check_if_exists, get_record, create_cookbook, exclude_query, update_recipes_array, create_nice_date
 from flask_paginate import Pagination, get_page_parameter
 
-    
+ 
+   
 @app.route('/', methods=["GET","POST"])
 def index():
     """
@@ -97,18 +98,28 @@ def filter_query():
                 del request_ready[k]
         print(or_dish_list)
         str_allergens = exclude_query(request_ready)
+        print("The processed string is {0}".format(str_allergens))
         # setting documents for each
         # if query or str_allergens:
         #     return redirect(url_for('filter_query', query=query, str_allergens=str_allergens, dish_name=dish_name, cuisine_name=cuisine_name))
-
-        if (query!=""):
+        
+        # if there are some allergens to and keyword
+        if (str_allergens!="" and query!=""):
+            # search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
+            print(str_allergens)
+            look_for_words = query + str_allergens
+            search_text = {"$text": {"$search": look_for_words }}
+            and_list.append(search_text)
+        # if there is some keyword but no allergens
+        elif (str_allergens=="" and query!=""):
             search_text = {"$text": {"$search": query }}
             and_list.append(search_text)
+        # no query, allergens only
+        elif (str_allergens!="" and query==""):
+            no_query_allergens = "1" + str_allergens
+            search_text = {"$text": {"$search": no_query_allergens }}
+            and_list.append(search_text)
             
-        if (str_allergens!=""):
-            search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
-            and_list.append(search_allergens)
-        
         if (len(or_cuisine_list) > 1):
             and_list.append({"$or": or_cuisine_list})
         elif (len(or_cuisine_list) == 1):
@@ -128,19 +139,15 @@ def filter_query():
                 return redirect(url_for('get_recipes')) 
         
         session['query'] = query_db
-        session.modified = True
-        print("I'm a session!")
-        print(session["query"])
-        
+        print("I'm sesion")
+        print(session['query'])
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
         return redirect(url_for('filter_query'))
     else:
-        try:
-            query_db = session["query"]
-        except():
-            query_db = {}
+        
+        query_db = session['query']
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
@@ -155,7 +162,7 @@ def filter_query():
 
 @app.route('/cancel_search')
 def cancel_search():
-    session['query'] = {}
+    g.pop('query')
     return redirect(url_for('get_recipes'))
     
 ############ Creating cookbook/ cookbook views logic ############################################ 

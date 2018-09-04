@@ -24,11 +24,11 @@ Yummy! Search page
 
                 <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt butter cheese">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt cheese">
                         <label class="form-check-label" for="inlineCheckbox1">Diary</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nut">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nuts">
                         <label class="form-check-label" for="inlineCheckbox2">Nuts</label>
                     </div>
 
@@ -54,7 +54,7 @@ Yummy! Search page
                 <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     {% for cuisine in cuisines %}
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
+                        <input class="form-check-input" type="checkbox" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
                         <label class="form-check-label" for="inlineCheckbox1">{{ cuisine.name }}</label>
                     </div>
                     {% endfor %}
@@ -72,7 +72,7 @@ Yummy! Search page
                 <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     {% for dish in dishes %}
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ dish.name }}" value="{{ dish.name }}">
+                        <input class="form-check-input" type="checkbox"  name="{{ dish.name }}" value="{{ dish.name }}">
                         <label class="form-check-label" for="inlineCheckbox1">{{ dish.name }}</label>
                     </div>
                     {% endfor %}
