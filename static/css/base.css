@@ -18,15 +18,15 @@ html {
 #bootstrap-overrides {
       margin-bottom: 100px; /* Margin bottom by footer height */
 }                   
-.nomore{
-   max-height: 300px;
-}
+
 .content{
     background-color: #EFE1CE;
     border-radius: 10px;
     overflow-y: scroll;
+    max-height: 70%;
     
 }  
+
 #footer{
     background-color: #ADBCA5;
   	position: absolute;
@@ -49,7 +49,9 @@ html {
     background-color: #ADBCA5;
     border: none;
 }
-
+.info-label{
+    font-size: 0.7em;
+}
 
 #bootstrap-overrides form{
     

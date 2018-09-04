@@ -5,20 +5,28 @@ Your cookbook
 
 {% block content %}
 <div class="container my-3" >
-    
-<h2>{{ cookbook.cookbook_name }}</h2>
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+<h2 class="text-white">{{ cookbook.cookbook_name }}</h2>
             
     <div class="row justify-content-around my-3">
             
-    
         <div class="col-md-5 col-sm-12 col-lg-5 content px-2 pb-2">
             <h5>Recipes by {{ cookbook.author_name}}</h5>
             <a href="{{ url_for('add_recipe') }}" class="btn btn-success"><span class="fas fa-plus"></span></a>
                {% if cookbook.recipes_owned %}
-                {% for recipe in cookbook.recipes_owned[:5] %}
-                <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
-               
+               <ul  class="list-unstyled">
+                {% for recipe in cookbook.recipes_owned %}
+                <li ><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
+                </ul>
                 {% else %}
             <span>You didn't add any recipes yet.</span>
             {% endif %}
@@ -27,9 +35,11 @@ Your cookbook
             <div class="col-md-5 col-sm-12 col-lg-5 content px-2 pb-2">
              <h5>Recipes pinned</h5>
              {% if cookbook.recipes_pinned %}
-                {% for recipe in cookbook.recipes_pinned[:5] %}
+             <ul  class="list-unstyled">
+                {% for recipe in cookbook.recipes_pinned %}
                 <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
+                </ul>
             {% else %}
             <a href="{{ url_for('get_recipes') }}" class="btn btn-warning"><span class="fas fa-search"></span></a>
             <span>You didn't pin any recipes yet.</span>

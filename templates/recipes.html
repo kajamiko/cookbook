@@ -13,7 +13,7 @@ Yummy! Search page
 <form action="{{ url_for('filter_query') }}" method="POST">
     <div class="row justify-content-around">
         <div class="col">
-            <a href="{{ url_for('get_recipes') }}"><span class="fas times-circle">Cancel search</span></a>
+            <a href="{{ url_for('cancel_search') }}"><span class="fas times-circle">Cancel search</span></a>
             <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
         </div>
         <div class="col-sm-12 col-md-2 col-lg-2">
@@ -38,7 +38,7 @@ Yummy! Search page
                     </div>
                     <div class="form-check">
                         <input class="form-control mr-sm-2" type="search" name="custom" placeholder="Custom">
-                        <label class="form-check-label" for="inlineCheckbox3">Custom - make sure you separate words with ONE space!</label>
+                        <label class="form-check-label" for="inlineCheckbox3"><span class="info-label">Custom - make sure to separate words with ONE space!</span></label>
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@ Yummy! Search page
               Cuisines
             </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     {% for cuisine in cuisines %}
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
@@ -69,7 +69,7 @@ Yummy! Search page
               Dishes
             </a>
 
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
                     {% for dish in dishes %}
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="{{ dish.name }}" value="{{ dish.name }}">
@@ -104,7 +104,7 @@ Yummy! Search page
 <div class="row justify-content-around">
     {% for recipe in recipes %}
     <div class="card mx-2 my-2 resp-card">
-        <img class="card-img-top nomore" src="{{ url_for('static', filename=recipe.image_url) }}" alt="recipe image"></img>
+        <img class="card-img-top nomore" height="250px" src="{{ url_for('static', filename=recipe.image_url) }}" alt="recipe image"></img>
         <div class="card-body">
                 <span><h5><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a></h5></span>
                 <span class="fas fa-user"> {{ recipe.author_name }}</span>
