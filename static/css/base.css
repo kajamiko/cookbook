@@ -20,10 +20,10 @@ html {
 }                   
 
 .content{
+    position: relative;
     background-color: #EFE1CE;
     border-radius: 10px;
     overflow-y: scroll;
-    max-height: 70%;
     
 }  
 
@@ -62,10 +62,23 @@ html {
 .resp-card{
     width: 18rem;
 }
+
+.content{
+    
+    max-height: 600px;
+}
  }
 
-@media (max-width: 768px) {
+@media (max-width: 991.98px) {
+
+#bootstrap-overrides nav {
+    font-size: 1.5em;
+}
+
 .resp-card{
     width: 30rem;
+}
+.content{
+    max-height: 400px;
 }
 }

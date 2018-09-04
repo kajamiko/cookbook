@@ -235,6 +235,10 @@ def show_recipe(recipe_id):
     already_got=already_got,
     owned = owned)
 
+@app.route('/edit_recipe/<recipe_id>')
+def edit_recipe(recipe_id):
+    pass
+
 @app.route('/add_recipe')
 def add_recipe():
     """
