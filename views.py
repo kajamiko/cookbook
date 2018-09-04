@@ -66,15 +66,14 @@ def get_recipes(cuisine_name="", dish_name=""):
 
 @app.route('/filter', methods=["GET", "POST"])
 def filter_query():
-    
-    query_db = {}
-    str_allergens = request.args.get('str_allergens')
-    and_list, or_dish_list, or_cuisine_list = [], [], []
     page = request.args.get(get_page_parameter(), type=int, default=1)
     cuisines=mongo.db.cuisines.find()
     dishes=mongo.db.dishes.find()
     
     if (request.method == "POST"):
+        query_db, recipes = {}, {}
+        # str_allergens = request.args.get('str_allergens')
+        and_list, or_dish_list, or_cuisine_list = [], [], []
         request_ready = request.form.to_dict()
         query = request.form["query"]
         #make sure query string will not get into allergens list
@@ -96,7 +95,7 @@ def filter_query():
             if k in temp_list:
                 or_dish_list.append({"dish_type": v})
                 del request_ready[k]
-        
+        print(or_dish_list)
         str_allergens = exclude_query(request_ready)
         # setting documents for each
         # if query or str_allergens:
@@ -105,6 +104,7 @@ def filter_query():
         if (query!=""):
             search_text = {"$text": {"$search": query }}
             and_list.append(search_text)
+            
         if (str_allergens!=""):
             search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
             and_list.append(search_allergens)
@@ -125,27 +125,39 @@ def filter_query():
             query_db = and_list[0]
             
         elif str_allergens== "" and query=="":
-                return redirect(url_for('get_recipes'))
-                
+                return redirect(url_for('get_recipes')) 
         
-        print(query_db)
+        session['query'] = query_db
+        session.modified = True
+        print("I'm a session!")
+        print(session["query"])
+        
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
-                flash("We found no results for your filters...try different ones")
+            flash("We found no results for your filters...try different ones")
+        return redirect(url_for('filter_query'))
+    else:
+        try:
+            query_db = session["query"]
+        except():
+            query_db = {}
+        recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
+        if recipes.count()==0:
+            flash("We found no results for your filters...try different ones")
         pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
                 record_name='recipes', bs_version=4)
         return render_template("recipes.html",
                             pagination = pagination,
-                            recipes=recipes,
-                            query = query,
-                            str_allergens=str_allergens,
+                            recipes = recipes,
                             cuisines=mongo.db.cuisines.find(),
                             dishes=mongo.db.dishes.find()
                             )
-    
-    
 
-
+@app.route('/cancel_search')
+def cancel_search():
+    session['query'] = {}
+    return redirect(url_for('get_recipes'))
+    
 ############ Creating cookbook/ cookbook views logic ############################################ 
 
 @app.route('/register', methods=["GET", "POST"])
@@ -368,8 +380,8 @@ def summarise(what_to_check="author_name", chart_type="'doughnut'"):
         dataset.append(count)
         datanames.append("None")
     if(what_to_check == "author_name"):
-        dataset = dataset[:4]
-        datanames = datanames[:4]
+        dataset = dataset[:6]
+        datanames = datanames[:6]
         
     return render_template("plot.html", 
     dataset = dataset,
