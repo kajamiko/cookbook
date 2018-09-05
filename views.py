@@ -190,7 +190,6 @@ def register():
                 message = _result
         else:
             message = "Some of your details were incorrect"
-              
         
     return render_template('register.html', message = message)
 
@@ -212,7 +211,7 @@ def your_cookbook(username):
     return redirect(url_for('cookbook_view', 
     cookbook_id = _cookbook["_id"]))
 
-########################## Adding/showing recipes logic ############################################################3    
+########################## Adding/showing/editing recipes logic ############################################################3    
     
 @app.route('/show_recipe/<recipe_id>')
 def show_recipe(recipe_id):
@@ -237,11 +236,26 @@ def show_recipe(recipe_id):
 
 @app.route('/edit_recipe/<recipe_id>/<owned>')
 def edit_recipe(recipe_id, owned):
+    """
+    This is a function that is getting recipe ready to edit, precisely changing my list items into strings
+    """
     # if(owned == "False"):
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     
+    ilist = _recipe['ingredients_list']
+    plist = _recipe['preparation_steps_list']
+    def gimme_ready_string(raw_list):
+        tmp = ""
+        for item in raw_list:
+            tmp += item + '\n'
+        ready = tmp[:-2]
+        return ready
+    ing_string = gimme_ready_string(ilist)
+    prep_string = gimme_ready_string(plist)
     return render_template('recipe_edit.html',
             recipe = _recipe,
+            prep_string = prep_string,
+            ing_string = ing_string,
             dishes=mongo.db.dishes.find(),
             cuisine_list=mongo.db.cuisines.find())
 
@@ -253,12 +267,57 @@ def add_recipe():
     dishes=mongo.db.dishes.find(),
     cuisine_list=mongo.db.cuisines.find())
     
+    
+@app.route('/update_recipe/<recipe_id>', methods=['POST'])
+def update_recipe(recipe_id):
+    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    request_ready = {}
+    if( request.method == "POST"):
+        # file processing, if any
+        form = request.form.to_dict()
+        if request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        # get me a full pathname and save the file
+                        file_path = "uploaded_images/" + filename
+                        request_ready.setdefault("image_url", file_path)
+                        old_image = "uploaded_images/" + recipe.to_dict()['image_url']
+                        os.remove(os.path.join(app.config['UPLOADED_FOLDER'], old_image))
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            else:
+                        flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
+            """
+            What's going on here: does the same as in insert recipe, but with condition: value has to be different than coresponding document value
+            """
+        for k, v in form.items():
+                if ( k== "ingredients_list"):
+                    request_ready.setdefault(k, v.splitlines())
+                elif ( k== "preparation_steps_list"):
+                    request_ready.setdefault(k, v.splitlines())
+                else: 
+                    request_ready[k] = v
+        if(request_ready["cuisine_name"] == ""):
+            del request_ready["cuisine_name"] 
+        print(request_ready)
+        result = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+                                    {"$set": request_ready})
+            
+        print("Updating!")
+        if result.matched_count == 1:
+            flash("Your changes have been saved")
+        else:
+            flash("There has been an error")
+        return redirect(url_for('show_recipe', recipe_id=recipe_id))
+    return redirect(url_for('show_recipe', recipe_id=recipe_id))
+    
 @app.route('/insert_recipe', methods=['POST'])
 def insert_recipe():
     recipes = mongo.db.recipes
     # creating an empty dictionary to send it later as a new document, to the database. 
     request_ready = {}
     if( request.method == "POST"):
+        print(request.form.to_dict())
         form = request.form
         if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10:
             username = session.get('username')
@@ -277,14 +336,13 @@ def insert_recipe():
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             else:
                     flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
-            
             for k, v in request.form.to_dict().items():
                 if ( k== "ingredients_list"):
-                    request_ready.setdefault(k,v.splitlines())
+                    request_ready.setdefault(k, v.splitlines())
                 elif ( k== "preparation_steps_list"):
-                    request_ready.setdefault(k,v.splitlines())
+                    request_ready.setdefault(k, v.splitlines())
                 else: 
-                    request_ready[k]=v
+                    request_ready[k] = v
             if(request_ready["cuisine_name"] == ""):
                 del request_ready["cuisine_name"] 
             # and adding some other initial data
@@ -332,8 +390,6 @@ def login():
                 message = "Incorrect password"
         else:# if not exist
             message = "User does not exist"
-        
-     
     return render_template('login.html', message=message)
     
     
@@ -347,7 +403,8 @@ def logout():
     return redirect(url_for('get_recipes'))    
     
 
-############## Pinning/removing/ upvoting recipes logic
+############## Pinning/removing/ upvoting recipes logic############
+
 @app.route('/pin_recipe/<recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):
     update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)

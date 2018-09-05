@@ -4,13 +4,13 @@ Your cookbook
 {% endblock %}
 
 {% block content %}
-
-  <form action="{{ url_for('insert_recipe') }}" method="POST" name="add_form" onsubmit="return(validate_empty());" enctype="multipart/form-data">
+<div class="container">
+  <form action="{{ url_for('update_recipe', recipe_id=recipe._id) }}" method="POST" name="add_form" onsubmit="return(validate_empty());" enctype="multipart/form-data">
 
     <div class="form-group row">
       <label for="recipe_name" class="col-sm-2 col-form-label">Recipe title:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="recipe_name" name="recipe_name" placeholder="{{ recipe.recipe_name }}" required minlength=5>
+      <div class="col-sm-12 col-md-12 col-lg-6">
+        <input type="text" class="form-control" id="recipe_name" name="recipe_name" value="{{ recipe.recipe_name }}" minlength=5>
       </div>
     </div>
     
@@ -18,11 +18,11 @@ Your cookbook
       {% if session['logged_in'] %}
  
         <label for="author_name" class="col-sm-2 col-form-label">You're logged as </label>
-        <div class="col-sm-10">
-        <input id="author_name" type="text" class="validate" placeholder="{{ session['username'] }}" disabled>
+        <div class="col-sm-12 col-md-12 col-lg-6">
+        <input id="author_name" type="text" class="validate" value="{{ session['username'] }}" disabled>
         {% else %}
         <label for="author_name" class="col-sm-2 col-form-label">Author's name:</label>
-        <div class="col-sm-10">
+        <div class="col-sm-12 col-md-6 col-lg-6">
         <input id="author_name" name="author_name" type="text" class="validate" >
         {% endif %}
       </div>
@@ -32,31 +32,31 @@ Your cookbook
     </div>
         <div class="form-group row">
       <label for="image_url" class="col-sm-2 col-form-label">Change image (upload file):</label>
-      <div class="col-sm-10">
-        <input type="file" name="file" id="file" required>
+      <div class="col-sm-12 col-md-6 col-lg-6">
+        <input type="file" name="file" id="file">
          <!--<input type="submit" value="Upload">-->
       </div>
     </div>
     
       <div class="form-group row">
       <label for="servings" class="col-sm-2 col-form-label">How many servings?:</label>
-      <div class="col-sm-10 col-md-3">
-        <input id="servings" name="servings" type="text" class="validate" placeholder="{{ recipe.servings }}" required>
+      <div class="col-sm-12 col-md-12 col-lg-6">
+        <input id="servings" name="servings" type="text" class="validate" value="{{ recipe.servings }}" >
       </div>
       </div>
       
        <div class="form-group row">
       <label for="cooking_time" class="col-sm-2 col-form-label">Cooking time:</label>
-      <div class="col-sm-10 col-md-3">
-        <input id="cooking_time" name="cooking_time" type="text" class="validate" placeholder="{{ recipe.cooking_time }}" required>
+      <div class="col-sm-12 col-md-12 col-lg-6">
+        <input id="cooking_time" name="cooking_time" type="text" class="validate" value="{{ recipe.cooking_time }}">
       </div>
           </div>
           
             <div class="form-group row">
       <label for="difficulty" class="col-sm-2 col-form-label">Difficulty:</label>
-      <div class="col-sm-10 col-md-3">
+      <div class="col-sm-12 col-md-12 col-lg-6">
       <select id="difficulty" name="difficulty">
-        <option value="" disabled selected>Choose:</option>
+        <option value="{{ recipe.difficulty }}"selected>{{ recipe.difficulty }}</option>
           <option value="Easy">Easy</option>
           <option value="Medium">Medium</option>
           <option value="Difficult">Difficult</option>
@@ -69,9 +69,9 @@ Your cookbook
     
     <div class="form-group row">
       <label for="dish_type" class="col-sm-2 col-form-label">Dish type:</label>
-      <div class="col-sm-10">
+      <div class="col-sm-12 col-md-12 col-lg-6">
         <select id="dish_type" name="dish_type">
-        <option value="" disabled selected>Choose from categories:</option>
+        <option value="{{ recipe.dish_type }}" selected>{{ recipe.dish_type }}</option>
           {% for dish in dishes  %}
           <option value="{{dish.name}}">{{dish.name}}</option>
           {% endfor %}
@@ -81,7 +81,7 @@ Your cookbook
     
     <div class="form-group row">
       <label for="cuisine_name" class="col-sm-2 col-form-label">Cuisine:</label>
-      <div class="col-sm-10">
+      <div class="col-sm-12 col-md-12 col-lg-6">
         <select id="cuisine_name" name="cuisine_name">
         <option value="" selected>Leave it if none</option>
           {% for cui in cuisine_list  %}
@@ -93,27 +93,27 @@ Your cookbook
     
     <div class="form-group row">
       <label for="ingredients_list" class="col-sm-2 col-form-label"> Ingredients:</label>
-      <div class="col-sm-10 col-md-6">
-        <textarea rows="4" name="ingredients_list"  class="form-control" id="ingredients_list" placeholder="{{ recipe.ingredients_list }}" required></textarea> 
+      <div class="col-sm-12 col-md-12 col-lg-6">
+        <textarea rows="4" name="ingredients_list"  class="form-control" id="ingredients_list" >{{ ing_string}}</textarea> 
       </div>
     </div>
    
     <div class="form-group row">
       <label for="preparation_steps_list" class="col-sm-2 col-form-label">How to prepare:</label>
-      <div class="col-sm-10 col-md-6">
-       <textarea rows="4" name="preparation_steps_list"  class="form-control" id="preparation_steps_list" placeholder="{{ recipe.preparation_steps_list }}" required></textarea>
+      <div class="col-sm-12 col-md-12 col-lg-6">
+       <textarea rows="4" name="preparation_steps_list"  class="form-control" id="preparation_steps_list"  >{{ prep_string }}</textarea>
       </div>
     </div>
 
     <div class="form-group row">
-      <div class="offset-sm-2 col-sm-10">
-          <label for="submit" class="col-sm-2 col-form-label"> Until you hit submit, nothing will happen in fact.</label>
-        <button type="submit" class="btn btn-primary" >Submit</button>
+      <div class="offset-sm-2 col-sm-12">
+          <label for="submit" class="col-sm-12  col-form-label"> Until you hit submit, nothing will happen in fact.</label>
+        <button type="submit" class="btn btn-primary" >Save</button>
       </div>
     </div>
   </form>
 </div>
-
+</div>
  <script type="text/javascript" src="../static/js/validate.js"> </script>
 
 {% endblock %}
