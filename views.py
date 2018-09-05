@@ -162,7 +162,7 @@ def filter_query():
 
 @app.route('/cancel_search')
 def cancel_search():
-    g.pop('query')
+    session.pop('query')
     return redirect(url_for('get_recipes'))
     
 ############ Creating cookbook/ cookbook views logic ############################################ 
@@ -235,9 +235,15 @@ def show_recipe(recipe_id):
     already_got=already_got,
     owned = owned)
 
-@app.route('/edit_recipe/<recipe_id>')
-def edit_recipe(recipe_id):
-    pass
+@app.route('/edit_recipe/<recipe_id>/<owned>')
+def edit_recipe(recipe_id, owned):
+    # if(owned == "False"):
+    _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    
+    return render_template('recipe_edit.html',
+            recipe = _recipe,
+            dishes=mongo.db.dishes.find(),
+            cuisine_list=mongo.db.cuisines.find())
 
 @app.route('/add_recipe')
 def add_recipe():
