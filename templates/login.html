@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block tile %}
+Yummy! Login
+{% endblock %}
+{% block content %} 
+
+
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+      <form class="form-signin" action="{{ url_for('login')}}" method="POST" name="log_form">
+          
+        <h2 class="form-signin-heading">Please log in</h2>
+        
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="text" id="inputName" class="form-control" placeholder="Name" name="author_name" required autofocus>
+        
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        
+      </form>
+      <div><strong>{{ message }}</strong></div>
+      </div>
+</div>
+    </div> <!-- /container -->
+
+</form>
+</div>
+{% endblock %} 

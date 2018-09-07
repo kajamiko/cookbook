@@ -1,0 +1,145 @@
+	<style type="text/css">
+	    
+        .input_hidden {
+            
+        margin:0;padding:0;
+        -webkit-appearance:none;
+       -moz-appearance:none;
+            appearance:none;
+        }
+  
+      .charts{
+          
+          width: 150px;
+          height: 150px;
+      }
+      
+      input[type=radio]:checked + label>img {
+        border:2px solid blue;
+}
+
+	</style>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
+
+{% extends 'base.html' %}
+{% block title %}
+Site summary
+{% endblock %}
+{% block content %}
+<div class="container" align="center">    
+    <form action="{{ url_for('summarise') }}" method="POST" >
+        
+         <h4 class="mb-3">Chart type:</h4>
+         <div class="chart">
+        <div class="form-check form-check-inline">
+            
+            <input class="input_hidden" type="radio" name="chart_type" value="'pie'" id="pie" checked>
+            <label for="pie">
+                  <img class="charts" src="../static/images/pie.jpg">
+                
+              </label>
+        </div>
+        
+        <div class="form-check form-check-inline">
+        <input class="input_hidden" type="radio" name="chart_type" id="doughnut" value="'doughnut'" >
+            <label  for="doughnut">
+                    <img class="charts" src="../static/images/doughnut.jpg">
+          </label>
+        </div>
+        </div> <!-- end of chart div  -->
+        
+        <h4 class="mb-3">What would you like to summarise:</h4>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="what_to_check"  value="cuisine_name" checked>
+            <label class="form-check-label" for="cuisines">
+           Cuisines
+          </label>
+          </div>
+              <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="what_to_check"  value="dish_type" >
+            <label class="form-check-label" for="Dishes">
+           Dish type
+          </label>
+          </div>
+          
+           <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="what_to_check"  value="author_name">
+            <label class="form-check-label" for="users">
+           Most active users
+          </label>
+          </div>
+                      <div class="form-group row">
+      <div class="offset-sm-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" >Apply!</button>
+      </div>
+    </div>
+    </form>
+        </div>
+        
+    <div width="600" height="600">
+<canvas id="myChart" ></canvas>
+</div>
+</div>
+
+ <script >
+     
+     var ctx = document.getElementById("myChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: {{ chart_type|safe }},
+    data: {
+        labels: {{ datanames|safe }},
+        datasets: [{
+            label: '# recipes',
+            data: {{ dataset|safe }},
+            backgroundColor: [
+                 'rgba(0, 50, 0, 1)',
+                'rgba(255, 222, 28, 1)',
+                 'rgba(255, 129, 28, 1)',
+                 'rgba(58, 93, 192, 1)',
+                'rgba(158, 227, 53, 1)',
+                'rgba(215, 40, 163, 0.9)',
+                'rgba(215, 40, 44, 0.9',
+                'rgba(75, 49, 182, 0.5)',
+                 'rgba(255, 99, 132, 0.5)',
+                 'rgba(54, 162, 235, 0.5)',
+                 'rgba(255, 206, 86, 0.5)',
+                 'rgba(75, 192, 192, 0.5)',
+                 'rgba(75, 255, 0, 0.5)',
+                 'rgba(255, 159, 64, 0.5)'
+                
+            ],
+            
+            borderColor: [
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(38, 14, 11, 1)',
+                'rgba(66, 26, 14, 1)',
+                'rgba(66, 26, 14, 1)',
+                'rgba(66, 26, 14, 1)',
+                'rgba(66, 26, 14, 1)',
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+	responsive: true
+       
+        
+    }
+});
+
+      </script>
+{% endblock %}
+    
+
+

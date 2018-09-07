@@ -1,0 +1,141 @@
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+ {% extends 'base.html' %}
+
+{% block title %}
+Yummy! Search page
+{% endblock %}
+
+{% block content %}  
+<div class="container">
+<form action="{{ url_for('filter_query') }}" method="POST">
+    <div class="row justify-content-around">
+        <div class="col">
+            <a href="{{ url_for('cancel_search') }}"><span class="fas times-circle">Cancel search</span></a>
+            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
+        </div>
+        <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Allergens
+            </a>
+
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt cheese">
+                        <label class="form-check-label" for="inlineCheckbox1">Diary</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nuts">
+                        <label class="form-check-label" for="inlineCheckbox2">Nuts</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="eggs" value="egg">
+                        <label class="form-check-label" for="inlineCheckbox3">Eggs</label>
+                    </div>
+                    
+                        <input class="form-control mr-sm-2" type="search" name="custom" placeholder="Custom">
+                        <label class="form-check-label" for="inlineCheckbox3"><span class="info-label">Custom - make sure to separate words with ONE space!</span></label>
+                    
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Cuisines
+            </a>
+
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                    {% for cuisine in cuisines %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
+                        <label class="form-check-label" for="inlineCheckbox1">{{ cuisine.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        
+         <div class="col-sm-12 col-md-2 col-lg-2">
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dishes
+            </a>
+
+                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                    {% for dish in dishes %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"  name="{{ dish.name }}" value="{{ dish.name }}">
+                        <label class="form-check-label" for="inlineCheckbox1">{{ dish.name }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="col-sm-2">
+
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+
+    </div>
+</form> 
+</div>
+{% if query %}
+<div class="row">You were looking for: {{ query }}</div>
+{%endif%}
+{% if str_allergens %}
+<div class="row">You excluded following: {{ str_allergens }}.</div>
+{% endif %}
+<div class="row justify-content-center">
+{{ pagination.info }}
+</div>
+<div class="row justify-content-center">
+{{ pagination.links }}
+</div>
+<div class="row justify-content-around">
+    {% for recipe in recipes %}
+    <div class="card mx-2 my-2 resp-card">
+        <img class="card-img-top nomore" height="250px" src="{{ url_for('static', filename=recipe.image_url) }}" alt="recipe image"></img>
+        <div class="card-body">
+                <span><h5><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.recipe_name }}</a></h5></span>
+                <span class="fas fa-user"> {{ recipe.author_name }}</span>
+                <span class="fas fa-clock"> {{ recipe.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ recipe.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ recipe.upvotes }}</span>
+           
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="row justify-content-center">{{ pagination.links }}</div>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+    
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+                 
+            <script type="text/javascript" src="">
+            $(document).ready(function(){
+            
+                $('.dropdown-toggle').dropdown();
+            });
+            </script> 
+           
+ {% endblock %} 

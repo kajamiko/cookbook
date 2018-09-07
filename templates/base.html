@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+   
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+         <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+         <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+      
+         <link rel="icon" type="image/png" href="/static/images/icons/apron.png">
+  <title>       
+{% block title %}
+{% endblock %}
+</title>
+    </head>
+    
+    <body id="bootstrap-overrides">
+<!--Navbar -->
+<div id="wrap">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('category_view', collection_name='cuisines') }}">Cuisines</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('category_view', collection_name='dishes') }}">Dishes</a>
+                    </li>
+                     <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('summarise') }}">Statistic</a>
+                    </li>
+                  
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('get_recipes') }}">Recipes</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if session['logged_in'] %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('register') }}"><span class="glyphicon glyphicon-user"></span> Create your own cookbook! </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                </div>
+
+        </nav>        
+        
+       
+            <div class="jumbotron jumbotron-fluid" id="jumbo">
+                <div class="container" id="text" >
+                    <h1 class="display-4">Yummy!</h1>
+                    <p class="lead">A place with a sense of taste</p>
+                </div>
+            </div>
+            
+            <div class="container">
+                {% block content %} {% endblock %}
+                
+</div>
+
+     <footer id="footer" class="navbar-expand-lg">
+      <div class="container">
+       <div class="row justify-content-around">          
+        <div class="col-6">
+        <ul class="list-unstyled">
+          <li><strong>Contact</strong></li>
+          <li>kajaths@gmail.com</li>
+          <li><a href="https://github.com/kajamiko">Github</a></li>
+        </ul>
+      </div>
+     
+      <div class="col-6 col">
+        <ul class="list-unstyled">
+          <li><strong>Other Websites</strong></li>
+          <li><a href="https://kajamiko.github.io/fabulous_mr_d/">Fabulous Mr D</a></li>
+          <li>Yummy!</li>
+          <li>Usos Modern</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+    <div  class="col-sm-12">
+        <p class="m-0 text-center ">Copyright &copy; Kajamiko 2018</p>
+        <p class="m-0 text-center"><div>Favicon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></p>
+        <div>
+      </div>
+    </div>
+      </div>
+    </div> <!-- container -->
+    </footer>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    </body>
+</html>
+
+
