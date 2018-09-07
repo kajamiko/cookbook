@@ -23,9 +23,9 @@
      <div class="col-md-9 col-lg-9 col-sm-12">
          <img  height="400" src="{{ url_for('static', filename=recipe.image_url) }}"></img>
     </div>
-     <div class="col-md-3 col-lg-3 col-sm-2">
+     <div class="col-md-3 col-lg-3 col-sm-12">
          <a class="btn  btn-success mr-2" href="{{ url_for('give_up', recipe_id=recipe._id) }}">
-             <span class="fas fa-thumbs-up"><span class="d-none d-lg-block d-lg-block">Up</span></span></a>Upvotes: {{ recipe.upvotes }}
+             <span class="fas fa-thumbs-up"><span class="d-none d-lg-block d-lg-block">Up</span></span></a>{{ recipe.upvotes }}
              <p>Created on: {{ recipe.created_on }}</p>
               {% if already_got %}
                   {% if owned %}
@@ -57,8 +57,10 @@
     
 <div class="container">
 <div class="row">
+    <div class="col-6">
     <h4>Ingredients</h4>
-      <button class="btn btn-primary" id="b1" type="button" data-toggle="collapse" data-target="#collapseIng" aria-expanded="false" aria-controls="collapseIng">
+    </div>
+      <button class="btn btn-info" id="b1" type="button" data-toggle="collapse" data-target="#collapseIng" aria-expanded="false" aria-controls="collapseIng">
     +
   </button>
     <div class="collapse navbar-collapse show-on-large" id="collapseIng">
@@ -69,9 +71,11 @@
     </ul>
     </div>
 </div>
-   <div class="row">
+   <div class="row my-2">
+       <div class="col-6">
        <h4>Preparation</h4>
-    <button class="btn btn-primary" id="b2" type="button" data-toggle="collapse" data-target="#collapsePrep" aria-expanded="false" aria-controls="collapsePrep">
+       </div>
+    <button class="btn btn-info" id="b2" type="button" data-toggle="collapse" data-target="#collapsePrep" aria-expanded="false" aria-controls="collapsePrep">
     +
   </button>
   <div class="collapse navbar-collapse show-on-large" id="collapsePrep">

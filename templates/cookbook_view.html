@@ -14,17 +14,17 @@ Your cookbook
     </div>
   {% endif %}
 {% endwith %}
-<h2 class="text-white">{{ cookbook.cookbook_name }}</h2>
+<h2 class="text-white handwritten">{{ cookbook.cookbook_name }}</h2>
             
     <div class="row justify-content-around my-3">
             
         <div class="col-md-12 col-sm-12 col-lg-5 content px-2 pb-2 my-2">
-            <h5>Recipes by {{ cookbook.author_name}}</h5>
+            <h5  class="handwritten">Recipes by {{ cookbook.author_name}}</h5>
             <a href="{{ url_for('add_recipe') }}" class="btn btn-success"><span class="fas fa-plus"></span></a>
                {% if cookbook.recipes_owned %}
                <ul  class="list-unstyled">
                 {% for recipe in cookbook.recipes_owned %}
-                <li ><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
+                <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
                 {% endfor %}
                 </ul>
                 {% else %}
@@ -33,7 +33,7 @@ Your cookbook
             </div>
             
             <div class="col-md-12 col-sm-12 col-lg-5 content px-2 pb-2 my-2">
-             <h5>Recipes pinned</h5>
+             <h5  class="handwritten">Recipes pinned</h5>
              {% if cookbook.recipes_pinned %}
              <ul  class="list-unstyled">
                 {% for recipe in cookbook.recipes_pinned %}
