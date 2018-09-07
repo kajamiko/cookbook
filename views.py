@@ -252,6 +252,7 @@ def edit_recipe(recipe_id, owned):
         return ready
     ing_string = gimme_ready_string(ilist)
     prep_string = gimme_ready_string(plist)
+    
     return render_template('recipe_edit.html',
             recipe = _recipe,
             prep_string = prep_string,

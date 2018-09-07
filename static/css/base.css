@@ -58,13 +58,17 @@ html {
   font-family: 'Roboto', sans-serif;  
 }
 
-@media (min-width: 769px) {
+@media (min-width: 992px) {
 .resp-card{
     width: 18rem;
 }
-
+#b1, #b2{
+    display: none;
+}
+.show-on-large{
+    display: block;
+}
 .content{
-    
     max-height: 600px;
 }
  }

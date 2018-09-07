@@ -9,7 +9,7 @@
   {% if messages %}
     <div>
     {% for message in messages %}
-      <li>{{ message }}</li>
+      <li style="list-unstyled">{{ message }}</li>
     {% endfor %}
     </div>
   {% endif %}
@@ -50,25 +50,37 @@
     </div>
     
 <div class="container">
-
-   
-    <ul>
+<div class="row">
+    <h4>Ingredients</h4>
+      <button class="btn btn-primary" id="b1" type="button" data-toggle="collapse" data-target="#collapseIng" aria-expanded="false" aria-controls="collapseIng">
+    +
+  </button>
+    <div class="collapse navbar-collapse show-on-large" id="collapseIng">
+    <ul class="list-unstyled">
         {% for ingredient in recipe.ingredients_list %}
         <li>{{ ingredient }}</li>
         {% endfor %}
     </ul>
-
-    <h3>Preparation:</h3>
-    <ol>
-
+    </div>
+</div>
+   <div class="row">
+       <h4>Preparation</h4>
+    <button class="btn btn-primary" id="b2" type="button" data-toggle="collapse" data-target="#collapsePrep" aria-expanded="false" aria-controls="collapsePrep">
+    +
+  </button>
+  <div class="collapse navbar-collapse show-on-large" id="collapsePrep">
+    <ol >
         {% for step in recipe.preparation_steps_list %}
         <li>{{ step }}</li>
         {% endfor %}
-
     </ol>
-
-    
+</div>
+   </div> 
     <!--row for buttons-->
 
 </div>
+<script type="text/javascript" src="">
+    
+    
+</script>
 {% endblock %} 
