@@ -1,10 +1,11 @@
 {% extends 'account_base.html' %}
 {% block title %}
-Your cookbook
+Editing
 {% endblock %}
 
 {% block content %}
 <div class="container">
+  <h4>Edit your recipe "{{ recipe.recipe_name }}"</h4>
   <form action="{{ url_for('update_recipe', recipe_id=recipe._id) }}" method="POST" name="add_form" onsubmit="return(validate_empty());" enctype="multipart/form-data">
 
     <div class="form-group row">
@@ -28,7 +29,8 @@ Your cookbook
       </div>
     </div>
     <div class="col-md-9 col-lg-9 col-sm-12">
-         <img  height="400" src="{{ url_for('static', filename=recipe.image_url) }}"></img>
+      <span>Current image: </span>
+         <img class="img-thumbnail"  height="100" src="{{ url_for('static', filename=recipe.image_url) }}"></img>
     </div>
         <div class="form-group row">
       <label for="image_url" class="col-sm-2 col-form-label">Change image (upload file):</label>
