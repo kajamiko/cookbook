@@ -53,11 +53,11 @@ def get_recipes(cuisine_name="", dish_name=""):
             
     recipes.sort('upvotes', pymongo.DESCENDING)
     
-    pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
-                record_name='recipes', bs_version=4)
+    pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE, 
+            record_name='recipes', link_size=8, css_framework='bootstrap4')
     # flash a message if there was no result
     if recipes.count()==0:
-        flash("We found no results for your filters...try different ones")
+        flash("We couldn't get any records!")
     return render_template("recipes.html",
                 pagination = pagination,
                 recipes=recipes,
@@ -152,7 +152,7 @@ def filter_query():
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
         pagination = Pagination(page=page, total=recipes.count(), per_page=PER_PAGE,
-                record_name='recipes', bs_version=4)
+                record_name='recipes',  bs_version=4)
         return render_template("recipes.html",
                             pagination = pagination,
                             recipes = recipes,
@@ -276,6 +276,9 @@ def update_recipe(recipe_id):
     if( request.method == "POST"):
         # file processing, if any
         form = request.form.to_dict()
+        """
+        What's going on here: does the same as in insert recipe, however none of the fields in form is required, and and "updated_on" field is created.
+        """
         if request.files:
             file = request.files['file']
             if file and allowed_file(file.filename):
@@ -288,9 +291,7 @@ def update_recipe(recipe_id):
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             else:
                         flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
-            """
-            What's going on here: does the same as in insert recipe, but with condition: value has to be different than coresponding document value
-            """
+        
         for k, v in form.items():
                 if ( k== "ingredients_list"):
                     request_ready.setdefault(k, v.splitlines())
@@ -299,7 +300,9 @@ def update_recipe(recipe_id):
                 else: 
                     request_ready[k] = v
         if(request_ready["cuisine_name"] == ""):
-            del request_ready["cuisine_name"] 
+            del request_ready["cuisine_name"]
+        new_date = create_nice_date()
+        request_ready.setdefault("updated_on", new_date)
         print(request_ready)
         result = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
                                     {"$set": request_ready})

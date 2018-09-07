@@ -3,6 +3,9 @@ html {
   position: relative;
   min-height: 100%;
 }
+#bootstrap-overrides .pagination a{
+   color: #008595; 
+}
 #wrap{
   font-family: 'Play', sans-serif;
 	margin-bottom: 15%;
@@ -26,7 +29,10 @@ html {
     overflow-y: scroll;
     
 }  
-
+#bootstrap-overrides .lovely-color{
+    
+    color: #008595;
+}
 #footer{
     background-color: #ADBCA5;
   	position: absolute;
@@ -44,11 +50,17 @@ html {
   background-color: #ADBCA5;
 }
                
-#bootstrap-overrides nav {
+#bootstrap-overrides .navbar {
     font-family: 'Nunito', sans-serif;
     background-color: #ADBCA5;
     border: none;
 }
+#bootstrap-overrides .pagination{
+    font-family: 'Nunito', sans-serif;
+    background-color: #ADBCA5;
+    border: none;
+}
+
 .info-label{
     font-size: 0.7em;
 }
