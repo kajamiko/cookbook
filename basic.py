@@ -5,7 +5,7 @@ import re
 from flask import session
 
 
-PER_PAGE = 6
+PER_PAGE = 9
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):

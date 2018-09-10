@@ -37,7 +37,8 @@ Your cookbook
              {% if cookbook.recipes_pinned %}
              <ul  class="list-unstyled">
                 {% for recipe in cookbook.recipes_pinned %}
-                <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
+                <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a>
+                <a class='btn btn-small' href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=False) }}"> <span class="fas fa-trash-alt"> </span></a></li>
                 {% endfor %}
                 </ul>
             {% else %}

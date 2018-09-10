@@ -70,7 +70,9 @@ html {
 .info-label{
     font-size: 0.7em;
 }
-
+.index-card{
+    width: 15rem;
+}
 #bootstrap-overrides form{
     
   font-family: 'Roboto', sans-serif;  
@@ -86,19 +88,27 @@ html {
 .show-on-large{
     display: block;
 }
+
+.nomore{
+    height: 230;
+    
+}
 .content{
     max-height: 600px;
 }
  }
 
 @media (max-width: 991.98px) {
-
+.nomore{
+    height: 300;
+    
+}
 #bootstrap-overrides nav {
     font-size: 1.5em;
 }
 
 .resp-card{
-    width: 30rem;
+    width: 28rem;
 }
 .content{
     max-height: 400px;

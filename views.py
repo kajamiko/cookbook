@@ -357,7 +357,7 @@ def insert_recipe():
             request_ready.setdefault("image_url", file_path)
             #push everything to the database and store returned data in _result
             _result = recipes.insert_one(request_ready)
-            print(request_ready)
+            # print(request_ready)
             if (username):
                 # push to owned
                 update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
@@ -418,7 +418,7 @@ def pin_recipe(recipe_id, recipe_title):
 def remove_recipe(recipe_id, owned):
     if(owned == "False"):
         update_recipes_array(ObjectId(recipe_id), remove = True)
-        return redirect(url_for('show_recipe', recipe_id=recipe_id))
+        return redirect(url_for('your_cookbook', username = session["username"]))
        
     else:
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
@@ -434,7 +434,6 @@ def give_up(recipe_id):
     
 @app.route('/summarise', methods = ['GET','POST'])
 def summarise(what_to_check="author_name", chart_type="'doughnut'"):
-    
     """
     This function queries database and keeps data in arrays that are passed to a javascript file
     """
