@@ -9,6 +9,7 @@ html {
 #wrap{
   /*font-family: 'Play', sans-serif;*/
 	margin-bottom: 15%;
+	width: 100%;
 }
 #jumbo{
                     background-image: url("../images/cooking-header.jpeg");

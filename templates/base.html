@@ -14,53 +14,51 @@
 {% endblock %}
 </title>
     </head>
-    
     <body id="bootstrap-overrides">
 <!--Navbar -->
 <div id="wrap">
         <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
+            <a class="navbar-brand  btn btn-outline-light" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
             <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('category_view', collection_name='cuisines') }}">Cuisines</a>
+                    <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-outline-primary" href="{{ url_for('category_view', collection_name='cuisines') }}">Cuisines</a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('category_view', collection_name='dishes') }}">Dishes</a>
+                    <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-small btn-outline-danger" href="{{ url_for('category_view', collection_name='dishes') }}">Dishes</a>
                     </li>
-                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('summarise') }}">Statistic</a>
+                     <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-small  btn-outline-success" href="{{ url_for('summarise') }}">Statistic</a>
                     </li>
                   
-                    <li class="nav-item active">
+                    <li class="nav-item active mx-1">
                         <a class="nav-link btn btn-outline-warning" href="{{ url_for('get_recipes') }}">Browse Recipes</a>
                     </li>
                 </ul>
                 
                 <ul class="navbar-nav">
                     {% if session['logged_in'] %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
+                    <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn btn-outline-info" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
                     </li>
                     <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                        <a class="nav-link btn btn-outline-dark" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
                     </li>
                     {% else %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('register') }}"><span class="glyphicon glyphicon-user"></span> Create your own cookbook! </a>
+                    <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-outline-info" href="{{ url_for('register') }}"><span class="glyphicon glyphicon-user"></span> Create your own cookbook! </a>
                     </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                    <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-outline-dark" href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a>
                     </li>
                     {% endif %}
                 </ul>
                 </div>
 
-        </nav>        
-        
+        </nav>       
        
             <div class="jumbotron jumbotron-fluid" id="jumbo">
                 <div class="container" id="text" >
@@ -71,7 +69,6 @@
             
             <div class="container">
                 {% block content %} {% endblock %}
-                
 </div>
 
      <footer id="footer" class="navbar-expand-lg">
