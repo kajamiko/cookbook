@@ -5,11 +5,19 @@ html {
 }
 #bootstrap-overrides .pagination a{
    color: #008595; 
+   background-color: #F4E2C8;
+}
+#bootstrap-overrides .page-item.disabled{
+   background-color: #F4E2C8; 
+    
 }
 #wrap{
   /*font-family: 'Play', sans-serif;*/
 	margin-bottom: 15%;
 	width: 100%;
+}
+#bootstrap-overrides .warm-brown{
+    color: #59344F;
 }
 #jumbo{
                     background-image: url("../images/cooking-header.jpeg");
@@ -21,6 +29,7 @@ html {
                     }
 #bootstrap-overrides {
       margin-bottom: 100px; /* Margin bottom by footer height */
+      background-color: #F4E2C8;
 }                   
 
 .content{
@@ -35,7 +44,7 @@ html {
     color: #008595;
 }
 #footer{
-    background-color: #ADBCA5;
+    background-color: #84894A;
   	position: absolute;
 	 text-align: center;
 	 width: 100%;
@@ -59,7 +68,7 @@ html {
                
 #bootstrap-overrides .navbar {
     font-family: 'Nunito', sans-serif;
-    background-color: #ADBCA5;
+    background-color: #84894A;
     border: none;
 }
 #bootstrap-overrides .pagination{

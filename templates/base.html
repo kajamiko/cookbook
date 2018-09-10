@@ -18,7 +18,7 @@
 <!--Navbar -->
 <div id="wrap">
         <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand  btn btn-outline-light" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
+            <a class="navbar-brand  btn btn-outline-light text-white" href="{{ url_for('index')}}">Yummy! Your online cookbook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -34,15 +34,19 @@
                         <a class="nav-link btn btn-small  btn-outline-success" href="{{ url_for('summarise') }}">Statistic</a>
                     </li>
                   
+                      <li class="nav-item active mx-1">
+                        <a class="nav-link btn btn-outline-secondary text-white" href="{{ url_for('get_recipes') }}">FAQ</a>
+                    </li>
+                    
                     <li class="nav-item active mx-1">
-                        <a class="nav-link btn btn-outline-warning" href="{{ url_for('get_recipes') }}">Browse Recipes</a>
+                        <a class="nav-link btn btn-outline-warning text-white" href="{{ url_for('get_recipes') }}">Browse Recipes</a>
                     </li>
                 </ul>
                 
                 <ul class="navbar-nav">
                     {% if session['logged_in'] %}
                     <li class="nav-item active mx-1">
-                        <a class="nav-link btn btn btn-outline-info" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
+                        <a class="nav-link btn btn-outline-info" href="{{ url_for('your_cookbook', username = session["username"]) }}"><span class="glyphicon glyphicon-user"></span> Your cookbook( {{ session['username'] }} )</a>
                     </li>
                     <li class="nav-item active">
                         <a class="nav-link btn btn-outline-dark" href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
