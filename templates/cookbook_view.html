@@ -24,7 +24,9 @@ Your cookbook
                {% if cookbook.recipes_owned %}
                <ul  class="list-unstyled">
                 {% for recipe in cookbook.recipes_owned %}
-                <li><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a></li>
+                <li  class="d-flex justify-content-between align-items-center"><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a>
+                 <a href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=True) }}" onclick="return(getConfirmation('{{ recipe.title }}'));"> <span class="badge badge-pill fas fa-trash-alt" style="color: red"> </span></a>
+                </li>
                 {% endfor %}
                 </ul>
                 {% else %}

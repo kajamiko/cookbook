@@ -442,7 +442,7 @@ def remove_recipe(recipe_id, owned):
     else:
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
-        flash("Recipe has been removed")
+        flash("Recipe has been removed from database!")
         return redirect(url_for('your_cookbook', username = session["username"]))
 
 @app.route('/give_up/<recipe_id>')
