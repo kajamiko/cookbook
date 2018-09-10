@@ -190,9 +190,7 @@ def register():
                 message = _result
         else:
             message = "Some of your details were incorrect"
-        
     return render_template('register.html', message = message)
-
 
 
 @app.route('/cookbook_view/<cookbook_id>')
@@ -245,6 +243,9 @@ def edit_recipe(recipe_id, owned):
     ilist = _recipe['ingredients_list']
     plist = _recipe['preparation_steps_list']
     def gimme_ready_string(raw_list):
+        """
+        Gets list of strings, to concatenate it in one large string as it was before inserting into db
+        """
         tmp = ""
         for item in raw_list:
             tmp += item + '\n'
@@ -252,7 +253,6 @@ def edit_recipe(recipe_id, owned):
         return ready
     ing_string = gimme_ready_string(ilist)
     prep_string = gimme_ready_string(plist)
-    
     return render_template('recipe_edit.html',
             recipe = _recipe,
             prep_string = prep_string,
@@ -263,6 +263,7 @@ def edit_recipe(recipe_id, owned):
 @app.route('/add_recipe')
 def add_recipe():
     """
+    Rendering form for addding a recipe. 
     """
     return render_template("add_recipe.html",
     dishes=mongo.db.dishes.find(),
@@ -271,6 +272,9 @@ def add_recipe():
     
 @app.route('/update_recipe/<recipe_id>', methods=['POST'])
 def update_recipe(recipe_id):
+    """
+    Updating recipe logic
+    """
     recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     request_ready = {}
     if( request.method == "POST"):
@@ -317,6 +321,9 @@ def update_recipe(recipe_id):
     
 @app.route('/insert_recipe', methods=['POST'])
 def insert_recipe():
+    """
+    Inserting recipe logic
+    """
     recipes = mongo.db.recipes
     # creating an empty dictionary to send it later as a new document, to the database. 
     request_ready = {}
@@ -361,13 +368,15 @@ def insert_recipe():
             if (username):
                 # push to owned
                 update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
-            
         else:
             flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
   
 @app.route('/category_view/<collection_name>')
 def category_view(collection_name):
+    """
+    View containing choice of collections either dishes or cuisines type
+    """
     if(collection_name == "cuisines"):
         return render_template('category_view.html',
         dataset = mongo.db.cuisines.find(),
@@ -381,6 +390,9 @@ def category_view(collection_name):
     
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    """
+    Function passing user details to session. User is logged in.
+    """
     message=""
     if (request.method == 'POST'):
         form = request.form
@@ -411,22 +423,33 @@ def logout():
 
 @app.route('/pin_recipe/<recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):
+    """
+    Recipe id and title is passed to update_recipe(), where it is added to 'pinned recipes' list in user's document in db
+    """
     update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
    
 @app.route('/remove_recipe/<recipe_id>/<owned>')
 def remove_recipe(recipe_id, owned):
+    """
+    This function is removing recipe details from 'pinned recipes' list if it's just pinned, or removing completely form database 
+    if user is it's owner.
+    """
     if(owned == "False"):
         update_recipes_array(ObjectId(recipe_id), remove = True)
+        flash("Recipe has been unpinned!")
         return redirect(url_for('your_cookbook', username = session["username"]))
-       
     else:
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
+        flash("Recipe has been removed")
         return redirect(url_for('your_cookbook', username = session["username"]))
 
 @app.route('/give_up/<recipe_id>')
 def give_up(recipe_id):
+    """
+    Increases 'upvotes' field in recipe's document
+    """
     _recipe = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
         {'$inc': {"upvotes" : 1}})
     return redirect(url_for("show_recipe",recipe_id=recipe_id))
