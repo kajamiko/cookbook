@@ -53,12 +53,10 @@ html {
 }
 
 .handwritten{
-    
     font-family: 'Lobster', cursive;
 }
 
 #footer a{
-  
   color: black;
 }
 #footer .container-fluid{
@@ -76,12 +74,16 @@ html {
     background-color: #ADBCA5;
     border: none;
 }
-
+#bootstrap-overrides .text-black{
+    color: black;
+    font-family: 'Nunito', sans-serif;
+}
 .info-label{
     font-size: 0.7em;
 }
-.index-card{
-    width: 15rem;
+#bootstrap-overrides .bordered-div{
+    border-radius: 5px;
+    background-color: #F3C969;
 }
 #bootstrap-overrides form{
     
@@ -92,6 +94,9 @@ html {
 .resp-card{
     width: 18rem;
 }
+.index-card{
+    width: 18rem;
+}
 #b1, #b2{
     display: none;
 }
@@ -100,7 +105,7 @@ html {
 }
 
 .nomore{
-    height: 230;
+    height: 250;
     
 }
 .content{
@@ -110,8 +115,11 @@ html {
 
 @media (max-width: 991.98px) {
 .nomore{
-    height: 300;
+    height: 250;
     
+}
+.index-card{
+    width: 25rem;
 }
 #bootstrap-overrides nav {
     font-size: 1.5em;

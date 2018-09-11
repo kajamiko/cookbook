@@ -8,93 +8,73 @@
 Yummy! Search page
 {% endblock %}
 
-{% block content %}  
-<div class="container">
-<form action="{{ url_for('filter_query') }}" method="POST">
-    <div class="row justify-content-around">
-        <div class="col">
-            <a class="warm-brown" href="{{ url_for('cancel_search') }}"><span class="fas times-circle">Cancel search</span></a>
-            <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
-        </div>
-        <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle warm-brown" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Allergens
-            </a>
-
-                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="diary" value="milk cream yogurt cheese">
-                        <label class="form-check-label" for="inlineCheckbox1">Diary</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" name="nuts" value="nuts">
-                        <label class="form-check-label" for="inlineCheckbox2">Nuts</label>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" name="eggs" value="egg">
-                        <label class="form-check-label" for="inlineCheckbox3">Eggs</label>
-                    </div>
-                    
-                        <input class="form-control mr-sm-2" type="search" name="custom" placeholder="Custom">
-                        <label class="form-check-label" for="inlineCheckbox3"><span class="info-label">Custom - make sure to separate words with ONE space!</span></label>
-                    
+{% block content %}
+<div class="row">
+    <!--column on the left to get the form right -->
+    <div class="col-sm-2 col-md-2 col-lg-2">
+        <!--formatting div-->
+        <div class="bordered-div py-1 px-1" >
+        <!--Form for querying database-->
+        <form action="{{ url_for('filter_query') }}" method="POST">
+                <div class="col-12" align="center">
+                    <a class="text-black btn btn-small btn-outline-danger my-1" href="{{ url_for('cancel_search') }}"><span class="fas times-circle">Cancel search</span></a>
+                    <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
                 </div>
-
-            </div>
-        </div>
-        
-        <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle warm-brown" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Cuisines
-            </a>
-
-                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
-                    {% for cuisine in cuisines %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
-                        <label class="form-check-label" for="inlineCheckbox1">{{ cuisine.name }}</label>
+                    <div class="nav-item dropdown" align="center">
+                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Allergens
+                    </a>
+                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                            <legend class="col-form-legend"> Exclude:</legend>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="diaryCheckbox" name="diary" value="milk cream yogurt cheese">
+                                <label class="form-check-label" for="diaryCheckbox">Diary</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="nutsCheckbox" name="nuts" value="nuts wallnuts pecans hazelnuts">
+                                <label class="form-check-label" for="nutsCheckbox">Nuts</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="eggCheckbox" name="eggs" value="egg eggs">
+                                <label class="form-check-label" for="eggCheckbox">Eggs</label>
+                            </div>
+                                <input class="form-control mr-sm-2" type="search" id="searchbox" name="custom" placeholder="Custom">
+                                <label class="form-check-label" for="searchbox"><span class="info-label">Custom - make sure to separate words with ONE space!</span></label>
+                        </div>
                     </div>
-                    {% endfor %}
-                </div>
-
-            </div>
-        </div>
-        
-         <div class="col-sm-12 col-md-2 col-lg-2">
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle warm-brown" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dishes
-            </a>
-
-                <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
-                    {% for dish in dishes %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox"  name="{{ dish.name }}" value="{{ dish.name }}">
-                        <label class="form-check-label" for="inlineCheckbox1">{{ dish.name }}</label>
+                    <div class="nav-item dropdown" align="center">
+                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Cuisines
+                    </a>
+                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                            {% for cuisine in cuisines %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cuisine_input" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
+                                <label class="form-check-label" for="cuisine_input">{{ cuisine.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endfor %}
-                </div>
-
-            </div>
+                    <div class="nav-item dropdown" align="center">
+                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Dishes
+                    </a>
+                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                            {% for dish in dishes %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="dish_input" name="{{ dish.name }}" value="{{ dish.name }}">
+                                <label class="form-check-label" for="dish_input1">{{ dish.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div align="center">
+                    <button type="submit" class="btn btn-outline-info text-black" align="center">Apply</button>
+                    </div>
+        </form> 
         </div>
-        
-        <div class="col-sm-2">
-
-            <button type="submit" class="btn btn-info">Apply</button>
-        </div>
-
-    </div>
-</form> 
-</div>
-{% if query %}
-<div class="row">You were looking for: {{ query }}</div>
-{%endif%}
-{% if str_allergens %}
-<div class="row">You excluded following: {{ str_allergens }}.</div>
-{% endif %}
+    </div> <!--end of column on the left, containing form-->
+<div class="col-sm-10 col-md-10 col-lg-10">
 <div class="row justify-content-center lovely-color">
 {{ pagination.info }}
 </div>
@@ -117,6 +97,8 @@ Yummy! Search page
         </div>
     </div>
     {% endfor %}
+</div>
+</div>
 </div>
 <div class="row justify-content-center">{{ pagination.links }}</div>
 {% with messages = get_flashed_messages() %}
