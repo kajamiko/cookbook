@@ -105,7 +105,6 @@ def filter_query():
         
         # if there are some allergens to and keyword
         if (str_allergens!="" and query!=""):
-            # search_allergens = {"ingredients_list": {'$not': re.compile(str_allergens, re.I)}}
             print(str_allergens)
             look_for_words = query + str_allergens
             search_text = {"$text": {"$search": look_for_words }}
@@ -139,15 +138,13 @@ def filter_query():
                 return redirect(url_for('get_recipes')) 
         
         session['query'] = query_db
-        print("I'm sesion")
-        print(session['query'])
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
         return redirect(url_for('filter_query'))
     else:
         
-        query_db = session['query']
+        query_db = session.get('query', {})
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
@@ -162,7 +159,10 @@ def filter_query():
 
 @app.route('/cancel_search')
 def cancel_search():
-    session.pop('query')
+    try:
+        session.pop('query')
+    except(KeyError):
+        redirect(url_for('get_recipes'))
     return redirect(url_for('get_recipes'))
     
 ############ Creating cookbook/ cookbook views logic ############################################ 
@@ -237,7 +237,6 @@ def edit_recipe(recipe_id, owned):
     """
     This is a function that is getting recipe ready to edit, precisely changing my list items into strings
     """
-    # if(owned == "False"):
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     
     ilist = _recipe['ingredients_list']
@@ -307,11 +306,9 @@ def update_recipe(recipe_id):
             del request_ready["cuisine_name"]
         new_date = create_nice_date()
         request_ready.setdefault("updated_on", new_date)
-        print(request_ready)
         result = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
                                     {"$set": request_ready})
             
-        print("Updating!")
         if result.matched_count == 1:
             flash("Your changes have been saved")
         else:
@@ -364,7 +361,6 @@ def insert_recipe():
             request_ready.setdefault("image_url", file_path)
             #push everything to the database and store returned data in _result
             _result = recipes.insert_one(request_ready)
-            # print(request_ready)
             if (username):
                 # push to owned
                 update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
@@ -480,8 +476,8 @@ def summarise(what_to_check="author_name", chart_type="'doughnut'"):
         dataset.append(count)
         datanames.append("None")
     if(what_to_check == "author_name"):
-        dataset = dataset[:6]
-        datanames = datanames[:6]
+        dataset = dataset[:8]
+        datanames = datanames[:8]
         
     return render_template("plot.html", 
     dataset = dataset,
