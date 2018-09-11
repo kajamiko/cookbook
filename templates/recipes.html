@@ -72,7 +72,23 @@ Yummy! Search page
                     <button type="submit" class="btn btn-outline-info text-black" align="center">Apply</button>
                     </div>
         </form> 
-        </div>
+        <div class="bordered-div" align="center">
+          {% if result %}
+        <ul class="list-unstyled"> Your filters:
+         {% for key, value in result.items() %}
+             {% if value|length > 0 %}
+                {% if key == 'nuts' or key =='diary' or key == 'eggs' or key == 'custom' %}
+                   <li> <span class="fas fa-minus-circle">{{ key }}</li>
+                   {% else %}
+                   <li> <span class="fas fa-search-plus"> {{ value }}</li>
+                 {% endif %}
+            {% endif %}
+         {% endfor %}
+         {% endif %}
+      </ul>
+      </div>
+        </div> 
+      
     </div> <!--end of column on the left, containing form-->
 <div class="col-sm-10 col-md-10 col-lg-10">
 <div class="row justify-content-center lovely-color">

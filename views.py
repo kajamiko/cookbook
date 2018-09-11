@@ -138,12 +138,17 @@ def filter_query():
                 return redirect(url_for('get_recipes')) 
         
         session['query'] = query_db
+        ###########################################
+        if(query_db):
+            
+            session['query_table'] = request.form
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
             flash("We found no results for your filters...try different ones")
         return redirect(url_for('filter_query'))
     else:
-        
+        ########################################
+        result = session.get('query_table', {})
         query_db = session.get('query', {})
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
@@ -154,7 +159,8 @@ def filter_query():
                             pagination = pagination,
                             recipes = recipes,
                             cuisines=mongo.db.cuisines.find(),
-                            dishes=mongo.db.dishes.find()
+                            dishes=mongo.db.dishes.find(),
+                            result = result
                             )
 
 @app.route('/cancel_search')
