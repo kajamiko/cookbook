@@ -81,6 +81,10 @@ html {
 .info-label{
     font-size: 0.7em;
 }
+#bootstrap-overrides .bordered-field{
+    border: 1px solid #008595;
+    border-radius: 5px;
+}
 #bootstrap-overrides .bordered-div{
     border-radius: 5px;
     background-color: #F3C969;
@@ -104,8 +108,8 @@ html {
     display: block;
 }
 
-.nomore{
-    height: 250;
+#bootstrap-overrides .nomore{
+    height: 230;
     
 }
 .content{

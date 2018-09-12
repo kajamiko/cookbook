@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %} 
+<div class="container">
     {% with messages = get_flashed_messages() %}
   {% if messages %}
     <div>
@@ -14,6 +15,7 @@
     </div>
   {% endif %}
 {% endwith %}
+
 <a href="{{ url_for('get_recipes') }}" class="btn btn-warning"><span class="fas fa-search"> Browse recipes </span></a>
     <!--with image and account buttons-->
     
@@ -87,8 +89,5 @@
 </div>
    </div> 
 </div>
-<script type="text/javascript" src="">
-    
-    
-</script>
+</div>
 {% endblock %} 

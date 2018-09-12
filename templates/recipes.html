@@ -1,7 +1,4 @@
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
  {% extends 'base.html' %}
 
 {% block title %}
@@ -13,18 +10,17 @@ Yummy! Search page
     <!--column on the left to get the form right -->
     <div class="col-sm-2 col-md-2 col-lg-2">
         <!--formatting div-->
-        <div class="bordered-div py-1 px-1" >
+        <div class="bordered-div py-1 px-1" align="center">
         <!--Form for querying database-->
         <form action="{{ url_for('filter_query') }}" method="POST">
-                <div class="col-12" align="center">
+               
                     <a class="text-black btn btn-small btn-outline-danger my-1" href="{{ url_for('cancel_search') }}"><span class="fas times-circle">Cancel search</span></a>
                     <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
-                </div>
-                    <div class="nav-item dropdown" align="center">
-                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Allergens
-                    </a>
-                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                    <div class="py-1" align="center">
+                        <a class="nav-link dropdown-toggle" data-toggle="collapse" data-target="#collapsePrep" aria-expanded="false" aria-controls="collapsePrep">
+                        Allergens
+                      </a>
+                      <div class="bordered-field collapse navbar-collapse pl-1" id="collapsePrep" align="left">
                             <legend class="col-form-legend"> Exclude:</legend>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="diaryCheckbox" name="diary" value="milk cream yogurt cheese">
@@ -41,25 +37,25 @@ Yummy! Search page
                                 <input class="form-control mr-sm-2" type="search" id="searchbox" name="custom" placeholder="Custom">
                                 <label class="form-check-label" for="searchbox"><span class="info-label">Custom - make sure to separate words with ONE space!</span></label>
                         </div>
-                    </div>
-                    <div class="nav-item dropdown" align="center">
-                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </div>
+                        <div class="py-1" align="center">
+                    <a class="nav-link dropdown-toggle"  data-toggle="collapse" data-target="#collapseCui" aria-expanded="false" aria-controls="collapseCui">
                       Cuisines
                     </a>
-                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                        <div class="bordered-field collapse navbar-collapse pl-1" id="collapseCui" align="left">
                             {% for cuisine in cuisines %}
-                            <div class="form-check">
+                            <div class=" form-check">
                                 <input class="form-check-input" type="checkbox" id="cuisine_input" name="{{ cuisine.name }}" value="{{ cuisine.name }}">
                                 <label class="form-check-label" for="cuisine_input">{{ cuisine.name }}</label>
                             </div>
                             {% endfor %}
                         </div>
-                    </div>
-                    <div class="nav-item dropdown" align="center">
-                        <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </div>
+                    <div class="py-1" align="center">
+                     <a class="nav-link dropdown-toggle"  data-toggle="collapse" data-target="#collapseDish" aria-expanded="false" aria-controls="collapseDish">
                       Dishes
                     </a>
-                        <div class="dropdown-menu px-1" aria-labelledby="navbarDropdown">
+                        <div class="bordered-field collapse navbar-collapse pl-1" id="collapseDish" align="left">
                             {% for dish in dishes %}
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dish_input" name="{{ dish.name }}" value="{{ dish.name }}">
@@ -68,28 +64,41 @@ Yummy! Search page
                             {% endfor %}
                         </div>
                     </div>
-                    <div align="center">
+                    <div class="py-1" align="center">
                     <button type="submit" class="btn btn-outline-info text-black" align="center">Apply</button>
                     </div>
         </form> 
+        </div>
         <div class="bordered-div" align="center">
           {% if result %}
-        <ul class="list-unstyled"> Your filters:
+         <table>
+         Your filters:
          {% for key, value in result.items() %}
              {% if value|length > 0 %}
-                {% if key == 'nuts' or key =='diary' or key == 'eggs' or key == 'custom' %}
-                   <li> <span class="fas fa-minus-circle">{{ key }}</li>
+                {% if key == 'nuts' or key =='diary' or key == 'eggs' %}
+                   <tr>
+                       <td><span class="fas fa-minus-circle">{{ key }}</td>
+                       
+                   {% elif key == 'custom' %}
+                   <td> <span class="fas fa-minus-circle">{{ value }}<td>
+                
+                  </tr>
                    {% else %}
-                   <li> <span class="fas fa-search-plus"> {{ value }}</li>
+                   
+                   <tr><td> <span class="fas fa-search-plus"> {{ value }}</td></tr>
+                   
                  {% endif %}
             {% endif %}
          {% endfor %}
+          </table>
          {% endif %}
-      </ul>
-      </div>
-        </div> 
+         
       
-    </div> <!--end of column on the left, containing form-->
+         
+      </div>
+      
+        </div><!--end of column on the left, containing form-->
+
 <div class="col-sm-10 col-md-10 col-lg-10">
 <div class="row justify-content-center lovely-color">
 {{ pagination.info }}
@@ -103,7 +112,7 @@ Yummy! Search page
         
         <div class="card-body">
                 <span><h5><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">
-                    <img class="card-img-top nomore" height="250px" src="{{ url_for('static', filename=recipe.image_url) }}" alt="recipe image"></img>
+                    <img class="card-img-top nomore" src="{{ url_for('static', filename=recipe.image_url) }}" alt="recipe image"></img>
                     {{ recipe.recipe_name }}</a></h5></span>
                 <span class="fas fa-user"> {{ recipe.author_name }}</span>
                 <span class="fas fa-clock"> {{ recipe.cooking_time }}</span>
@@ -127,15 +136,4 @@ Yummy! Search page
   {% endif %}
 {% endwith %}
     
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-                 
-            <script type="text/javascript" src="">
-            $(document).ready(function(){
-            
-                $('.dropdown-toggle').dropdown();
-            });
-            </script> 
-           
  {% endblock %} 

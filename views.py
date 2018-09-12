@@ -12,7 +12,6 @@ from flask import Blueprint
 from basic import allowed_file, PER_PAGE, check_if_exists, get_record, create_cookbook, exclude_query, update_recipes_array, create_nice_date
 from flask_paginate import Pagination, get_page_parameter
 
- 
    
 @app.route('/', methods=["GET","POST"])
 def index():
@@ -99,9 +98,6 @@ def filter_query():
         print(or_dish_list)
         str_allergens = exclude_query(request_ready)
         print("The processed string is {0}".format(str_allergens))
-        # setting documents for each
-        # if query or str_allergens:
-        #     return redirect(url_for('filter_query', query=query, str_allergens=str_allergens, dish_name=dish_name, cuisine_name=cuisine_name))
         
         # if there are some allergens to and keyword
         if (str_allergens!="" and query!=""):
@@ -140,7 +136,6 @@ def filter_query():
         session['query'] = query_db
         ###########################################
         if(query_db):
-            
             session['query_table'] = request.form
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
@@ -148,7 +143,7 @@ def filter_query():
         return redirect(url_for('filter_query'))
     else:
         ########################################
-        result = session.get('query_table', {})
+        result= session.get('query_table', {})
         query_db = session.get('query', {})
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
         if recipes.count()==0:
@@ -489,3 +484,8 @@ def summarise(what_to_check="author_name", chart_type="'doughnut'"):
     dataset = dataset,
     datanames = datanames,
     chart_type=chart_type)
+
+@app.route('/frequently_asked_questions')
+def get_faq():
+    
+    return render_template('faq.html')
