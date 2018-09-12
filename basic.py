@@ -9,6 +9,10 @@ PER_PAGE = 12
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):
+    """
+    Checks if file has correct extension.
+    COde copied form Flask documentation http://flask.pocoo.org/docs/0.12/patterns/fileuploads/
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -18,8 +22,6 @@ def check_if_exists(field, value):
     else: 
         return False
 
-def get_record(collection, query={}):
-    return collection.find_one(query)
 
 def create_cookbook(cookbook_name='', password='', username='', description=''):
     """
@@ -42,10 +44,12 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
 
 def exclude_query(request_ready):
     """
-    passes strings into find query, converts to regexp
+    Gets a dictionary as a parameter, converts into mongo search acceptable string
+    ' -word1 -word2 -word3'. There is additional space at the begininig so it's ready
+    to concatenate with query
     """
     str_allergens, allergens= "", ""
-    for k,v in request_ready.items():
+    for v in request_ready.values():
         if(v):
             temp = allergens
             proc = v.replace(" ", " -")
@@ -55,6 +59,12 @@ def exclude_query(request_ready):
 
 
 def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinned', remove = False):
+    """
+    Function processing adding and removing recipe details from lists inside cookbook document. 
+    Recipe_id, recipe_title - recipe's details
+    type_of_array = default is pinned, but can get recipes_owned as well 
+    remove - if true, it will remove recipe with details provided, if false, it will push it into list
+    """
     if(remove == False):
         return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
                 { '$push': 
