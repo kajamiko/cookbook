@@ -9,7 +9,7 @@ import os
 import re
 from math import ceil
 from flask import Blueprint
-from basic import allowed_file, PER_PAGE, check_if_exists, get_record, create_cookbook, exclude_query, update_recipes_array, create_nice_date
+from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date
 from flask_paginate import Pagination, get_page_parameter
 
    
@@ -33,10 +33,8 @@ def index():
 @app.route('/dishes/<dish_name>')
 def get_recipes(cuisine_name="", dish_name=""):
     """
-    This function:
-    1. Takes optional arguments: 'dishes' or 'cuisines' to filter recipes by categories.
-    2. Returns all recipes or filtered recipes, as it processes form allowing to filter allergens and/or search by keyword.
-    3. Supports results pagination.
+    This function takes optional arguments: 'dishes' or 'cuisines' to filter recipes by categories, and paginates
+    them.
     """
     
     page = request.args.get(get_page_parameter(), type=int, default=1)
@@ -66,6 +64,13 @@ def get_recipes(cuisine_name="", dish_name=""):
 
 @app.route('/filter', methods=["GET", "POST"])
 def filter_query():
+    """
+    Function is processing user's query.
+    In POST request, it is processing form data into mongo db acceptable document, sends it to session to make
+    pagination possible.
+    In GET request, it gets ready query from session and sends to db. Then it either displays paginated results,
+    or flashes a no result message.
+    """
     page = request.args.get(get_page_parameter(), type=int, default=1)
     cuisines=mongo.db.cuisines.find()
     dishes=mongo.db.dishes.find()
@@ -134,7 +139,6 @@ def filter_query():
                 return redirect(url_for('get_recipes')) 
         
         session['query'] = query_db
-        ###########################################
         if(query_db):
             session['query_table'] = request.form
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
@@ -142,7 +146,6 @@ def filter_query():
             flash("We found no results for your filters...try different ones")
         return redirect(url_for('filter_query'))
     else:
-        ########################################
         result= session.get('query_table', {})
         query_db = session.get('query', {})
         recipes = mongo.db.recipes.find(query_db).skip(PER_PAGE * (page-1)).limit(PER_PAGE)
@@ -160,6 +163,9 @@ def filter_query():
 
 @app.route('/cancel_search')
 def cancel_search():
+    """
+    Clears query value in session just in case of session expiring
+    """
     try:
         session.pop('query')
     except(KeyError):
@@ -196,8 +202,10 @@ def register():
 
 @app.route('/cookbook_view/<cookbook_id>')
 def cookbook_view(cookbook_id):
+    """
+    View is rendering cookbook details
+    """
     _cookbook = mongo.db.cookbooks.find_one({"_id": ObjectId(cookbook_id)})
-    
     return render_template('cookbook_view.html',
     cookbook=_cookbook)
   
@@ -236,7 +244,8 @@ def show_recipe(recipe_id):
 @app.route('/edit_recipe/<recipe_id>/<owned>')
 def edit_recipe(recipe_id, owned):
     """
-    This is a function that is getting recipe ready to edit, precisely changing my list items into strings
+    Function that is getting recipe ready to edit. Finds recipe and passes it to template where it's 
+    loaded into form, ready for the user to edit
     """
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     
@@ -429,8 +438,8 @@ def pin_recipe(recipe_id, recipe_title):
 @app.route('/remove_recipe/<recipe_id>/<owned>')
 def remove_recipe(recipe_id, owned):
     """
-    This function is removing recipe details from 'pinned recipes' list if it's just pinned, or removing completely form database 
-    if user is it's owner.
+    Function is passing correct arguments into update_recipes_array() function. It will remove from 'pinned recipes' list if it's just pinned,
+    or remove completely form database and recipes_owned list if user is it's owner.
     """
     if(owned == "False"):
         update_recipes_array(ObjectId(recipe_id), remove = True)
