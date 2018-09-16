@@ -210,13 +210,16 @@ def cookbook_view(cookbook_id):
     cookbook=_cookbook)
   
 @app.route('/your_cookbook/<username>')
-def your_cookbook(username):
+def your_cookbook(username=""):
     """
     Redirects to a cookbook view
     """
-    _cookbook = mongo.db.cookbooks.find_one({"author_name": session.get('username')})
+    if(username):
+        _cookbook = mongo.db.cookbooks.find_one({"author_name": username})
+    else:
+        _cookbook = mongo.db.cookbooks.find_one({"author_name": session['username']})
     return redirect(url_for('cookbook_view', 
-    cookbook_id = _cookbook["_id"]))
+    cookbook_id = ObjectId(_cookbook["_id"])))
 
 ########################## Adding/showing/editing recipes logic ############################################################3    
     
@@ -420,8 +423,9 @@ def logout():
     """
     Logging out logic
     """
-    session.clear()
-    print (session.get('username'))
+    # session.clear()
+    session['logged_in'] = False
+    session['username'] = ""
     return redirect(url_for('get_recipes'))    
     
 
@@ -453,7 +457,7 @@ def remove_recipe(recipe_id, owned):
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
         flash("Recipe has been removed from database!")
-        return redirect(url_for('your_cookbook', username = session["username"]))
+        return redirect(url_for('your_cookbook'))
 
 
     

@@ -20,7 +20,13 @@
     <!--with image and account buttons-->
     
  <div class="row"><h3> {{ recipe.recipe_name }} </h3></div>
-   <div class="row"><span class="fas fa-user"><span class="d-none d-lg-block d-lg-block">Author:</span> {{ recipe.author_name }}</span></div>
+   <div class="row"><span class="fas fa-user"><span class="d-none d-lg-block d-lg-block">Author:
+   {% if session['logged_in'] %}
+   <a href="{{ url_for('your_cookbook', username=recipe.author_name) }}"></span>{{ recipe.author_name }}</span></a>
+   {% else %}
+   </span>{{ recipe.author_name }}</span>
+   {% endif %}
+   </div>
  <div class="row"> 
      <div class="col-md-9 col-lg-9 col-sm-12">
          <img  height="300" src="{{ url_for('static', filename=recipe.image_url) }}"></img>

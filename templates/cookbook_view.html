@@ -20,18 +20,22 @@ Your cookbook
             
         <div class="col-md-12 col-sm-12 col-lg-5 content px-2 pb-2 my-2">
             <h5  class="handwritten">Recipes by {{ cookbook.author_name}}</h5>
-            <a href="{{ url_for('add_recipe') }}" class="btn btn-success"><span class="fas fa-plus"></span></a>
-               {% if cookbook.recipes_owned %}
-               <ul  class="list-unstyled">
-                {% for recipe in cookbook.recipes_owned %}
-                <li  class="d-flex justify-content-between align-items-center"><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a>
-                 <a href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=True) }}" onclick="return(getConfirmation('{{ recipe.title }}'));"> <span class="badge badge-pill fas fa-trash-alt" style="color: red"> </span></a>
-                </li>
-                {% endfor %}
+                {% if session['username'] == cookbook.author_name %}
+                <a href="{{ url_for('add_recipe') }}" class="btn btn-success"><span class="fas fa-plus"></span></a>
+                {% endif %}
+                {% if cookbook.recipes_owned %}
+                <ul  class="list-unstyled">
+                    {% for recipe in cookbook.recipes_owned %}
+                    <li  class="d-flex justify-content-between align-items-center"><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a>
+                        {% if session['username'] == cookbook.author_name %}
+                         <a href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=True) }}" onclick="return(getConfirmation('{{ recipe.title }}'));"> <span class="badge badge-pill fas fa-trash-alt" style="color: red"> </span></a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
                 </ul>
                 {% else %}
-            <span>You didn't add any recipes yet.</span>
-            {% endif %}
+                <span>You didn't add any recipes yet.</span>
+                {% endif %}
             </div>
             
             <div class="col-md-12 col-sm-12 col-lg-5 content px-2 pb-2 my-2">
@@ -40,7 +44,11 @@ Your cookbook
              <ul  class="list-unstyled">
                 {% for recipe in cookbook.recipes_pinned %}
                 <li class="d-flex justify-content-between align-items-center"><a class="text-info" href="{{ url_for('show_recipe', recipe_id=recipe._id) }}">{{ recipe.title }}</a>
-                <a href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=False) }}" onclick="return(getConfirmation('{{ recipe.title }}'));"> <span class="badge badge-pill fas fa-trash-alt" style="color: #008595"> </span></a></li>
+                    {% if session['username'] == cookbook.author_name %}
+                    <a href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=False) }}" onclick="return(getConfirmation('{{ recipe.title }}'));"> <span class="badge badge-pill fas fa-trash-alt" style="color: #008595"> </span>
+                    </a>
+                    {% endif %}
+                </li>
                 {% endfor %}
                 </ul>
             {% else %}

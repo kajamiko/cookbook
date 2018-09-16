@@ -115,6 +115,10 @@ html {
 .content{
     max-height: 600px;
 }
+
+.content-faq{
+    max-height: 600px;
+}
  }
 
 @media (max-width: 991.98px) {
@@ -134,5 +138,8 @@ html {
 }
 .content{
     max-height: 400px;
+}
+.content-faq{
+    max-height: none;
 }
 }
