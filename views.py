@@ -432,7 +432,9 @@ def pin_recipe(recipe_id, recipe_title):
     """
     Recipe id and title is passed to update_recipe(), where it is added to 'pinned recipes' list in user's document in db
     """
-    update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)
+    if(update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)):
+        mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+        {'$inc': {"upvotes" : 1}})
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
    
 @app.route('/remove_recipe/<recipe_id>/<owned>')
@@ -442,23 +444,17 @@ def remove_recipe(recipe_id, owned):
     or remove completely form database and recipes_owned list if user is it's owner.
     """
     if(owned == "False"):
-        update_recipes_array(ObjectId(recipe_id), remove = True)
-        flash("Recipe has been unpinned!")
-        return redirect(url_for('your_cookbook', username = session["username"]))
+        if(update_recipes_array(ObjectId(recipe_id), remove = True)):
+            mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+            {'$inc': {"upvotes" : -1}})
+            flash("Recipe has been unpinned!")
+        return redirect(url_for('show_recipe', recipe_id=recipe_id))
     else:
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
         flash("Recipe has been removed from database!")
         return redirect(url_for('your_cookbook', username = session["username"]))
 
-@app.route('/give_up/<recipe_id>')
-def give_up(recipe_id):
-    """
-    Increases 'upvotes' field in recipe's document
-    """
-    _recipe = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
-        {'$inc': {"upvotes" : 1}})
-    return redirect(url_for("show_recipe",recipe_id=recipe_id))
 
     
 @app.route('/summarise', methods = ['GET','POST'])

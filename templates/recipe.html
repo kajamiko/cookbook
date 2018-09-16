@@ -26,8 +26,8 @@
          <img  height="300" src="{{ url_for('static', filename=recipe.image_url) }}"></img>
     </div>
      <div class="col-md-3 col-lg-3 col-sm-12">
-         <a class="btn  btn-success mr-2" href="{{ url_for('give_up', recipe_id=recipe._id) }}">
-             <span class="fas fa-thumbs-up"><span class="d-none d-lg-block d-lg-block">Up</span></span></a>{{ recipe.upvotes }}
+         <a class="btn  btn-success mr-2" >
+             <span class="fas fa-thumbs-up"></span> <span>{{ recipe.upvotes }}</span></a>
              <p>Created on: {{ recipe.created_on }}</p>
               {% if already_got %}
                   {% if owned %}
