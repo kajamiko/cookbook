@@ -15,7 +15,6 @@ class TestCookbook(unittest.TestCase):
         self.app.application.config['SECRET_KEY'] = 'az#5t];a5g,dfnmk34;322bum'
         self.app.application.config['SESSION_COOKIE_DOMAIN'] = None
         self.app.application.config["SERVER_NAME"] = "{0} {1}".format(os.environ.get('PORT'), os.environ.get('IP'))
-        # self.app.application.config['SERVER_NAME'] = 'localhost'
         
         
     def test_create_cookbook(self):
