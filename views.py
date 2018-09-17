@@ -231,6 +231,9 @@ def show_recipe(recipe_id):
     already_got = False
     owned = False
     _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    if _recipe:
+        mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+        {'$inc': {"views" : 1}})
     if("logged_in" in session):
         if (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_pinned._id" : ObjectId(recipe_id)})):
              already_got = True

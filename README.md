@@ -22,12 +22,45 @@ For some/all of your features, you may choose to reference the specific project 
 In addition, you may also use this section to discuss plans for additional features to be implemented in the future:
 
 Features Left to Implement
-Another feature idea
+
+I do have many ideas of how to improve my application. Here are some of them:
+
+1. First and most important is to make accounts secure and provide such features as retrieving forgotten passwords, disabling accounts, also connecting and registering cookbook with facebook accounts.
+3. Separating different parts of user's filter, so that user will be able to discard any filters without using query form again.
+4. Re-structuring database by adding sub-categories.
+
+
 Technologies Used
 In this section, you should mention all of the languages, frameworks, libraries, and any other tools that you have used to construct this project. For each, provide its name, a link to its official site and a short sentence of why it was used.
 
-JQuery
-The project uses JQuery to simplify DOM manipulation.
+- HTML and CSS
+    - project uses **HTML** and **CSS** to build webpages.
+-  [Bootstrap](https://getbootstrap.com/)
+    -project uses **Bootstrap** for webpages' layout.
+- [Javascript](https://www.javascript.com/) 
+    -The project uses **Javascript** to enhance pages functionality.
+- [JQuery](https://jquery.com)
+    - The project is using Bootstrap's **JQuery** for responsiveness.
+- [Python](https://www.python.org/)
+    - The project's back-end was written in **Python** .
+- [Flask](http://flask.pocoo.org/)
+    - project was built **flask** microframework due to its simplicity.
+    - project uses **flask.session** for session functionality. 
+- [MongoDB](https://www.mongodb.com/)
+    - The project uses **MongoDB** database, mongod version 3.6.6..
+- [Mlab](https://mlab.com/)
+    - The project's database is hosted on **Mlab.com**.
+- [Pymongo](https://pypi.org/project/pymongo/)
+    - The project uses **Pymongo** as driver to connect to the database.
+- [Flask-Pymongo](https://pypi.org/project/Flask-PyMongo/)
+    - The project uses  **Flask-Pymongo** as a support for some tasks.
+- [Flask-paginate](https://pythonhosted.org/Flask-paginate/)
+    - The project uses **Flask-paginate** for pagination.
+
+## Database structure
+
+As the project is using **mongodb**, I have just made a simple file explaining documents' structure. Link
+
 Testing
 In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your user stories from the UX section and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
 
@@ -61,6 +94,9 @@ Content
 The text for section Y was copied from the Wikipedia article Z
 Media
 The photos used in this site were obtained from ...
-Acknowledgements
-I received inspiration for this project from X
 
+## Acknowledgements
+
+Inspirations for this project was [Allrecipes](http://allrecipes.co.uk/)
+- how they require users to upload for example, list of ingredients for a recipe. Of course I have no idea how it is implemented, but just watching gave me some hints.
+- there is no requirements for image size, and also images displayed in search results are not statically sized, and I used a similar solution in my project.
