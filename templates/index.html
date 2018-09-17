@@ -8,51 +8,67 @@ Yummy! Homepage
             <div class="row justify-content-around">
             <!--Breakfast-->
             <div class="card mx-1 my-2 index-card">
-                 <h5 class="card-header">Breakfast</h5>
+                 <h5 class="card-header light-green">Breakfast</h5>
             {% for break in breakfast %}
                      <div class="card-body">
                     <span><h5><a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=break._id) }}">
                     <img  class="card-img-top nomore"  src="{{ url_for('static', filename=break.image_url) }}" alt="recipe image"></img>
                      {{ break.recipe_name }}
                     </a></h5></span>
+                     <span class="fas fa-user"> {{ break.author_name }}</span>
+                <span class="fas fa-clock"> {{ break.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ break.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ break.upvotes }}</span>
                 </div>
                  {% endfor %}
             </div>
             <!--Lunch-->
             <div class="card mx-1 my-2 index-card">
                 
-                    <h5 class="card-header">Main Course</h5>
+                    <h5 class="card-header light-purple text-white">Main Course</h5>
                 {% for m in main %}
                      <div class="card-body">
                     <span><h5><a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=m._id) }}">
                      <img  class="card-img-top  nomore"  src="{{ url_for('static', filename=m.image_url) }}" alt="recipe image"></img>
                      {{ m.recipe_name }}
                     </a></h5></span>
+                     <span class="fas fa-user"> {{ m.author_name }}</span>
+                <span class="fas fa-clock"> {{ m.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ m.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ m.upvotes }}</span>
                 </div>
                  {% endfor %}
             </div>
             <!--Dessert-->
             <div class="card mx-1 my-2 index-card">
-                    <h5 class="card-header">Dessert</h5>
+                    <h5 class="card-header warm-pink text-white">Dessert</h5>
                 {% for des in dessert %}
                      <div class="card-body">
                     <span><h5><a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=des._id) }}">
                      <img  class="card-img-top  nomore"  src="{{ url_for('static', filename=des.image_url) }}" alt="recipe image"></img>
                      {{ des.recipe_name }}
                     </a></h5></span>
+                     <span class="fas fa-user"> {{ des.author_name }}</span>
+                <span class="fas fa-clock"> {{ des.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ des.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ des.upvotes }}</span>
                 </div>
                  {% endfor %}
             </div>
            
            <!--Dinner -->
             <div class="card mx-1 my-2 index-card">
-                    <h5 class="card-header">Dinner</h5>
+                    <h5 class="card-header warm-brown text-white">Dinner</h5>
                     {% for din in dinner %}
                      <div class="card-body">
                     <span><h5><a class="card-text text-info" href="{{ url_for('show_recipe', recipe_id=din._id) }}">
                       <img  class="card-img-top  nomore"  src="{{ url_for('static', filename=din.image_url) }}" alt="recipe image"></img>
                      {{ din.recipe_name }}
                     </a></h5></span>
+                     <span class="fas fa-user"> {{ din.author_name }}</span>
+                <span class="fas fa-clock"> {{ din.cooking_time }}</span>
+                <span class="fas fa-magic"> {{ din.difficulty }}</span>
+                <span class="fas fa-thumbs-up"> {{ din.upvotes }}</span>
                     </div>
                     {% endfor %}
             </div>

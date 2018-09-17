@@ -3,6 +3,7 @@ html {
   position: relative;
   min-height: 100%;
 }
+/*styles pagination*/
 #bootstrap-overrides .pagination a{
    color: #008595; 
    background-color: #F4E2C8;
@@ -16,9 +17,20 @@ html {
 	margin-bottom: 15%;
 	width: 100%;
 }
-#bootstrap-overrides .warm-brown{
-    color: #59344F;
+#bootstrap-overrides .warm-pink{
+    background-color: #DC136C;
 }
+#bootstrap-overrides .light-purple{
+    background-color: #574D68;
+}
+#bootstrap-overrides .light-green{
+    background-color: #F9EA9A;
+}
+#bootstrap-overrides .warm-brown{
+    background-color: #7C3626;
+}
+
+
 #jumbo{
                     background-image: url("../images/cooking-header.jpeg");
                     background-repeat: no-repeat;
@@ -95,6 +107,7 @@ html {
 }
 
 @media (min-width: 992px) {
+
 .resp-card{
     width: 18rem;
 }
@@ -109,7 +122,7 @@ html {
 }
 
 #bootstrap-overrides .nomore{
-    height: 230;
+    height: 230px;
     
 }
 .content{
@@ -122,8 +135,8 @@ html {
  }
 
 @media (max-width: 991.98px) {
-.nomore{
-    height: 250;
+#bootstrap-overrides .nomore{
+    height: 250px;
     
 }
 .index-card{

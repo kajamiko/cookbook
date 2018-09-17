@@ -7,14 +7,14 @@
 {% block content %} 
 <div class="container">
     {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div>
-    {% for message in messages %}
-      <li style="list-unstyled">{{ message }}</li>
-    {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+      {% if messages %}
+        <div>
+        {% for message in messages %}
+          <li style="list-unstyled">{{ message }}</li>
+        {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
 <a href="{{ url_for('get_recipes') }}" class="btn btn-warning"><span class="fas fa-search"> Browse recipes </span></a>
     <!--with image and account buttons-->
@@ -22,7 +22,7 @@
  <div class="row"><h3> {{ recipe.recipe_name }} </h3></div>
    <div class="row"><span class="fas fa-user"><span class="d-none d-lg-block d-lg-block">Author:
    {% if session['logged_in'] %}
-   <a href="{{ url_for('your_cookbook', username=recipe.author_name) }}"></span>{{ recipe.author_name }}</span></a>
+   <a style="color: black" href="{{ url_for('your_cookbook', username=recipe.author_name) }}"></span>{{ recipe.author_name }}</span></a>
    {% else %}
    </span>{{ recipe.author_name }}</span>
    {% endif %}
@@ -38,23 +38,23 @@
              <p>Created on: {{ recipe.created_on }}</p>
               {% if already_got %}
                   {% if owned %}
-             <p>Last update: {{ recipe.updated_on }}</p>
+                    <p>Last update: {{ recipe.updated_on }}</p>
                   {% endif %}
               {% endif %}
-         {% if session['logged_in'] %}
-    {% if already_got %}
-    <h5><span class="badge badge-success">In your cookbook</span></h5>
-        {% if owned %}
-    <a class="btn btn-warning" href="{{ url_for('edit_recipe', recipe_id=recipe._id, owned=owned) }}">Edit</a>
-    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
-        {% else %}
-    <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Unpin</a>
-        {% endif %}
-        {% elif not already_got %}
-    <a class="btn btn-warning" href="{{ url_for('pin_recipe', recipe_id = recipe._id, recipe_title = recipe.recipe_name) }}">
-        <span class="fas fa-map-pin"><span class="d-none d-lg-block d-lg-block">Pin to your cookbook</span></a>
-        {% endif %}
-    {% endif %}
+             {% if session['logged_in'] %}
+                {% if already_got %}
+                <h5><span class="badge badge-success">In your cookbook</span></h5>
+                    {% if owned %}
+                <a class="btn btn-warning" href="{{ url_for('edit_recipe', recipe_id=recipe._id, owned=owned) }}">Edit</a>
+                <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
+                    {% else %}
+                <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Unpin</a>
+                    {% endif %}
+                    {% elif not already_got %}
+                <a class="btn btn-warning" href="{{ url_for('pin_recipe', recipe_id = recipe._id, recipe_title = recipe.recipe_name) }}">
+                    <span class="fas fa-map-pin"><span class="d-none d-lg-block d-lg-block">Pin to your cookbook</span></a>
+                {% endif %}
+            {% endif %}
     </div>
 </div>
     

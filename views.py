@@ -36,7 +36,6 @@ def get_recipes(cuisine_name="", dish_name=""):
     This function takes optional arguments: 'dishes' or 'cuisines' to filter recipes by categories, and paginates
     them.
     """
-    
     page = request.args.get(get_page_parameter(), type=int, default=1)
     
     if(cuisine_name):
@@ -278,7 +277,7 @@ def edit_recipe(recipe_id, owned):
 @app.route('/add_recipe')
 def add_recipe():
     """
-    Rendering form for addding a recipe. 
+    Rendering form for adding a recipe. 
     """
     return render_template("add_recipe.html",
     dishes=mongo.db.dishes.find(),

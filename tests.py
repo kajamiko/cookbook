@@ -50,10 +50,16 @@ class TestCookbook(unittest.TestCase):
     
     def test_homepage(self):
        with app.app_context():
+            resp = self.app.get('/get_recipes')
+            self.assertEqual(resp._status_code, 200)
+            self.assertIn( 'Menu just for you', str(resp.data))
+
+    def test_get_recipes(self):
+       with app.app_context():
             resp = self.app.get('/')
             self.assertEqual(resp._status_code, 200)
             self.assertIn( 'Menu just for you', str(resp.data))
-        
+
     def test_rendering_add_page(self):
         with app.app_context():
             response = self.app.get('/add_recipe')
@@ -68,6 +74,7 @@ class TestCookbook(unittest.TestCase):
                                         password="password")):
             resp = app.dispatch_request()
             self.assertIn('Logout', str(resp))
+        # Checking if works and displays expected message
         with app.test_request_context('/login', method='POST', data=dict(author_name="Kittykat",
                                         password="password")):
             resp = app.dispatch_request()
