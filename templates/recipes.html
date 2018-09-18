@@ -6,6 +6,15 @@ Yummy! Search page
 {% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 <div class="row">
     <!--column on the left to get the form right -->
     <div class="col-sm-2 col-md-2 col-lg-2">
@@ -126,14 +135,6 @@ Yummy! Search page
 </div>
 </div>
 <div class="row justify-content-center">{{ pagination.links }}</div>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+
     
  {% endblock %} 

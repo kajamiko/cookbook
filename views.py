@@ -279,9 +279,13 @@ def add_recipe():
     """
     Rendering form for adding a recipe. 
     """
-    return render_template("add_recipe.html",
-    dishes=mongo.db.dishes.find(),
-    cuisine_list=mongo.db.cuisines.find())
+    if('logged_in' in session and session['logged_in']==True):
+        return render_template("add_recipe.html",
+        dishes=mongo.db.dishes.find(),
+        cuisine_list=mongo.db.cuisines.find())
+    else:
+        flash('You have to be logged in!')
+        return redirect(url_for('get_recipes'))
     
     
 @app.route('/update_recipe/<recipe_id>', methods=['POST'])

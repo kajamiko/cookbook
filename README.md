@@ -1,4 +1,6 @@
-Your Project's Name
+# Yummy! Your online cookbook
+
+Yummy! is an web application, 
 One or two paragraphs providing an overview of your project.
 
 Essentially, this part is your sales pitch.
@@ -11,10 +13,40 @@ In particular, as part of this section we recommend that you provide a list of U
 As a user type, I want to perform an action, so that I can achieve a goal.
 This section is also where you would share links to any wireframes, mockups, diagrams etc. that you created as part of the design process. These files should themselves either be included in the project itself (in an separate directory), or just hosted elsewhere online and can be in any format that is viewable inside the browser.
 
-Features
-In this section, you should go over the different parts of your project, and describe each in a sentence or so.
+## Features
 
-Existing Features
+1. Browsing feature
+User can do following, without logging in:
+- browse the recipes, either all of them or by categories
+- filter search by keywords and/or categories
+
+2. Cookbook feature
+User is able to:
+- create a cookbook
+- login into it
+- add new recipes, which will be displayed in 'own recipes' section
+- pin other recipes to the cookbook, upvoting them in the same time
+
+
+3. Statistic feature:
+User can check following:
+- see website's summary
+- choose between categories or most active users
+- change type of chart to display results. This function has no practical sense, but it looks nice.
+
+
+## Existing Features
+
+1. Browsing
+- allows to browse all recipes, by clicking "Browse recipes" button on navigation bar or typing ".../get_recipes" in the browser bar
+- user can browse by categories, by clicking "Dishes" or "Cuisines" buttons on navigation bar
+- user can go to browsing page and filter search by filling form. There is keyword (search and/or exclude from search) functionality and categories functionality
+
+2. Cookbook feature
+- user may create his own cookbook, by filling and submitting the form on '.../register' page. 
+- user can add new recipes by
+
+
 Feature 1 - allows users X to achieve Y, by having them fill out Z
 ...
 For some/all of your features, you may choose to reference the specific project files that implement them, although this is entirely optional.
