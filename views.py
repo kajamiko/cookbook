@@ -199,12 +199,12 @@ def register():
     return render_template('register.html', message = message)
 
 
-@app.route('/cookbook_view/<cookbook_id>')
+@app.route('/cookbook_view/<ObjectId:cookbook_id>')
 def cookbook_view(cookbook_id):
     """
     View is rendering cookbook details
     """
-    _cookbook = mongo.db.cookbooks.find_one({"_id": ObjectId(cookbook_id)})
+    _cookbook = mongo.db.cookbooks.find_one_or_404({"_id": cookbook_id})
     return render_template('cookbook_view.html',
     cookbook=_cookbook)
   
@@ -218,20 +218,19 @@ def your_cookbook(username=""):
     else:
         _cookbook = mongo.db.cookbooks.find_one({"author_name": session['username']})
     return redirect(url_for('cookbook_view', 
-    cookbook_id = ObjectId(_cookbook["_id"])))
+    cookbook_id = _cookbook["_id"]))
 
-########################## Adding/showing/editing recipes logic ############################################################3    
+########################## Adding/showing/editing recipes logic ############################################################
     
-@app.route('/show_recipe/<recipe_id>')
+@app.route('/show_recipe/<ObjectId:recipe_id>')
 def show_recipe(recipe_id):
     """
     Shows recipe page, which contain details and links to upvote it.
     """
     already_got = False
     owned = False
-    _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
-    if _recipe:
-        mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+    _recipe = mongo.db.recipes.find_one_or_404({"_id": recipe_id})
+    mongo.db.recipes.update_one({"_id": recipe_id},
         {'$inc': {"views" : 1}})
     if("logged_in" in session):
         if (mongo.db.cookbooks.find_one({"author_name": session.get('username'), "recipes_pinned._id" : ObjectId(recipe_id)})):
@@ -246,13 +245,13 @@ def show_recipe(recipe_id):
     already_got=already_got,
     owned = owned)
 
-@app.route('/edit_recipe/<recipe_id>/<owned>')
+@app.route('/edit_recipe/<ObjectId:recipe_id>/<owned>')
 def edit_recipe(recipe_id, owned):
     """
     Function that is getting recipe ready to edit. Finds recipe and passes it to template where it's 
     loaded into form, ready for the user to edit
     """
-    _recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    _recipe = mongo.db.recipes.find_one({"_id": recipe_id})
     
     ilist = _recipe['ingredients_list']
     plist = _recipe['preparation_steps_list']
@@ -288,7 +287,7 @@ def add_recipe():
         return redirect(url_for('get_recipes'))
     
     
-@app.route('/update_recipe/<recipe_id>', methods=['POST'])
+@app.route('/update_recipe/<ObjectId:recipe_id>', methods=['POST'])
 def update_recipe(recipe_id):
     """
     Updating recipe logic
@@ -329,7 +328,7 @@ def update_recipe(recipe_id):
             del request_ready["cuisine_name"]
         new_date = create_nice_date()
         request_ready.setdefault("updated_on", new_date)
-        result = mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+        result = mongo.db.recipes.update_one({"_id": recipe_id},
                                     {"$set": request_ready})
             
         if result.matched_count == 1:
@@ -446,32 +445,32 @@ def logout():
 
 ############## Pinning/removing/ upvoting recipes logic############
 
-@app.route('/pin_recipe/<recipe_id>/<recipe_title>')
+@app.route('/pin_recipe/<ObjectId:recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):
     """
     Recipe id and title is passed to update_recipe(), where it is added to 'pinned recipes' list in user's document in db
     """
-    if(update_recipes_array(ObjectId(recipe_id), recipe_title = recipe_title)):
-        mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
+    if(update_recipes_array(recipe_id, recipe_title = recipe_title)):
+        mongo.db.recipes.update_one({"_id": recipe_id},
         {'$inc': {"upvotes" : 1}})
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
    
-@app.route('/remove_recipe/<recipe_id>/<owned>')
+@app.route('/remove_recipe/<ObjectId:recipe_id>/<owned>')
 def remove_recipe(recipe_id, owned):
     """
     Function is passing correct arguments into update_recipes_array() function. It will remove from 'pinned recipes' list if it's just pinned,
     or remove completely form database and recipes_owned list if user is it's owner.
     """
     if(owned == "False"):
-        if(update_recipes_array(ObjectId(recipe_id), remove = True)):
+        if(update_recipes_array(recipe_id, remove = True)):
             mongo.db.recipes.update_one({"_id": ObjectId(recipe_id)},
             {'$inc': {"upvotes" : -1}})
             flash("Recipe has been unpinned!")
         return redirect(url_for('show_recipe', recipe_id=recipe_id))
     else:
         remove_image(recipe_id)
-        mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
-        update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
+        mongo.db.recipes.delete_one({"_id": recipe_id})
+        update_recipes_array(recipe_id, type_of_array="recipes_owned", remove = True)
         flash("Recipe has been removed from database!")
         return redirect(url_for('your_cookbook', username=session['username']))
 
@@ -514,3 +513,9 @@ def summarise(what_to_check="author_name", chart_type="'doughnut'"):
 def get_faq():
     
     return render_template('faq.html')
+    
+################# last but not least ###############################
+@app.errorhandler(404)
+@app.errorhandler(400)
+def page_not_found(e):
+    return render_template('error.html')

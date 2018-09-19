@@ -47,7 +47,7 @@ User can check following:
 - user can add new recipes by clicking green '+' button in his cookbook's "Recipes by <user>" section. This will redirect to '/add_recipe' page. 
 - user can save other users' recipes by going to interesting recipe's page and clicking "Pin to your cookbook" button. The link to the recipe will appear in "Pinned recipes" section of user's cookbook.
 - user may want to remove recipes form his cookbook, either directly form the cookbook view, by clicking a bin icon next to a recipe title, or from recipe page, by clicking "Remove" or "Unpin" button. If removing from cookbook page, a confirmation box will always pop out. However, when unpinning from recipe's page, there will be no box, as the action is obvious to cancel.
-- 
+- it is possible to browse other users' cookbooks, however this function is evailable exclusively to logged in users.
 
 Feature 1 - allows users X to achieve Y, by having them fill out Z
 ...
