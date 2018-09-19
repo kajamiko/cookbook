@@ -46,7 +46,7 @@
                 <h5><span class="badge badge-success">In your cookbook</span></h5>
                     {% if owned %}
                 <a class="btn btn-warning" href="{{ url_for('edit_recipe', recipe_id=recipe._id, owned=owned) }}">Edit</a>
-                <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Remove</a>
+                <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}"  onclick="return(getConfirmation('{{ recipe.recipe_name }}'));">Remove</a>
                     {% else %}
                 <a class="btn btn-danger" href="{{ url_for('remove_recipe', recipe_id=recipe._id, owned=owned) }}">Unpin</a>
                     {% endif %}
@@ -97,4 +97,17 @@
    </div> 
 </div>
 </div>
+  <script type="text/javascript">
+           function getConfirmation(title){
+               var retVal = confirm("Do you really want to remove following recipe?\n"+ title);
+               if( retVal == true ){
+                  return true;
+               }
+               else{
+                  return false;
+               }
+              
+    }
+
+</script>
 {% endblock %} 

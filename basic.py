@@ -3,6 +3,7 @@ import datetime
 import os
 import re
 from flask import session
+from bson.objectid import ObjectId
 
 
 PER_PAGE = 12
@@ -38,7 +39,8 @@ def create_cookbook(cookbook_name='', password='', username='', description=''):
             "cookbook_desc": description,
             "created_on": create_nice_date(),
             "recipes_pinned": [],
-            "recipes_owned": []
+            "recipes_owned": [],
+            "recipes_number": 0
         })
         return _id
 
@@ -92,3 +94,8 @@ def create_nice_date():
     new_date = "{0}-{1}-{2}".format(now.day,now.month,now.year)
     return new_date
  
+ 
+def remove_image(recipe_id):
+    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    old_image =  recipe['image_url'].rsplit('/', 1)[1]
+    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], old_image))
