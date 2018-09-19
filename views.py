@@ -9,7 +9,7 @@ import os
 import re
 from math import ceil
 from flask import Blueprint
-from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date
+from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image
 from flask_paginate import Pagination, get_page_parameter
 
    
@@ -293,24 +293,28 @@ def update_recipe(recipe_id):
     """
     Updating recipe logic
     """
-    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     request_ready = {}
     if( request.method == "POST"):
         # file processing, if any
         form = request.form.to_dict()
+        username = form['author_name']
         """
         What's going on here: does the same as in insert recipe, however none of the fields in form is required, and and "updated_on" field is created.
         """
         if request.files:
             file = request.files['file']
             if file and allowed_file(file.filename):
+                        result = mongo.db.cookbooks.find_one({"author_name": username})
+                        number = int(result['recipes_number'])
                         filename = secure_filename(file.filename)
+                        file_ext = filename[filename.rfind('.') : len(filename)+1].lower()
+                        new_filename = username + str(number) + file_ext
+                        file_path =  "uploaded_images/" + new_filename
                         # get me a full pathname and save the file
-                        file_path = "uploaded_images/" + filename
                         request_ready.setdefault("image_url", file_path)
-                        old_image = "uploaded_images/" + recipe.to_dict()['image_url']
-                        os.remove(os.path.join(app.config['UPLOADED_FOLDER'], old_image))
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                        remove_image(recipe_id)
+                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+                        mongo.db.cookbooks.update_one({"author_name": username}, {'$inc': {"recipes_number" : 1}})
             else:
                         flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
         
@@ -346,10 +350,11 @@ def insert_recipe():
     if( request.method == "POST"):
         print(request.form.to_dict())
         form = request.form
+        username = request.form.to_dict()['author_name']
         if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10:
-            username = session.get('username')
             new_date = create_nice_date()
-            
+            result = mongo.db.cookbooks.find_one({"author_name": username})
+            number = int(result['recipes_number'])
             file = request.files['file']
             """
              filling disctionary with data from the form, with large strings sliced to an array
@@ -359,8 +364,11 @@ def insert_recipe():
             if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
                     # get me a full pathname and save the file
-                    file_path = "uploaded_images/" + filename
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    file_ext = filename[filename.rfind('.') : len(filename)+1].lower()
+                    new_filename = username + str(number) + file_ext
+                    file_path =  "uploaded_images/" + new_filename
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
             else:
                     flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
             for k, v in request.form.to_dict().items():
@@ -376,16 +384,17 @@ def insert_recipe():
             request_ready.setdefault("upvotes", 0)
             request_ready.setdefault("views", 0)
             request_ready.setdefault("created_on", new_date)
-            request_ready.setdefault("author_name", username)
             request_ready.setdefault("image_url", file_path)
             #push everything to the database and store returned data in _result
             _result = recipes.insert_one(request_ready)
             if (username):
                 # push to owned
                 update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
+                mongo.db.cookbooks.update_one({"author_name": username}, {'$inc': {"recipes_number" : 1}})
         else:
             flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
+  
   
 @app.route('/category_view/<collection_name>')
 def category_view(collection_name):
@@ -460,10 +469,11 @@ def remove_recipe(recipe_id, owned):
             flash("Recipe has been unpinned!")
         return redirect(url_for('show_recipe', recipe_id=recipe_id))
     else:
+        remove_image(recipe_id)
         mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
         update_recipes_array(ObjectId(recipe_id), type_of_array="recipes_owned", remove = True)
         flash("Recipe has been removed from database!")
-        return redirect(url_for('your_cookbook'))
+        return redirect(url_for('your_cookbook', username=session['username']))
 
 
     

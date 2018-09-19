@@ -34,6 +34,7 @@ Add a recipe
         <div class="col-sm-12 col-md-6 col-lg-6">
         <input id="author_name" name="author_name" type="text" class="validate">
         {% endif %}
+        <input id="author_name" name="author_name" type="hidden" class="validate" value="{{ session['username'] }}">
       </div>
     </div>
     
