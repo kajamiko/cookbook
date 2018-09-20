@@ -1,7 +1,6 @@
 # Yummy! Your online cookbook
 
-Yummy! is an web application, 
-One or two paragraphs providing an overview of your project.
+Yummy! is an web application, allowing users to add
 
 Essentially, this part is your sales pitch.
 
@@ -43,19 +42,19 @@ User can check following:
 - user can go to browsing page and filter search by filling form. There is keyword (search and/or exclude from search) functionality and categories functionality
 
 2. Cookbook feature
-- user may create his own cookbook, by filling and submitting the form on '.../register' page. 
-- user can add new recipes by clicking green '+' button in his cookbook's "Recipes by <user>" section. This will redirect to '/add_recipe' page. 
+- user may create his own cookbook, by filling and submitting the form on '.../register' page. User has to provide title for the cookbook, username he will be able to log in with, and password. Cookbook description is not mandatory.
+- user can log in,  using his username and password.
+- user can add new recipes by clicking green '+' button in his cookbook's "Recipes by <user>" section. This will redirect to '/add_recipe' page. All fields, except from "cuisine" field, are mandatory.]
+- user may edit his own recipes, by clicking yellow "Edit" button on recipe's page. This will redirect to '/edit_recipe' page, where a pre-filled form is rendered. All the values saved before will display in proper fields. All changes will be submitted by clicking "Save" button. 
 - user can save other users' recipes by going to interesting recipe's page and clicking "Pin to your cookbook" button. The link to the recipe will appear in "Pinned recipes" section of user's cookbook.
-- user may want to remove recipes form his cookbook, either directly form the cookbook view, by clicking a bin icon next to a recipe title, or from recipe page, by clicking "Remove" or "Unpin" button. If removing from cookbook page, a confirmation box will always pop out. However, when unpinning from recipe's page, there will be no box, as the action is obvious to cancel.
-- it is possible to browse other users' cookbooks, however this function is evailable exclusively to logged in users.
+- user may want to remove recipes form his cookbook, either directly form the cookbook view, by clicking a bin icon next to a recipe title, or from recipe page, by clicking "Remove" or "Unpin" button. If removing from cookbook page, a confirmation box will always pop out. However, when unpinning from recipe's page, there will be no confirmation box displayed, as it is obvious to pin it back, if done by mistake.
+- it is possible to browse other users' cookbooks, however this function is available exclusively to logged in users.
 
-Feature 1 - allows users X to achieve Y, by having them fill out Z
-...
-For some/all of your features, you may choose to reference the specific project files that implement them, although this is entirely optional.
 
-In addition, you may also use this section to discuss plans for additional features to be implemented in the future:
+3. Summary feature
+- user can see website's summary, by clicking on 'Statistics' button on navigation bar. 
+- user can choose between summarising categories or most active users, as well as choose a chart type, by submitting the form on the page.
 
-Features Left to Implement
 
 I do have many ideas of how to improve my application. Here are some of them:
 

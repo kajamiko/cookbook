@@ -225,7 +225,7 @@ def your_cookbook(username=""):
 @app.route('/show_recipe/<ObjectId:recipe_id>')
 def show_recipe(recipe_id):
     """
-    Shows recipe page, which contain details and links to upvote it.
+    Shows recipe page, which contain recipe's details.
     """
     already_got = False
     owned = False
@@ -249,7 +249,7 @@ def show_recipe(recipe_id):
 def edit_recipe(recipe_id, owned):
     """
     Function that is getting recipe ready to edit. Finds recipe and passes it to template where it's 
-    loaded into form, ready for the user to edit
+    loaded into form, ready for the user to edit.
     """
     _recipe = mongo.db.recipes.find_one({"_id": recipe_id})
     
@@ -298,7 +298,7 @@ def update_recipe(recipe_id):
         form = request.form.to_dict()
         username = form['author_name']
         """
-        What's going on here: does the same as in insert recipe, however none of the fields in form is required, and and "updated_on" field is created.
+        What's going on here: does the same as in insert recipe, however none of the fields in form is required, and "updated_on" field is created.
         """
         if request.files:
             file = request.files['file']
