@@ -1,13 +1,12 @@
 # Yummy! Your online cookbook
 
-Yummy! is an web application, allowing users to add
+Yummy! is an web application, allowing users to store and share their cooking recipes. It does not require any social networks account or email confirming. Just browse and add to your personal cookbook!
 
-Essentially, this part is your sales pitch.
 
 UX
-Use this section to provide insight into your UX process, focusing on who this website is for, what it is that they want to achieve and how your project is the best way to help them achieve these things.
 
-In particular, as part of this section we recommend that you provide a list of User Stories, with the following general structure:
+My goal was to create a user-friendly web application, that will allow users to store cooking recipes and save them in one place without navigating between different pages, clearly separating user's own recipes from the ones made by others. I wanted to make it obvious, how to add a particular recipe into the cookbook. I wanted to make upvoting easy, so I linked it to pinning into cookbook.
+My goal was also to make browsing other user's cookbook's possible, including the ones users are recommending, without linking it to any social networks.  In this meaning, it is completely safe - this website is all about cooking, not about who is cooking!
 
 As a user type, I want to perform an action, so that I can achieve a goal.
 This section is also where you would share links to any wireframes, mockups, diagrams etc. that you created as part of the design process. These files should themselves either be included in the project itself (in an separate directory), or just hosted elsewhere online and can be in any format that is viewable inside the browser.
@@ -44,7 +43,7 @@ User can check following:
 2. Cookbook feature
 - user may create his own cookbook, by filling and submitting the form on '.../register' page. User has to provide title for the cookbook, username he will be able to log in with, and password. Cookbook description is not mandatory.
 - user can log in,  using his username and password.
-- user can add new recipes by clicking green '+' button in his cookbook's "Recipes by <user>" section. This will redirect to '/add_recipe' page. All fields, except from "cuisine" field, are mandatory.]
+- user can add new recipes by clicking green '+' button in his cookbook's "Recipes by <user>" section. This will redirect to '/add_recipe' page. All fields, except from "cuisine" field, are mandatory.
 - user may edit his own recipes, by clicking yellow "Edit" button on recipe's page. This will redirect to '/edit_recipe' page, where a pre-filled form is rendered. All the values saved before will display in proper fields. All changes will be submitted by clicking "Save" button. 
 - user can save other users' recipes by going to interesting recipe's page and clicking "Pin to your cookbook" button. The link to the recipe will appear in "Pinned recipes" section of user's cookbook.
 - user may want to remove recipes form his cookbook, either directly form the cookbook view, by clicking a bin icon next to a recipe title, or from recipe page, by clicking "Remove" or "Unpin" button. If removing from cookbook page, a confirmation box will always pop out. However, when unpinning from recipe's page, there will be no confirmation box displayed, as it is obvious to pin it back, if done by mistake.
@@ -58,10 +57,10 @@ User can check following:
 
 I do have many ideas of how to improve my application. Here are some of them:
 
-1. First and most important is to make accounts secure and provide such features as retrieving forgotten passwords, disabling accounts, also connecting and registering cookbook with facebook accounts.
+1. First and most important is to make accounts secure and provide such features as retrieving forgotten passwords, disabling accounts.
 3. Separating different parts of user's filter, so that user will be able to discard any filters without using query form again.
 4. Re-structuring database by adding sub-categories.
-
+5. Allowing users to search through recipes stored in their cookbooks.
 
 Technologies Used
 In this section, you should mention all of the languages, frameworks, libraries, and any other tools that you have used to construct this project. For each, provide its name, a link to its official site and a short sentence of why it was used.
@@ -90,9 +89,11 @@ In this section, you should mention all of the languages, frameworks, libraries,
 - [Flask-paginate](https://pythonhosted.org/Flask-paginate/)
     - The project uses **Flask-paginate** for pagination.
 
-## Database structure
+## Database 
 
-As the project is using **mongodb**, I have just made a simple file explaining documents' structure. Link
+As the project is using **mongodb**, I have just  a .docx file explaining documents' structure. Link
+
+The deployed project version is configured to use populated database hosted on mlab.com. 
 
 Testing
 In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your user stories from the UX section and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
@@ -110,9 +111,11 @@ In addition, you should mention in this section how your project looks and works
 
 You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
 
-If this section grows too long, you may want to split it off into a separate file and link to it from here.
+If this section grows too long, you may want to split it off into a separate file and link to it from here. As images are stored in the project's filesystem, the deployed version is also populated as it would be in production.
+
 
 Deployment
+
 This section should describe the process you went through to deploy the project to a hosting platform (e.g. GitHub Pages or Heroku).
 
 In particular, you should provide all details of the differences between the deployed version and the development version, if any, including:
@@ -122,9 +125,12 @@ Different configuration files?
 Separate git branch?
 In addition, if it is not obvious, you should also describe how to run your code locally.
 
-Credits
-Content
-The text for section Y was copied from the Wikipedia article Z
+##Credits
+
+###Content
+
+All the recipes and images picturing them has been copied from [Allrecipes](http://allrecipes.co.uk/).
+
 Media
 The photos used in this site were obtained from ...
 
