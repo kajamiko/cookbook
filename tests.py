@@ -48,15 +48,17 @@ class TestCookbook(unittest.TestCase):
         self.assertTrue(basic.allowed_file('somefile.png'))
             
     
-    # def test_finding_recipe(self):
-    #     """
-    #     Checks if recipe can be found
-    #     """
-    #     with app.app_context():
-    #         id_part = basic.find_recipe_id("recipe_name", "Are you happy with my tests?")
-    #         resp = self.app.get('/show_recipe/'+ str(id_part))
-    #         self.assertEqual(resp._status_code, 200)
-    #         self.assertIn('Are you happy with my tests?', str(resp.data))
+    def test_finding_recipe(self):
+        """
+        Checks if recipe can be found
+        """
+        with app.app_context():
+            id_part = basic.find_recipe_id("recipe_name", "Inserting?")
+            resp = self.app.get('/show_recipe/'+ str(id_part))
+            self.assertEqual(resp._status_code, 200)
+            self.assertIn('Inserting?', str(resp.data))
+            
+
         
     def test_homepage(self):
        with app.app_context():
@@ -69,6 +71,8 @@ class TestCookbook(unittest.TestCase):
             resp = self.app.get('/get_recipes')
             self.assertEqual(resp._status_code, 200)
             self.assertIn( 'displaying ', str(resp.data))
+            # checking previously added recipe
+            self.assertIn( 'Inserting?', str(resp.data))
 
     def test_rendering_add_page(self):
 
@@ -86,23 +90,23 @@ class TestCookbook(unittest.TestCase):
             self.assertIn('displaying', str(resp))
        
        
-    def test_inserting_recipe(self):
-        """
-        Tests if inserting recipe is working (including image file). The only part not passing test is
-        updating provided user's 'recipes_owned' array, as this functionality requires session. It would not
-        work in running app as session would not allow.
+    # def test_inserting_recipe(self):
+    #     """
+    #     Tests if inserting recipe is working (including image file). The only part not passing test is
+    #     updating provided user's 'recipes_owned' array, as this functionality requires session. It would not
+    #     work in running app as session would not allow.
         
-        """
-        recipe_data = {'recipe_name': 'Inserting?', 'preparation_steps_list' : 'test test test',
-        'ingredients_list': 'test1 test1 test1',
-        'author_name': 'Kaja', "servings": "test", "cooking_time": "test", "difficulty": " test",
-        "dish_type": "Main", 'cuisine_name': ""
-        }
-        recipe_data['file'] = (io.BytesIO(b"abcdef"), 'test.jpg')
-        with app.test_request_context('insert_recipe', method='POST', data=recipe_data,
-            content_type='multipart/form-data'):
-            resp = app.dispatch_request()
-            # self.assertIn('Your recipe has been saved!', str(resp.data)) 
+    #     """
+    #     recipe_data = {'recipe_name': 'Inserting?', 'preparation_steps_list' : 'test test test',
+    #     'ingredients_list': 'test1 test1 test1',
+    #     'author_name': 'Kaja', "servings": "test", "cooking_time": "test", "difficulty": " test",
+    #     "dish_type": "Main", 'cuisine_name': ""
+    #     }
+    #     recipe_data['file'] = (io.BytesIO(b"abcdef"), 'test.jpg')
+    #     with app.test_request_context('insert_recipe', method='POST', data=recipe_data,
+    #         content_type='multipart/form-data'):
+    #         resp = app.dispatch_request()
+    #         # self.assertIn('Your recipe has been saved!', str(resp.data)) 
 
     # def test_update_recipe(self):
     #     """
@@ -130,31 +134,31 @@ class TestCookbook(unittest.TestCase):
     #         self.assertEqual(resp._status_code, 200)
     #         self.assertIn('updated test!', str(resp.data))
             
-    def test_removing(self):
-        """
-        Tests removing recipe
-        """
-        with app.app_context():
-            id_part = basic.find_recipe_id("recipe_name", "Inserting?")
-            resp = self.app.get('/show_recipe/'+ str(id_part))
-            self.assertEqual(resp._status_code, 200)
-            self.assertIn('Inserting?', str(resp.data))
-            resp1 = self.app.get('/remove_recipe/' + str(id_part) + '/True' )
-            resp = self.app.get('/show_recipe/'+ str(id_part))
-            self.assertIn('We can\\\'t find the page you are looking for', str(resp.data))
+    # def test_removing(self):
+    #     """
+    #     Tests removing recipe
+    #     """
+    #     with app.app_context():
+    #         id_part = basic.find_recipe_id("recipe_name", "Inserting?")
+    #         resp = self.app.get('/show_recipe/'+ str(id_part))
+    #         self.assertEqual(resp._status_code, 200)
+    #         self.assertIn('Inserting?', str(resp.data))
+    #         resp1 = self.app.get('/remove_recipe/' + str(id_part) + '/True' )
+    #         resp = self.app.get('/show_recipe/'+ str(id_part))
+    #         self.assertIn('We can\\\'t find the page you are looking for', str(resp.data))
             
             
-    def test_editing(self):
-        """
-        Tests loading recipe for editing
-        """
-        # random recipe check with title, ingredients, preparation steps, 
-        with app.test_request_context('/edit_recipe/5b8d6cb88dbc98405b99672a/True', method='GET'):
-            resp = app.dispatch_request()
-            self.assertIn('Champagne Cocktail', str(resp))
-            self.assertIn('pour in the brandy', str(resp))
-            self.assertIn('dashes Angostura bitters', str(resp))
-            self.assertIn('Drinks and Smoothies', str(resp))
+    # def test_editing(self):
+    #     """
+    #     Tests loading recipe for editing
+    #     """
+    #     # random recipe check with title, ingredients, preparation steps, 
+    #     with app.test_request_context('/edit_recipe/5b8d6cb88dbc98405b99672a/True', method='GET'):
+    #         resp = app.dispatch_request()
+    #         self.assertIn('Champagne Cocktail', str(resp))
+    #         self.assertIn('pour in the brandy', str(resp))
+    #         self.assertIn('dashes Angostura bitters', str(resp))
+    #         self.assertIn('Drinks and Smoothies', str(resp))
 
         
     def test_faq(self):
