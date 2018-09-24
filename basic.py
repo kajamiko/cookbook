@@ -68,7 +68,7 @@ def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinn
     remove - if true, it will remove recipe with details provided, if false, it will push it into list
     """
     if(remove == False):
-        return mongo.db.cookbooks.update({'author_name': session.get('username')}, 
+        return mongo.db.cookbooks.update_one({'author_name': session.get('username')}, 
                 { '$push': 
                     { type_of_array: 
                         {'_id': recipe_id, 'title': recipe_title}
@@ -76,7 +76,7 @@ def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinn
                     }}
                     )
     else:
-        return  mongo.db.cookbooks.update({'author_name': session.get('username')}, 
+        return  mongo.db.cookbooks.update_one({'author_name': session.get('username')}, 
                 { '$pull': 
                     { type_of_array: 
                         {'_id': recipe_id}
@@ -84,7 +84,6 @@ def update_recipes_array(recipe_id, recipe_title="", type_of_array='recipes_pinn
                     }}
                     )
     
-
 
 def create_nice_date():
     """
@@ -99,3 +98,11 @@ def remove_image(recipe_id):
     recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
     old_image =  recipe['image_url'].rsplit('/', 1)[1]
     os.remove(os.path.join(app.config['UPLOAD_FOLDER'], old_image))
+    
+def find_recipe_id(field, value):
+    _result = mongo.db.recipes.find_one({field: value})
+    if _result:
+        recipe_id = _result["_id"]
+        return ObjectId(recipe_id)
+    else: 
+        return None
