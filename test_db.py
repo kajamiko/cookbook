@@ -45,31 +45,31 @@ class TestCookbook(unittest.TestCase):
       
 
 
-    # def test_update_recipe(self):
-    #     """
-    #     Tests if updating works (works), then checking result in show_recipe
-    #     """
-    #     id_part = ""
-    #     with app.app_context():
-    #         """
-    #         Checks if recipe can be found
-    #         """
-    #         id_part = str(basic.find_recipe_id("recipe_name", "Inserting?"))
-    #         resp = self.app.get('/show_recipe/'+ str(id_part))
-    #         self.assertEqual(resp._status_code, 200)
-    #     recipe_data = {'recipe_name': 'Are you happy with my tests?', 'preparation_steps_list' : 'updated test!',
-    #     'ingredients_list': 'updated_test',
-    #     'author_name': 'Kaja', "servings": "test", "cooking_time": "test", "difficulty": " test",
-    #     "dish_type": "Main", "cuisine_name": ""
-    #     }
-    #     recipe_data['file'] = (io.BytesIO(b"abcdef"), 'test.jpg')
-    #     with app.test_request_context('update_recipe/'+ id_part , method='POST', data=recipe_data,
-    #         content_type='multipart/form-data'):
-    #         resp = app.dispatch_request()           
-    #     with app.app_context():
-    #         resp = self.app.get('/show_recipe/' + id_part)
-    #         self.assertEqual(resp._status_code, 200)
-    #         self.assertIn('updated test!', str(resp.data))
+    def test_update_recipe(self):
+        """
+        Tests if updating works (works), then checking result in show_recipe
+        """
+        id_part = ""
+        with app.app_context():
+            """
+            Checks if recipe can be found
+            """
+            id_part = str(basic.find_recipe_id("recipe_name", "Inserting again?"))
+            resp = self.app.get('/show_recipe/'+ str(id_part))
+            self.assertEqual(resp._status_code, 200)
+        recipe_data = {'recipe_name': 'WIll it work this time?', 'preparation_steps_list' : 'updated test!',
+        'ingredients_list': 'updated_test',
+        'author_name': 'Kaja', "servings": "test", "cooking_time": "test", "difficulty": " test",
+        "dish_type": "Main", "cuisine_name": ""
+        }
+        recipe_data['file'] = (io.BytesIO(b"abcdef"), 'test.jpg')
+        with app.test_request_context('update_recipe/'+ id_part , method='POST', data=recipe_data,
+            content_type='multipart/form-data'):
+            resp = app.dispatch_request()           
+        with app.app_context():
+            resp = self.app.get('/show_recipe/' + id_part)
+            self.assertEqual(resp._status_code, 200)
+            self.assertIn('updated test!', str(resp.data))
             
     # def test_removing(self):
     #     """

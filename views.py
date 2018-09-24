@@ -9,7 +9,7 @@ import os
 import re
 from math import ceil
 from flask import Blueprint
-from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image
+from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image, find_recipe_id
 from flask_paginate import Pagination, get_page_parameter
 
    
@@ -311,31 +311,39 @@ def update_recipe(recipe_id):
                         file_path =  "uploaded_images/" + new_filename
                         # get me a full pathname and save the file
                         request_ready.setdefault("image_url", file_path)
-                        remove_image(recipe_id)
                         file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+                        
+                        remove_image(recipe_id)
                         mongo.db.cookbooks.update_one({"author_name": username}, {'$inc': {"recipes_number" : 1}})
             else:
                         flash("Incorrent file extension. Allowed extensions: png, jpg, jpeg or gif")
-        
-        for k, v in form.items():
-                if ( k== "ingredients_list"):
-                    request_ready.setdefault(k, v.splitlines())
-                elif ( k== "preparation_steps_list"):
-                    request_ready.setdefault(k, v.splitlines())
-                else: 
-                    request_ready[k] = v
-        if(request_ready["cuisine_name"] == ""):
-            del request_ready["cuisine_name"]
-        new_date = create_nice_date()
-        request_ready.setdefault("updated_on", new_date)
-        result = mongo.db.recipes.update_one({"_id": recipe_id},
-                                    {"$set": request_ready})
+        is_there = find_recipe_id("recipe_name", form['recipe_name'])
+        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10 and is_there==False or is_there==recipe_id:
+            # just validating recipe name, ingredients list, prep steps list and mostly important - if the name is unique. Other can be left with no value for tests
+            # they're validated with HTML5 anyway.
+            for k, v in form.items():
+                    if ( k== "ingredients_list"):
+                        request_ready.setdefault(k, v.splitlines())
+                    elif ( k== "preparation_steps_list"):
+                        request_ready.setdefault(k, v.splitlines())
+                    else: 
+                        request_ready[k] = v
+            if(request_ready["cuisine_name"] == ""):
+                del request_ready["cuisine_name"]
+            new_date = create_nice_date()
+            request_ready.setdefault("updated_on", new_date)
+            result = mongo.db.recipes.update_one({"_id": recipe_id},
+                                        {"$set": request_ready})
             
-        if result.matched_count == 1:
-            flash("Your changes have been saved")
+            if result.matched_count == 1:
+                flash("Your changes have been saved")
+                print("Updating!")
+            else:
+                print("There has been an error")
+                flash("There has been an error")
+            return redirect(url_for('show_recipe', recipe_id=recipe_id))
         else:
-            flash("There has been an error")
-        return redirect(url_for('show_recipe', recipe_id=recipe_id))
+            print('Some of your values are incorrent')
     return redirect(url_for('show_recipe', recipe_id=recipe_id))
     
 @app.route('/insert_recipe', methods=['POST'])
@@ -349,7 +357,7 @@ def insert_recipe():
     if( request.method == "POST"):
         form = request.form
         username = request.form.to_dict()['author_name']
-        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10:
+        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10 and find_recipe_id("recipe_name", form['recipe_name'])==False:
             
             print("Validation passed")
             new_date = create_nice_date()
@@ -393,7 +401,7 @@ def insert_recipe():
                 mongo.db.cookbooks.update_one({"author_name": username}, {'$inc': {"recipes_number" : 1}})
                 flash("Your recipe has been saved!")
         else:
-            print("Some of your values were incorrect")
+            print("Some of your values were incorrect, for example change title.")
             flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
   
