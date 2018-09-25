@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 import pymongo
 from bson.objectid import ObjectId
-from conf import UP_FOLDER
+from basic import UP_FOLDER
 from secret import secret_key
 from app import app, mongo
 from werkzeug.utils import secure_filename

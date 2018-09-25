@@ -5,7 +5,7 @@ import re
 from flask import session
 from bson.objectid import ObjectId
 
-
+UP_FOLDER = 'static/uploaded_images/'
 PER_PAGE = 12
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
