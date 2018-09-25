@@ -9,7 +9,7 @@ import os
 import re
 from math import ceil
 from flask import Blueprint
-from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image
+from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image, find_recipe_id
 from flask_paginate import Pagination, get_page_parameter
 
    
@@ -349,7 +349,9 @@ def insert_recipe():
     if( request.method == "POST"):
         form = request.form
         username = request.form.to_dict()['author_name']
-        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10:
+        # just validating recipe name, ingredients list, prep steps list and mostly important - if the name is unique. 
+        # Others are not so important and they're validated with HTML5 anyway.
+        if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10 and find_recipe_id("recipe_name", form['recipe_name'])==False :
             
             print("Validation passed")
             new_date = create_nice_date()

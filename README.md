@@ -8,7 +8,9 @@ UX
 My goal was to create a user-friendly web application, that will allow users to store cooking recipes and save them in one place without navigating between different pages, clearly separating user's own recipes from the ones made by others. I wanted to make it obvious, how to add a particular recipe into the cookbook. I wanted to make upvoting easy, so I linked it to pinning into cookbook.
 My goal was also to make browsing other user's cookbook's possible, including the ones users are recommending, without linking it to any social networks.  In this meaning, it is completely safe - this website is all about cooking, not about who is cooking!
 
-As a user type, I want to perform an action, so that I can achieve a goal.
+#### User story:
+
+As a cookbook user, I would like to store my recipes on my page, be able to easily browse them and edit if necessary.
 This section is also where you would share links to any wireframes, mockups, diagrams etc. that you created as part of the design process. These files should themselves either be included in the project itself (in an separate directory), or just hosted elsewhere online and can be in any format that is viewable inside the browser.
 
 ## Features
@@ -54,13 +56,14 @@ User can check following:
 - user can see website's summary, by clicking on 'Statistics' button on navigation bar. 
 - user can choose between summarising categories or most active users, as well as choose a chart type, by submitting the form on the page.
 
-
+## Features do d
 I do have many ideas of how to improve my application. Here are some of them:
 
 1. First and most important is to make accounts secure and provide such features as retrieving forgotten passwords, disabling accounts.
 3. Separating different parts of user's filter, so that user will be able to discard any filters without using query form again.
 4. Re-structuring database by adding sub-categories.
-5. Allowing users to search through recipes stored in their cookbooks.
+5. Allowing users to search through all recipes stored in their cookbooks.
+6. Probably less important, but so far editing recipe title is not validated. This bug has no effect on using deployed app, as the recipes are identified through their id field. However, it is a bit annoying in automated tests.
 
 Technologies Used
 In this section, you should mention all of the languages, frameworks, libraries, and any other tools that you have used to construct this project. For each, provide its name, a link to its official site and a short sentence of why it was used.
@@ -96,7 +99,8 @@ As the project is using **mongodb**, I have just  a .docx file explaining docume
 The deployed project version is configured to use populated database hosted on mlab.com. 
 As images are stored in the project's filesystem, the deployed version is also populated as it would be in production.
 
-Testing
+## Testing
+
 In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your user stories from the UX section and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
 
 Whenever it is feasible, prefer to automate your tests, and if you've done so, provide a brief explanation of your approach, link to the test file(s) and explain how to run them.

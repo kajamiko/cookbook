@@ -105,4 +105,4 @@ def find_recipe_id(field, value):
         recipe_id = _result["_id"]
         return ObjectId(recipe_id)
     else: 
-        return None
+        return False
