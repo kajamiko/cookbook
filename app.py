@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_pymongo import PyMongo
-from conf import db_name, uri_str, UP_FOLDER
+from conf import UP_FOLDER
 from secret import secret_key
 
 

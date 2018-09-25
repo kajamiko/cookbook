@@ -1,12 +1,11 @@
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 import pymongo
 from bson.objectid import ObjectId
-from conf import db_name, uri_str, UP_FOLDER
+from conf import UP_FOLDER
 from secret import secret_key
 from app import app, mongo
 from werkzeug.utils import secure_filename
 import os
-import re
 from math import ceil
 from flask import Blueprint
 from basic import allowed_file, PER_PAGE, check_if_exists, create_cookbook, exclude_query, update_recipes_array, create_nice_date, remove_image, find_recipe_id
@@ -526,4 +525,7 @@ def get_faq():
 @app.errorhandler(404)
 @app.errorhandler(400)
 def page_not_found(e):
+    """
+    Error handling function
+    """
     return render_template('error.html')
