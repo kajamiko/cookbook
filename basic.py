@@ -95,9 +95,12 @@ def create_nice_date():
  
  
 def remove_image(recipe_id):
-    recipe = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    recipe = mongo.db.recipes.find_one_or_404({"_id": ObjectId(recipe_id)})
     old_image =  recipe['image_url'].rsplit('/', 1)[1]
-    os.remove(os.path.join(app.config['UPLOAD_FOLDER'], old_image))
+    try:
+        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], old_image))
+    except Exception as e:
+        print(e)
     
 def find_recipe_id(field, value):
     _result = mongo.db.recipes.find_one({field: value})

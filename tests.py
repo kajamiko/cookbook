@@ -48,16 +48,14 @@ class TestCookbook(unittest.TestCase):
         self.assertTrue(basic.allowed_file('somefile.png'))
             
     
-    def test_finding_recipe(self):
+    def test_removing_image(self):
         """
-        Checks if recipe can be found
+        Tests if the image is deleted
         """
         with app.app_context():
-            id_part = basic.find_recipe_id("recipe_name", "Inserting?")
-            resp = self.app.get('/show_recipe/'+ str(id_part))
-            self.assertEqual(resp._status_code, 200)
-            self.assertIn('Inserting?', str(resp.data))
-            
+            recipe_id = str(basic.find_recipe_id("recipe_name", "Jabłka w cieście francuskim"))
+            basic.remove_image(recipe_id)
+        
 
         
     def test_homepage(self):
@@ -72,7 +70,6 @@ class TestCookbook(unittest.TestCase):
             self.assertEqual(resp._status_code, 200)
             self.assertIn( 'displaying ', str(resp.data))
             # checking previously added recipe
-            self.assertIn( 'Inserting?', str(resp.data))
 
     def test_rendering_add_page(self):
 
@@ -89,7 +86,6 @@ class TestCookbook(unittest.TestCase):
             resp = app.dispatch_request()
             self.assertIn('displaying', str(resp))
        
- 
         
     def test_faq(self):
         with app.app_context():
