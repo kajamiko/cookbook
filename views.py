@@ -448,7 +448,7 @@ def logout():
     return redirect(url_for('get_recipes'))    
     
 
-############## Pinning/removing/ upvoting recipes logic############
+############## Pinning/removing recipes logic############
 
 @app.route('/pin_recipe/<ObjectId:recipe_id>/<recipe_title>')
 def pin_recipe(recipe_id, recipe_title):

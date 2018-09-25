@@ -8,10 +8,14 @@ UX
 My goal was to create a user-friendly web application, that will allow users to store cooking recipes and save them in one place without navigating between different pages, clearly separating user's own recipes from the ones made by others. I wanted to make it obvious, how to add a particular recipe into the cookbook. I wanted to make upvoting easy, so I linked it to pinning into cookbook.
 My goal was also to make browsing other user's cookbook's possible, including the ones users are recommending, without linking it to any social networks.  In this meaning, it is completely safe - this website is all about cooking, not about who is cooking!
 
-#### User story:
+#### Users stories:
 
+##### User type: 
 As a cookbook user, I would like to store my recipes on my page, be able to easily browse them and edit if necessary.
-This section is also where you would share links to any wireframes, mockups, diagrams etc. that you created as part of the design process. These files should themselves either be included in the project itself (in an separate directory), or just hosted elsewhere online and can be in any format that is viewable inside the browser.
+
+As a page user, I would like to search through various recipes, excluding ones I know I won't like.
+
+These files should themselves either be included in the project itself (in an separate directory), or just hosted elsewhere online and can be in any format that is viewable inside the browser.
 
 ## Features
 
@@ -94,16 +98,26 @@ In this section, you should mention all of the languages, frameworks, libraries,
 
 ## Database 
 
-As the project is using **mongodb**, I have just  a .docx file explaining documents' structure. Link
+As the project is using **mongodb**, I have just made a .docx file explaining documents' structure. It is stored in the project's /db folder.
 
-The deployed project version is configured to use populated database hosted on mlab.com. 
+
+The project's deployed version is configured to use populated database hosted on mlab.com. 
 As images are stored in the project's filesystem, the deployed version is also populated as it would be in production.
 
 ## Testing
 
 In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your user stories from the UX section and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
 
-Whenever it is feasible, prefer to automate your tests, and if you've done so, provide a brief explanation of your approach, link to the test file(s) and explain how to run them.
+All CRUD operations tests (for recipes) are in test_crud.py file. Known bugs for these operations:
+- if a recipe is removed from the  owner's cookbook, other users' cookbooks are not updated. This means that it is possible to have "dead" links in "Pinned recipes" section. Clicking them will redirect to an error page. Links can always be deleted.
+- when a recipe is about to be inserted, the name is checked for its uniqueness  before actual inserting. However, it is not the case when updating a recipe.It does not really affect the UX, because recipes documents are in fact identified with the "id" field.
+- when inserting a recipe, it should normally be appended to "recipes_owned" array in cookbook's documents. Unfortunetely it is not working with automated tests because this operation is using flask.session. This functionality is well tested manually(see below).
+
+
+All functions testing views are in test.py file.
+
+### Unfortunetely, due to problems with testing flask.session, some of the automated tests are not working properly, so the only tests I can provide are manual.
+
 
 For any scenarios that have not been automated, test the user stories manually and provide as much detail as is relevant. A particularly useful form for describing your testing process is via scenarios, such as:
 
