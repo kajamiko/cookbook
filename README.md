@@ -102,7 +102,7 @@ As the project is using **mongodb**, I have just made a .docx file explaining do
 
 
 The project's deployed version is configured to use populated database hosted on mlab.com. 
-As images are stored in the project's filesystem, the deployed version is also populated as it would be in production.
+As images are stored in the project's filesystem, the deployed version is also populated.
 
 ## Testing
 
@@ -129,8 +129,6 @@ Try to submit the form with all inputs valid and verify that a success message a
 In addition, you should mention in this section how your project looks and works on different browsers and screen sizes.
 
 You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
-
-
 
 
 Deployment
