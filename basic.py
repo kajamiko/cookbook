@@ -18,7 +18,6 @@ def allowed_file(filename):
 
 
 
-
 def exclude_query(request_ready):
     """
     Gets a dictionary as a parameter, converts into mongo search acceptable string

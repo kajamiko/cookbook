@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, request, url_for, flash, session
 import pymongo
 from bson.objectid import ObjectId
-from app import app, mongo
+from app import app
+from flask_pymongo import PyMongo
 from werkzeug.utils import secure_filename
 import os
 from math import ceil
@@ -10,6 +11,7 @@ from basic import allowed_file, PER_PAGE, exclude_query, create_nice_date
 from flask_paginate import Pagination, get_page_parameter
 
 
+mongo = PyMongo(app)
 
 def check_if_exists(field, value):
     if mongo.db.cookbooks.find_one({field: value}):
