@@ -14,5 +14,6 @@ def create_app(conf_obj='conf.TestingConfig'):
 
 app = create_app(conf_obj='conf.Config')
 app.config['UPLOAD_FOLDER'] = UP_FOLDER
+
 mongo = PyMongo(app)
 
