@@ -15,6 +15,7 @@ def index():
     """
     Homepage view function : getting random recipes from selected categories
     """
+
     dinner = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Sides"}},{ "$sample": { "size": 1 }}])
     main = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Main"}},{ "$sample": { "size": 1 }}])
     dessert = mongo.db.recipes.aggregate([{"$match": {"dish_type": "Desserts"}},{ "$sample": { "size": 1 }}])
