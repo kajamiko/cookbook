@@ -17,6 +17,8 @@ class TestCookbook(unittest.TestCase):
         self.app.application.config['SESSION_COOKIE_DOMAIN'] = None
         self.app.application.config["SERVER_NAME"] = "{0} {1}".format(os.environ.get('PORT'), os.environ.get('IP'))
         
+        self.app.application.config['SESSION_TYPE'] = 'filesystem'
+        
         
     # def test_create_cookbook(self):
     #     """
@@ -48,13 +50,13 @@ class TestCookbook(unittest.TestCase):
         self.assertTrue(basic.allowed_file('somefile.png'))
             
     
-    def test_removing_image(self):
-        """
-        Tests if the image is deleted
-        """
-        with app.app_context():
-            recipe_id = str(basic.find_recipe_id("recipe_name", "Jabłka w cieście francuskim"))
-            basic.remove_image(recipe_id)
+    # def test_removing_image(self):
+    #     """
+    #     Tests if the image is deleted
+    #     """
+    #     with app.app_context():
+    #         recipe_id = str(basic.find_recipe_id("recipe_name", "Jabłka w cieście francuskim"))
+    #         basic.remove_image(recipe_id)
         
 
         
@@ -99,10 +101,10 @@ class TestCookbook(unittest.TestCase):
         Testing if loging in works properly
         """
         ### Unfortunetely does not give proper result due to issue with session testing
-        with app.test_request_context('/login', method='POST', data=dict(author_name="Kajamiko",
+        with app.test_request_context('/login', method='POST', data=dict(author_name="Kaja",
                                         password="password")):
             resp = app.dispatch_request()
-            self.assertNotIn('Logout', str(resp))
+            self.assertIn('Logout', str(resp))
         # Checking if works and displays expected message
         with app.test_request_context('/login', method='POST', data=dict(author_name="Kittykat",
                                         password="password")):

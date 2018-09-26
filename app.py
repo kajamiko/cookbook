@@ -1,8 +1,8 @@
-from flask import Flask
+from flask import Flask, session
 from flask_pymongo import PyMongo
 from secret import secret_key
 
-
+UP_FOLDER = '/static/uploaded_images'
 
 def create_app(conf_obj='conf.TestingConfig'):
     
@@ -14,4 +14,5 @@ def create_app(conf_obj='conf.TestingConfig'):
 #('Config')
 app = create_app(conf_obj='conf.Config')
 mongo = PyMongo(app)
+
 
