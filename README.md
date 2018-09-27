@@ -133,9 +133,15 @@ You should also mention in this section any interesting bugs or problems you dis
 
 Deployment
 
-This section should describe the process you went through to deploy the project to a hosting platform (e.g. GitHub Pages or Heroku).
 
-In particular, you should provide all details of the differences between the deployed version and the development version, if any, including:
+
+When deploying my application to Heroku, I have found that there is a cross import in my project, however it used to work in development. 
+This is why I rearranged some parts of my code. I had to move some of the functions form 'basic.py' file to 'views.py' to make it work on Heroku. This does not actually affect the project's functionality. Therefore, I changed it only in 'master' branch. There is a separate 'test' branch, where things are left as they used to be before deployment.
+
+For deployment, I had also changed some project's settings. Configuration variables used to be hard coded in a separate file out of the repository, so I changed it to use environmental variables, to make it work with Heroku.
+Variables set in Heroku Config are: 'SECRET KEY', 'IP', 'PORT' and 'MONGO_URI'.
+
+
 
 Different values for environment variables (Heroku Config Vars)?
 Different configuration files?
