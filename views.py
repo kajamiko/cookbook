@@ -422,8 +422,7 @@ def insert_recipe():
         # just validating recipe name, ingredients list, prep steps list and mostly important - if the name is unique. 
         # Others are not so important and they're validated with HTML5 anyway.
         if len(form["recipe_name"])>4 and len(form["ingredients_list"])>10 and len(form["preparation_steps_list"])>10 and find_recipe_id("recipe_name", form['recipe_name'])==False :
-            
-            print("Validation passed")
+
             new_date = create_nice_date()
             result = mongo.db.cookbooks.find_one({"author_name": username})
             number = int(result['recipes_number'])
@@ -458,14 +457,12 @@ def insert_recipe():
             request_ready.setdefault("image_url", file_path)
             #push everything to the database and store returned data in _result
             _result = recipes.insert_one(request_ready)
-            print("Saved")
             if (username):
                 # push to owned
                 update_recipes_array(ObjectId(_result.inserted_id), request_ready['recipe_name'], type_of_array='recipes_owned')
                 mongo.db.cookbooks.update_one({"author_name": username}, {'$inc': {"recipes_number" : 1}})
                 flash("Your recipe has been saved!")
         else:
-            print("Some of your values were incorrect")
             flash("Some of your values were incorrent.")
     return redirect(url_for('get_recipes'))  
   
