@@ -141,6 +141,15 @@ This is why I rearranged some parts of my code. I had to move some of the functi
 For deployment, I had also changed some project's settings. Configuration variables used to be hard coded in a separate file out of the repository, so I changed it to use environmental variables, to make it work with Heroku.
 Variables set in Heroku Config are: 'SECRET KEY', 'IP', 'PORT' and 'MONGO_URI'.
 
+### How to run code locally for tests
+
+##### Project's 'test' branch is configured specifically for tests. It contains exported database with minimum records to run project properly. 
+To run it:
+
+1. Download repository's [test branch](https://github.com/kajamiko/cookbook/archive/test.zip).
+2. Install dependencies listed in requirements.txt.
+3. Import database from db/cookbook_proto to either local mongodb instance, or mlab online instance, using mogorestore. 
+4. 
 
 
 Different values for environment variables (Heroku Config Vars)?
