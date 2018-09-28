@@ -101,8 +101,8 @@ In this section, you should mention all of the languages, frameworks, libraries,
 As the project is using **mongodb**, I have just made a .docx file explaining documents' structure. It is stored in the project's /db folder.
 
 
-The project's deployed version is configured to use populated database hosted on mlab.com. 
-As images are stored in the project's filesystem, the deployed version is also populated.
+For demostration purposes, the project's deployed version is configured to use populated database hosted on mlab.com. 
+As images are stored in the project's filesystem, the deployed version is also populated with images.
 
 ## Testing
 
@@ -116,7 +116,7 @@ All CRUD operations tests (for recipes) are in test_crud.py file. Known bugs for
 
 All functions testing views are in test.py file.
 
-### Unfortunetely, due to problems with testing flask.session, some of the automated tests are not working properly, so the only tests I can provide are manual.
+### Unfortunetely, due to problems with testing flask.session, some of the automated tests are not working properly. However, these functionalities are properly tested manually.
 
 
 For any scenarios that have not been automated, test the user stories manually and provide as much detail as is relevant. A particularly useful form for describing your testing process is via scenarios, such as:
@@ -131,40 +131,41 @@ In addition, you should mention in this section how your project looks and works
 You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
 
 
-Deployment
+## Deployment
 
+When deploying my application to Heroku, I have found that there is a cross import in my project. It used to work in development with no warnings. 
+This is why I rearranged some parts of my code. Some of  the functions form 'basic.py' file to 'views.py' has been moved to make it work on Heroku. This does not actually affect the project's functionality, because not even a single line of code has been changed to achieve it. Therefore, I changed it only in 'master' branch. There is a separate 'test' branch, where things are left as they used to be before deployment.
 
-
-When deploying my application to Heroku, I have found that there is a cross import in my project, however it used to work in development. 
-This is why I rearranged some parts of my code. I had to move some of the functions form 'basic.py' file to 'views.py' to make it work on Heroku. This does not actually affect the project's functionality. Therefore, I changed it only in 'master' branch. There is a separate 'test' branch, where things are left as they used to be before deployment.
-
-For deployment, I had also changed some project's settings. Configuration variables used to be hard coded in a separate file out of the repository, so I changed it to use environmental variables, to make it work with Heroku.
+For deployment, I had also changed some project's settings. Configuration variables were hard coded in a separate file out of the repository, so I changed it to use environmental variables, to make it work with Heroku.
 Variables set in Heroku Config are: 'SECRET KEY', 'IP', 'PORT' and 'MONGO_URI'.
+
 
 ### How to run code locally for tests
 
-##### Project's 'test' branch is configured specifically for tests. It contains exported database with minimum records to run project properly. 
+##### Project's 'test' branch is configured specifically for tests. This includes:
+
+- it's enough to set variables into file (see instruction below) to run the code. Master branch version is importing them form environment.
+- exported database with minimum records to run project properly
+- functions are printing success or fail messages into console. Master branch version doesn't have that functionality.
+
 To run it:
 
 1. Download repository's [test branch](https://github.com/kajamiko/cookbook/archive/test.zip).
 2. Install dependencies listed in requirements.txt.
 3. Import database from db/cookbook_proto to either local mongodb instance, or mlab online instance, using mogorestore. 
-4. 
+4. In app.py file, there is `from secret import secret_key, db_uri` line. These two values are then loaded as configuration values. 
+    Create your won 'secret.py' file with values named above and the app is ready for testing.
 
 
-Different values for environment variables (Heroku Config Vars)?
-Different configuration files?
-Separate git branch?
-In addition, if it is not obvious, you should also describe how to run your code locally.
 
-##Credits
+## Credits
 
-###Content
+### Content
 
-All the recipes and images picturing them has been copied from [Allrecipes](http://allrecipes.co.uk/).
+All the recipes and images picturing them have been copied from [Allrecipes](http://allrecipes.co.uk/).
 
-Media
-The photos used in this site were obtained from ...
+### Media
+The photos used in this site were obtained from [Allrecipes](http://allrecipes.co.uk/) and in some cases, from [Pixabay.com](https://pixabay.com/).
 
 ## Acknowledgements
 
