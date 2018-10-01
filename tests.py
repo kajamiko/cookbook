@@ -17,7 +17,8 @@ class TestCookbook(unittest.TestCase):
         self.app.application.config['SESSION_COOKIE_DOMAIN'] = None
         self.app.application.config["SERVER_NAME"] = "{0} {1}".format(os.environ.get('PORT'), os.environ.get('IP'))
         
-   
+        self.app.application.config['SESSION_TYPE'] = 'filesystem'
+        
     
     def test_exclude_query(self):
         """
@@ -35,19 +36,51 @@ class TestCookbook(unittest.TestCase):
         """
         self.assertFalse(basic.allowed_file('somefile.txt'))
         self.assertTrue(basic.allowed_file('somefile.png'))
+        
 
+        
     def test_homepage(self):
        with app.app_context():
             resp = self.app.get('/')
             self.assertEqual(resp._status_code, 200)
             self.assertIn( 'Menu just for you', str(resp.data))
 
+    def test_category_view_cuisines(self):
+        with app.app_context():
+            """
+            Testing response for displaying categories
+            """
+            resp = self.app.get('/category_view/cuisines')
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('American', str(resp.data))
+            
+    def test_category_view_dishes(self):
+        """
+        Testing response for displaying categories
+        """
+        with app.app_context():
+            resp = self.app.get('/category_view/dishes')
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Main', str(resp.data))
+
     def test_get_recipes(self):
-       with app.app_context():
+        """
+        Testing displaying recipes
+        """
+        with app.app_context():
             resp = self.app.get('/get_recipes')
             self.assertEqual(resp._status_code, 200)
             self.assertIn( 'displaying ', str(resp.data))
 
+    def test_summarise(self):
+        """
+        This test checks rendering template in summarise view
+        """
+        with app.app_context():
+            resp = self.app.get('/summarise')
+            self.assertEqual(resp._status_code, 200)
+            self.assertIn( 'What would you like to summarise:', str(resp.data))    
+    
     def test_rendering_add_page(self):
 
         with app.test_request_context('add_recipe', method='GET'):
@@ -63,33 +96,27 @@ class TestCookbook(unittest.TestCase):
             resp = app.dispatch_request()
             self.assertIn('displaying', str(resp))
        
-            
-    def test_editing(self):
-        """
-        Tests loading recipe for editing
-        """
-        # random recipe check with title, ingredients, preparation steps, 
-        with app.test_request_context('/edit_recipe/5b8d6cb88dbc98405b99672a/True', method='GET'):
-            resp = app.dispatch_request()
-            self.assertIn('Champagne Cocktail', str(resp))
-            self.assertIn('pour in the brandy', str(resp))
-            self.assertIn('dashes Angostura bitters', str(resp))
-            self.assertIn('Drinks and Smoothies', str(resp))
-
         
     def test_faq(self):
         with app.app_context():
             resp = self.app.get('/frequently_asked_questions')
             self.assertEqual(resp._status_code, 200)
             #print(resp)
-            # self.assertIn('Frequently asked questions', str(resp))
+            self.assertIn('Frequently asked questions', str(resp.data))
             
-    def test_login(self):
+            
+    def test_login_get(self):
+            resp = self.app.get('/login')
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Please log in', str(resp.data))
+            
+            
+    def test_login_post(self):
         """
         Testing if loging in works properly
         """
-        ### Unfortunetely does not give proper result due to issue with session testing
-        with app.test_request_context('/login', method='POST', data=dict(author_name="Kajamiko",
+        ### Unfortunetely does not give proper result due to issue with session testing. Template should contain "Login", it does not
+        with app.test_request_context('/login', method='POST', data=dict(author_name="Kaja",
                                         password="password")):
             resp = app.dispatch_request()
             self.assertNotIn('Logout', str(resp))
@@ -100,6 +127,13 @@ class TestCookbook(unittest.TestCase):
             self.assertIn('User does not exist', str(resp))
         
 
+        
+    # def test_session(self):
+    #     with app.test_client() as c:
+    #         with app.test_request_context('/login', method='POST', data=dict(author_name="Kajamiko",
+    #                                     password="password")):
+    #             rv = app.dispatch_request()
+    #             print(rv) dziala jesli złe dane podac
             
 if __name__ == '__main__':
     unittest.main()

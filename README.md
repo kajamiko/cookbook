@@ -108,7 +108,7 @@ As images are stored in the project's filesystem, the deployed version is also p
 
 In this section, you need to convince the assessor that you have conducted enough testing to legitimately believe that the site works well. Essentially, in this part you will want to go over all of your user stories from the UX section and ensure that they all work as intended, with the project providing an easy and straightforward way for the users to achieve their goals.
 
-All CRUD operations tests (for recipes) are in test_crud.py file. Known bugs for these operations:
+All CRUD operations tests (creating, updating, removing recipes, creating cookbooks) are in test_crud.py file. Known bugs for these operations:
 - if a recipe is removed from the  owner's cookbook, other users' cookbooks are not updated. This means that it is possible to have "dead" links in "Pinned recipes" section. Clicking them will redirect to an error page. Links can always be deleted.
 - when a recipe is about to be inserted, the name is checked for its uniqueness  before actual inserting. However, it is not the case when updating a recipe.It does not really affect the UX, because recipes documents are in fact identified with the "id" field.
 - when inserting a recipe, it should normally be appended to "recipes_owned" array in cookbook's documents. Unfortunetely it is not working with automated tests because this operation is using flask.session. This functionality is well tested manually(see below).
@@ -118,17 +118,54 @@ All functions testing views are in test.py file.
 
 ### Unfortunetely, due to problems with testing flask.session, some of the automated tests are not working properly. However, these functionalities are properly tested manually.
 
+Scenarios that are tested only manually:
 
-For any scenarios that have not been automated, test the user stories manually and provide as much detail as is relevant. A particularly useful form for describing your testing process is via scenarios, such as:
+1. Logging in (at least succesful)
+2. Logging out
+3. Pinning recipes
+4. Unpinning recipes
+5. Removing recipes
+6. Searching
+7. Statistics page
 
-Contact form:
-Go to the "Contact Us" page
-Try to submit the empty form and verify that an error message about the required fields appears
-Try to submit the form with an invalid email address and verify that a relevant error message appears
-Try to submit the form with all inputs valid and verify that a success message appears.
-In addition, you should mention in this section how your project looks and works on different browsers and screen sizes.
+1. Logging in:
+    Go to login page (click 'Login') button.
+    Type in your username and password.
+    Click 'Sign in' button.
+    Verify, that if you provided correct values, you can see "Your cookbook" and 'Logout' buttons.
+    Try to submit wrong values, and a message error will be displayed under the form.
 
-You should also mention in this section any interesting bugs or problems you discovered during your testing, even if you haven't addressed them yet.
+2. Logging out:
+    Make sure you are logged in. Click on 'Logout' button.
+    Verify that the are no "Your cookbook" and 'Logout' buttons. Instead, you can find only "Create your own cookbook" and "Login" buttons.
+    Try to click browser's go back button. Verify, that you are not able to see your cookbook's content anymore, nor any other cookbooks at all.
+
+3. Pinning and unpining recipes:
+    When logged in, open a chosen recipe's page by clicking it's title. Click "Pin to your cookbook" button.
+    Verify, that if you go to your cookbook's page, the chosen recipe title will appear in "Pinned recipes" section. 
+    You can also find a bin icon next to recipe's title. To unpin it, just click the icon. A confirmation box with a recipe title will appear. After confirming, the recipe will be deleted from your "Pinned recipes" section.
+    Verify, that you had been redirected to the recipe's page. If you made up your mind, the recipe can be easily pinned back.
+    Notice also, that is is a way to give or cancel your upvote for that recipe. If you pin it, the upvotes number on the recipe's page will increase.
+
+4. Searching:
+    Searching is available from "Browse recipes" page. Click the button on the page.
+    Using a form located on page's left side, try filtering recipes. 
+    You can filter by various categories, and by keywords.
+    If you submit some values in "Search" field, recipes containing that word will be returned.
+    If you click on 'Allergens' button, you can see a section with another input field. If you submit some values in this one, it will exclude recipes containing this word. You can also choose between some ready options: diary, eggs and nuts, and these can also be excluded.
+
+5. Statistics page:
+    Click on "Statistics" button in navbar.
+    Verify, that you have been redirected to a page displaying chart, by default summarising most active users.
+    If you click on donut image, the chart type will change to 'donut'.
+    If you choose a category to summarise, the chart's dataset will change.
+    Hit "Apply!" button to submit form and apply the changes.
+
+
+The project has been tested on various screens and browsers. Some pages look slightly different on large screens:
+- recipe's page - on medium and smaller screens, the ingredint's list section and preparation step's section are hidden by default. In the same time, ingredients' and 'preparation' buttons will appear to toggle display those section.
+- cookbook's page - on medium and smaller screens, the "own recipes" and "pinned recipes" sections are stacked vertically, to make the containing recipes titles clearer.
+- every other page - on medium and smaller screens, buttons have icons only, with no text, and some fonts are larger, to improve UX. 
 
 
 ## Deployment
@@ -142,11 +179,11 @@ Variables set in Heroku Config are: 'SECRET KEY', 'IP', 'PORT' and 'MONGO_URI'.
 
 ### How to run code locally for tests
 
-##### Project's 'test' branch is configured specifically for tests. This includes:
+##### Project's 'test' branch is configured specifically for automated tests. This includes:
 
 - it's enough to set variables into file (see instruction below) to run the code. Master branch version is importing them form environment.
 - exported database with minimum records to run project properly
-- functions are printing success or fail messages into console. Master branch version doesn't have that functionality.
+- functions are printing success and fail messages into console. Master branch version doesn't have that functionality.
 
 To run it:
 
@@ -154,8 +191,8 @@ To run it:
 2. Install dependencies listed in requirements.txt.
 3. Import database from db/cookbook_proto to either local mongodb instance, or mlab online instance, using mogorestore. 
 4. In app.py file, there is `from secret import secret_key, db_uri` line. These two values are then loaded as configuration values. 
-    Create your won 'secret.py' file with values named above and the app is ready for testing.
-
+Create your own 'secret.py' file with values named above and the app is ready for testing.
+5. Run the 'run.py' file.
 
 
 ## Credits
@@ -171,4 +208,4 @@ The photos used in this site were obtained from [Allrecipes](http://allrecipes.c
 
 Inspirations for this project was [Allrecipes](http://allrecipes.co.uk/)
 - how they require users to upload for example, list of ingredients for a recipe. Of course I have no idea how it is implemented, but just watching gave me some hints.
-- there is no requirements for image size, and also images displayed in search results are not statically sized, and I used a similar solution in my project.
+- there is no requirements for image size, and also images displayed in search results are not sized, and I used a similar solution in my project.
