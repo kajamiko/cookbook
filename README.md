@@ -60,7 +60,7 @@ User can check following:
 - user can see website's summary, by clicking on 'Statistics' button on navigation bar. 
 - user can choose between summarising categories or most active users, as well as choose a chart type, by submitting the form on the page.
 
-## Features do d
+## Future features
 I do have many ideas of how to improve my application. Here are some of them:
 
 1. First and most important is to make accounts secure and provide such features as retrieving forgotten passwords, disabling accounts.
