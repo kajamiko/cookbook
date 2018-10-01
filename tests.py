@@ -127,13 +127,5 @@ class TestCookbook(unittest.TestCase):
             self.assertIn('User does not exist', str(resp))
         
 
-        
-    # def test_session(self):
-    #     with app.test_client() as c:
-    #         with app.test_request_context('/login', method='POST', data=dict(author_name="Kajamiko",
-    #                                     password="password")):
-    #             rv = app.dispatch_request()
-    #             print(rv) dziala jesli złe dane podac
-            
 if __name__ == '__main__':
     unittest.main()
